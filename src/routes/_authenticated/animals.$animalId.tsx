@@ -101,7 +101,7 @@ function AnimalDetail() {
   });
 
   const updatePreg = useMutation({
-    mutationFn: async ({ id, ...p }: { id: string; status?: string; actual_birth?: string; offspring_count?: number }) => {
+    mutationFn: async ({ id, ...p }: { id: string; status?: "active" | "born" | "lost"; actual_birth?: string; offspring_count?: number }) => {
       const { error } = await supabase.from("pregnancies").update(p).eq("id", id);
       if (error) throw error;
     },

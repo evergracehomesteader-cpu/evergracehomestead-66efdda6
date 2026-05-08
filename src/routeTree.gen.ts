@@ -9,38 +9,162 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
+import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCompostRouteImport } from './routes/_authenticated/compost'
+import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
+import { Route as AuthenticatedAnimalsRouteImport } from './routes/_authenticated/animals'
+import { Route as AuthenticatedAnimalsAnimalIdRouteImport } from './routes/_authenticated/animals.$animalId'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
+  id: '/garden',
+  path: '/garden',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedFeedRoute = AuthenticatedFeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCompostRoute = AuthenticatedCompostRouteImport.update({
+  id: '/compost',
+  path: '/compost',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedBillsRoute = AuthenticatedBillsRouteImport.update({
+  id: '/bills',
+  path: '/bills',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAnimalsRoute = AuthenticatedAnimalsRouteImport.update({
+  id: '/animals',
+  path: '/animals',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAnimalsAnimalIdRoute =
+  AuthenticatedAnimalsAnimalIdRouteImport.update({
+    id: '/$animalId',
+    path: '/$animalId',
+    getParentRoute: () => AuthenticatedAnimalsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/bills': typeof AuthenticatedBillsRoute
+  '/compost': typeof AuthenticatedCompostRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/feed': typeof AuthenticatedFeedRoute
+  '/garden': typeof AuthenticatedGardenRoute
+  '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/bills': typeof AuthenticatedBillsRoute
+  '/compost': typeof AuthenticatedCompostRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/feed': typeof AuthenticatedFeedRoute
+  '/garden': typeof AuthenticatedGardenRoute
+  '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_authenticated/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/_authenticated/bills': typeof AuthenticatedBillsRoute
+  '/_authenticated/compost': typeof AuthenticatedCompostRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/feed': typeof AuthenticatedFeedRoute
+  '/_authenticated/garden': typeof AuthenticatedGardenRoute
+  '/_authenticated/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/animals'
+    | '/bills'
+    | '/compost'
+    | '/dashboard'
+    | '/feed'
+    | '/garden'
+    | '/animals/$animalId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/animals'
+    | '/bills'
+    | '/compost'
+    | '/dashboard'
+    | '/feed'
+    | '/garden'
+    | '/animals/$animalId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/login'
+    | '/_authenticated/animals'
+    | '/_authenticated/bills'
+    | '/_authenticated/compost'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/feed'
+    | '/_authenticated/garden'
+    | '/_authenticated/animals/$animalId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +172,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/garden': {
+      id: '/_authenticated/garden'
+      path: '/garden'
+      fullPath: '/garden'
+      preLoaderRoute: typeof AuthenticatedGardenRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/feed': {
+      id: '/_authenticated/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof AuthenticatedFeedRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/compost': {
+      id: '/_authenticated/compost'
+      path: '/compost'
+      fullPath: '/compost'
+      preLoaderRoute: typeof AuthenticatedCompostRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/bills': {
+      id: '/_authenticated/bills'
+      path: '/bills'
+      fullPath: '/bills'
+      preLoaderRoute: typeof AuthenticatedBillsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/animals': {
+      id: '/_authenticated/animals'
+      path: '/animals'
+      fullPath: '/animals'
+      preLoaderRoute: typeof AuthenticatedAnimalsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/animals/$animalId': {
+      id: '/_authenticated/animals/$animalId'
+      path: '/$animalId'
+      fullPath: '/animals/$animalId'
+      preLoaderRoute: typeof AuthenticatedAnimalsAnimalIdRouteImport
+      parentRoute: typeof AuthenticatedAnimalsRoute
+    }
   }
 }
 
+interface AuthenticatedAnimalsRouteChildren {
+  AuthenticatedAnimalsAnimalIdRoute: typeof AuthenticatedAnimalsAnimalIdRoute
+}
+
+const AuthenticatedAnimalsRouteChildren: AuthenticatedAnimalsRouteChildren = {
+  AuthenticatedAnimalsAnimalIdRoute: AuthenticatedAnimalsAnimalIdRoute,
+}
+
+const AuthenticatedAnimalsRouteWithChildren =
+  AuthenticatedAnimalsRoute._addFileChildren(AuthenticatedAnimalsRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedAnimalsRoute: typeof AuthenticatedAnimalsRouteWithChildren
+  AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
+  AuthenticatedCompostRoute: typeof AuthenticatedCompostRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
+  AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAnimalsRoute: AuthenticatedAnimalsRouteWithChildren,
+  AuthenticatedBillsRoute: AuthenticatedBillsRoute,
+  AuthenticatedCompostRoute: AuthenticatedCompostRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFeedRoute: AuthenticatedFeedRoute,
+  AuthenticatedGardenRoute: AuthenticatedGardenRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
