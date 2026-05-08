@@ -14,7 +14,439 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      animals: {
+        Row: {
+          breed: string | null
+          created_at: string
+          created_by: string | null
+          date_of_birth: string | null
+          father_id: string | null
+          id: string
+          mother_id: string | null
+          name: string
+          notes: string | null
+          photo_url: string | null
+          sex: Database["public"]["Enums"]["animal_sex"]
+          species: string
+          status: Database["public"]["Enums"]["animal_status"]
+          tag: string | null
+          updated_at: string
+        }
+        Insert: {
+          breed?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string | null
+          father_id?: string | null
+          id?: string
+          mother_id?: string | null
+          name: string
+          notes?: string | null
+          photo_url?: string | null
+          sex?: Database["public"]["Enums"]["animal_sex"]
+          species: string
+          status?: Database["public"]["Enums"]["animal_status"]
+          tag?: string | null
+          updated_at?: string
+        }
+        Update: {
+          breed?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string | null
+          father_id?: string | null
+          id?: string
+          mother_id?: string | null
+          name?: string
+          notes?: string | null
+          photo_url?: string | null
+          sex?: Database["public"]["Enums"]["animal_sex"]
+          species?: string
+          status?: Database["public"]["Enums"]["animal_status"]
+          tag?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animals_father_id_fkey"
+            columns: ["father_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_mother_id_fkey"
+            columns: ["mother_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bills: {
+        Row: {
+          amount_cents: number
+          category: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          name: string
+          notes: string | null
+          paid: boolean
+          paid_on: string | null
+          recurring: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          paid?: boolean
+          paid_on?: string | null
+          recurring?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          paid?: boolean
+          paid_on?: string | null
+          recurring?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      compost_entries: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          entry_date: string
+          entry_type: string
+          id: string
+          material: string | null
+          notes: string | null
+          quantity: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          entry_type?: string
+          id?: string
+          material?: string | null
+          notes?: string | null
+          quantity?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          entry_type?: string
+          id?: string
+          material?: string | null
+          notes?: string | null
+          quantity?: string | null
+        }
+        Relationships: []
+      }
+      feed_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          low_stock_threshold: number
+          name: string
+          notes: string | null
+          price_cents: number | null
+          stock_qty: number
+          store: string | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          low_stock_threshold?: number
+          name: string
+          notes?: string | null
+          price_cents?: number | null
+          stock_qty?: number
+          store?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          low_stock_threshold?: number
+          name?: string
+          notes?: string | null
+          price_cents?: number | null
+          stock_qty?: number
+          store?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      feed_logs: {
+        Row: {
+          animal_id: string | null
+          created_at: string
+          created_by: string | null
+          fed_on: string
+          feed_item_id: string
+          id: string
+          notes: string | null
+          quantity: number
+        }
+        Insert: {
+          animal_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fed_on?: string
+          feed_item_id: string
+          id?: string
+          notes?: string | null
+          quantity: number
+        }
+        Update: {
+          animal_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fed_on?: string
+          feed_item_id?: string
+          id?: string
+          notes?: string | null
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_logs_feed_item_id_fkey"
+            columns: ["feed_item_id"]
+            isOneToOne: false
+            referencedRelation: "feed_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_purchases: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          feed_item_id: string
+          id: string
+          notes: string | null
+          price_cents: number
+          purchased_on: string
+          quantity: number
+          store: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          feed_item_id: string
+          id?: string
+          notes?: string | null
+          price_cents: number
+          purchased_on?: string
+          quantity: number
+          store?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          feed_item_id?: string
+          id?: string
+          notes?: string | null
+          price_cents?: number
+          purchased_on?: string
+          quantity?: number
+          store?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_purchases_feed_item_id_fkey"
+            columns: ["feed_item_id"]
+            isOneToOne: false
+            referencedRelation: "feed_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garden_plots: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          crop: string | null
+          expected_harvest: string | null
+          id: string
+          name: string
+          notes: string | null
+          planted_on: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          expected_harvest?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          planted_on?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          expected_harvest?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          planted_on?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      heat_events: {
+        Row: {
+          animal_id: string
+          created_at: string
+          created_by: string | null
+          event_date: string
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string
+          created_by?: string | null
+          event_date: string
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string
+          created_by?: string | null
+          event_date?: string
+          id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "heat_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pregnancies: {
+        Row: {
+          actual_birth: string | null
+          animal_id: string
+          bred_date: string
+          created_at: string
+          created_by: string | null
+          expected_due: string | null
+          id: string
+          notes: string | null
+          offspring_count: number | null
+          sire_id: string | null
+          status: Database["public"]["Enums"]["pregnancy_status"]
+          updated_at: string
+        }
+        Insert: {
+          actual_birth?: string | null
+          animal_id: string
+          bred_date: string
+          created_at?: string
+          created_by?: string | null
+          expected_due?: string | null
+          id?: string
+          notes?: string | null
+          offspring_count?: number | null
+          sire_id?: string | null
+          status?: Database["public"]["Enums"]["pregnancy_status"]
+          updated_at?: string
+        }
+        Update: {
+          actual_birth?: string | null
+          animal_id?: string
+          bred_date?: string
+          created_at?: string
+          created_by?: string | null
+          expected_due?: string | null
+          id?: string
+          notes?: string | null
+          offspring_count?: number | null
+          sire_id?: string | null
+          status?: Database["public"]["Enums"]["pregnancy_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pregnancies_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pregnancies_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +455,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      animal_sex: "female" | "male" | "unknown"
+      animal_status: "active" | "sold" | "deceased" | "archived"
+      pregnancy_status: "active" | "born" | "lost"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +584,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      animal_sex: ["female", "male", "unknown"],
+      animal_status: ["active", "sold", "deceased", "archived"],
+      pregnancy_status: ["active", "born", "lost"],
+    },
   },
 } as const
