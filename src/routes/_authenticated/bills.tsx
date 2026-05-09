@@ -126,6 +126,7 @@ function BillForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unkno
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">One-time</SelectItem>
+                <SelectItem value="weekly">Weekly</SelectItem>
                 <SelectItem value="monthly">Monthly</SelectItem>
                 <SelectItem value="quarterly">Quarterly</SelectItem>
                 <SelectItem value="yearly">Yearly</SelectItem>
