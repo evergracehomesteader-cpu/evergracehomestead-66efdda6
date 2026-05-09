@@ -95,11 +95,12 @@ function Dashboard() {
         <p className="text-muted-foreground">Today's snapshot of your homestead.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Stat icon={PawPrint} label="Active animals" value={animals.data?.length ?? "—"} to="/animals" />
         <Stat icon={Wheat} label="Feed items" value={feed.data?.length ?? "—"} to="/feed" />
         <Stat icon={Sprout} label="Garden plots" value={garden.data?.length ?? "—"} to="/garden" />
         <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />
+        <Stat icon={Handshake} label="Pending barter" value={pendingBarter.length} to="/barter" accent="bg-warning/15 text-warning" />
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
