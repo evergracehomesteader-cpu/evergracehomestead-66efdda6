@@ -115,9 +115,11 @@ function FeedPage() {
             return (
               <Card key={f.id} className="p-4 flex flex-col gap-2">
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="font-semibold">{f.name}</div>
-                    {f.store && <div className="text-xs text-muted-foreground">{f.store}</div>}
+                  <div className="min-w-0">
+                    <div className="font-semibold truncate">{f.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {f.store ? f.store : "—"}{f.species_for ? ` · for ${f.species_for}` : ""}
+                    </div>
                   </div>
                   {low && <Badge variant="outline" className="border-warning text-warning">low</Badge>}
                 </div>
