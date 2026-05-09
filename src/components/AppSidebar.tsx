@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, LogOut } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
