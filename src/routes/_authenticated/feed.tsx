@@ -18,6 +18,7 @@ export const Route = createFileRoute("/_authenticated/feed")({ component: FeedPa
 type FeedItem = {
   id: string; name: string; store: string | null; price_cents: number | null;
   unit: string; stock_qty: number; low_stock_threshold: number; notes: string | null;
+  species_for: string | null; package_size: number | null;
 };
 type Purchase = { id: string; feed_item_id: string; store: string | null; price_cents: number; quantity: number; purchased_on: string; notes: string | null };
 
