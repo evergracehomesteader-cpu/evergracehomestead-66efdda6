@@ -69,9 +69,24 @@ function Dashboard() {
       return data;
     },
   });
+  const barter = useQuery({
+    queryKey: ["dash-barter"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("barter_deals")
+        .select("id, title, person_name, status, due_date, trade_date, created_at")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const lowStock = (feed.data ?? []).filter((f) => Number(f.stock_qty) <= Number(f.low_stock_threshold) && Number(f.low_stock_threshold) > 0);
   const upcomingBills = (bills.data ?? []).filter((b) => b.due_date && isBefore(new Date(b.due_date), addDays(new Date(), 14)));
+  const pendingBarter = (barter.data ?? []).filter((b) => b.status === "pending");
+  const upcomingBarter = pendingBarter.filter((b) => b.due_date && isBefore(new Date(b.due_date), addDays(new Date(), 14)));
+  const recentBarter = (barter.data ?? []).slice(0, 5);
+  const completedBarterCount = (barter.data ?? []).filter((b) => b.status === "completed").length;
 
   return (
     <div className="space-y-6">
