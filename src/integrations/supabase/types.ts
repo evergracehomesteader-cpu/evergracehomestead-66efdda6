@@ -22,6 +22,7 @@ export type Database = {
           date_of_birth: string | null
           father_id: string | null
           id: string
+          medical_notes: string | null
           mother_id: string | null
           name: string
           notes: string | null
@@ -30,6 +31,7 @@ export type Database = {
           species: string
           status: Database["public"]["Enums"]["animal_status"]
           tag: string | null
+          temperament_tags: string[]
           updated_at: string
         }
         Insert: {
@@ -39,6 +41,7 @@ export type Database = {
           date_of_birth?: string | null
           father_id?: string | null
           id?: string
+          medical_notes?: string | null
           mother_id?: string | null
           name: string
           notes?: string | null
@@ -47,6 +50,7 @@ export type Database = {
           species: string
           status?: Database["public"]["Enums"]["animal_status"]
           tag?: string | null
+          temperament_tags?: string[]
           updated_at?: string
         }
         Update: {
@@ -56,6 +60,7 @@ export type Database = {
           date_of_birth?: string | null
           father_id?: string | null
           id?: string
+          medical_notes?: string | null
           mother_id?: string | null
           name?: string
           notes?: string | null
@@ -64,6 +69,7 @@ export type Database = {
           species?: string
           status?: Database["public"]["Enums"]["animal_status"]
           tag?: string | null
+          temperament_tags?: string[]
           updated_at?: string
         }
         Relationships: [
@@ -326,7 +332,9 @@ export type Database = {
           low_stock_threshold: number
           name: string
           notes: string | null
+          package_size: number | null
           price_cents: number | null
+          species_for: string | null
           stock_qty: number
           store: string | null
           unit: string
@@ -339,7 +347,9 @@ export type Database = {
           low_stock_threshold?: number
           name: string
           notes?: string | null
+          package_size?: number | null
           price_cents?: number | null
+          species_for?: string | null
           stock_qty?: number
           store?: string | null
           unit?: string
@@ -352,7 +362,9 @@ export type Database = {
           low_stock_threshold?: number
           name?: string
           notes?: string | null
+          package_size?: number | null
           price_cents?: number | null
+          species_for?: string | null
           stock_qty?: number
           store?: string | null
           unit?: string
@@ -539,6 +551,7 @@ export type Database = {
           offspring_count: number | null
           sire_id: string | null
           status: Database["public"]["Enums"]["pregnancy_status"]
+          survived_count: number | null
           updated_at: string
         }
         Insert: {
@@ -553,6 +566,7 @@ export type Database = {
           offspring_count?: number | null
           sire_id?: string | null
           status?: Database["public"]["Enums"]["pregnancy_status"]
+          survived_count?: number | null
           updated_at?: string
         }
         Update: {
@@ -567,6 +581,7 @@ export type Database = {
           offspring_count?: number | null
           sire_id?: string | null
           status?: Database["public"]["Enums"]["pregnancy_status"]
+          survived_count?: number | null
           updated_at?: string
         }
         Relationships: [
@@ -604,6 +619,47 @@ export type Database = {
         }
         Relationships: []
       }
+      weight_logs: {
+        Row: {
+          animal_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          unit: string
+          weighed_on: string
+          weight: number
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          unit?: string
+          weighed_on?: string
+          weight: number
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          unit?: string
+          weighed_on?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -613,7 +669,13 @@ export type Database = {
     }
     Enums: {
       animal_sex: "female" | "male" | "unknown"
-      animal_status: "active" | "sold" | "deceased" | "archived"
+      animal_status:
+        | "active"
+        | "sold"
+        | "deceased"
+        | "archived"
+        | "butchered"
+        | "missing"
       barter_category:
         | "livestock"
         | "feed"
@@ -632,7 +694,13 @@ export type Database = {
         | "service"
         | "other"
       barter_status: "pending" | "completed" | "cancelled"
-      pregnancy_status: "active" | "born" | "lost"
+      pregnancy_status:
+        | "active"
+        | "born"
+        | "lost"
+        | "suspected"
+        | "confirmed"
+        | "delivered"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -761,7 +829,14 @@ export const Constants = {
   public: {
     Enums: {
       animal_sex: ["female", "male", "unknown"],
-      animal_status: ["active", "sold", "deceased", "archived"],
+      animal_status: [
+        "active",
+        "sold",
+        "deceased",
+        "archived",
+        "butchered",
+        "missing",
+      ],
       barter_category: [
         "livestock",
         "feed",
@@ -782,7 +857,14 @@ export const Constants = {
         "other",
       ],
       barter_status: ["pending", "completed", "cancelled"],
-      pregnancy_status: ["active", "born", "lost"],
+      pregnancy_status: [
+        "active",
+        "born",
+        "lost",
+        "suspected",
+        "confirmed",
+        "delivered",
+      ],
     },
   },
 } as const
