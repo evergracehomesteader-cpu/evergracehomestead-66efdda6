@@ -111,7 +111,7 @@ function AnimalDetail() {
 
   const updatePreg = useMutation({
     mutationFn: async ({ id, ...p }: { id: string } & Record<string, unknown>) => {
-      const { error } = await supabase.from("pregnancies").update(p).eq("id", id);
+      const { error } = await supabase.from("pregnancies").update(p as never).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["pregs", animalId] }),
