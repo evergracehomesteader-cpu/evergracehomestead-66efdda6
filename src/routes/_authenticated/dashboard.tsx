@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart } from "lucide-react";
+import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake } from "lucide-react";
 import { format, addDays, isBefore } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
