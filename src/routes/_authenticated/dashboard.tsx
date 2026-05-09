@@ -95,6 +95,13 @@ function Dashboard() {
         <p className="text-muted-foreground">Today's snapshot of your homestead.</p>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        <Button asChild size="sm" variant="outline"><Link to="/animals"><PawPrint className="h-4 w-4" /> Add animal</Link></Button>
+        <Button asChild size="sm" variant="outline"><Link to="/feed"><Wheat className="h-4 w-4" /> Buy feed</Link></Button>
+        <Button asChild size="sm" variant="outline"><Link to="/bills"><Receipt className="h-4 w-4" /> Add bill</Link></Button>
+        <Button asChild size="sm" variant="outline"><Link to="/barter"><Handshake className="h-4 w-4" /> New trade</Link></Button>
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Stat icon={PawPrint} label="Active animals" value={animals.data?.length ?? "—"} to="/animals" />
         <Stat icon={Wheat} label="Feed items" value={feed.data?.length ?? "—"} to="/feed" />
