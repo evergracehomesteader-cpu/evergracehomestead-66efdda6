@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake } from "lucide-react";
 import { format, addDays, isBefore } from "date-fns";
 
@@ -93,6 +94,13 @@ function Dashboard() {
       <div>
         <h1 className="text-3xl font-display font-semibold">Welcome home</h1>
         <p className="text-muted-foreground">Today's snapshot of your homestead.</p>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button asChild size="sm" variant="outline"><Link to="/animals"><PawPrint className="h-4 w-4" /> Add animal</Link></Button>
+        <Button asChild size="sm" variant="outline"><Link to="/feed"><Wheat className="h-4 w-4" /> Buy feed</Link></Button>
+        <Button asChild size="sm" variant="outline"><Link to="/bills"><Receipt className="h-4 w-4" /> Add bill</Link></Button>
+        <Button asChild size="sm" variant="outline"><Link to="/barter"><Handshake className="h-4 w-4" /> New trade</Link></Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

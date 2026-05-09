@@ -18,6 +18,7 @@ export const Route = createFileRoute("/_authenticated/feed")({ component: FeedPa
 type FeedItem = {
   id: string; name: string; store: string | null; price_cents: number | null;
   unit: string; stock_qty: number; low_stock_threshold: number; notes: string | null;
+  species_for: string | null; package_size: number | null;
 };
 type Purchase = { id: string; feed_item_id: string; store: string | null; price_cents: number; quantity: number; purchased_on: string; notes: string | null };
 
@@ -114,9 +115,11 @@ function FeedPage() {
             return (
               <Card key={f.id} className="p-4 flex flex-col gap-2">
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="font-semibold">{f.name}</div>
-                    {f.store && <div className="text-xs text-muted-foreground">{f.store}</div>}
+                  <div className="min-w-0">
+                    <div className="font-semibold truncate">{f.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {f.store ? f.store : "—"}{f.species_for ? ` · for ${f.species_for}` : ""}
+                    </div>
                   </div>
                   {low && <Badge variant="outline" className="border-warning text-warning">low</Badge>}
                 </div>
@@ -180,14 +183,16 @@ function FeedItemForm({ initial, onSubmit, submitting }: { initial?: FeedItem; o
   const [f, setF] = useState<Partial<FeedItem>>(initial ?? { name: "", store: "", unit: "lb", stock_qty: 0, low_stock_threshold: 0, price_cents: 0 });
   const [priceDollars, setPriceDollars] = useState(initial ? ((initial.price_cents ?? 0) / 100).toFixed(2) : "");
   return (
-    <DialogContent>
+    <DialogContent className="max-h-[90vh] overflow-y-auto">
       <DialogHeader><DialogTitle>{initial ? "Edit feed item" : "Add feed item"}</DialogTitle></DialogHeader>
       <form onSubmit={(e) => { e.preventDefault(); if (!f.name) { toast.error("Name required"); return; } onSubmit({ ...f, price_cents: Math.round(Number(priceDollars || 0) * 100) }); }} className="space-y-3">
         <div><Label>Product name *</Label><Input value={f.name ?? ""} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="Layer Pellets 50lb" required maxLength={150} /></div>
         <div className="grid grid-cols-2 gap-3">
           <div><Label>Store</Label><Input value={f.store ?? ""} onChange={(e) => setF({ ...f, store: e.target.value })} placeholder="Tractor Supply" maxLength={100} /></div>
+          <div><Label>Used for (species)</Label><Input value={f.species_for ?? ""} onChange={(e) => setF({ ...f, species_for: e.target.value })} placeholder="chickens, goats" maxLength={100} /></div>
           <div><Label>Price ($)</Label><Input type="number" step="0.01" value={priceDollars} onChange={(e) => setPriceDollars(e.target.value)} /></div>
           <div><Label>Unit</Label><Input value={f.unit ?? "lb"} onChange={(e) => setF({ ...f, unit: e.target.value })} maxLength={20} /></div>
+          <div><Label>Package size</Label><Input type="number" step="0.1" value={f.package_size ?? ""} onChange={(e) => setF({ ...f, package_size: e.target.value ? Number(e.target.value) : null })} placeholder="50" /></div>
           <div><Label>Stock qty</Label><Input type="number" step="0.1" value={f.stock_qty ?? 0} onChange={(e) => setF({ ...f, stock_qty: Number(e.target.value) })} /></div>
           <div className="col-span-2"><Label>Low stock alert at</Label><Input type="number" step="0.1" value={f.low_stock_threshold ?? 0} onChange={(e) => setF({ ...f, low_stock_threshold: Number(e.target.value) })} /></div>
         </div>

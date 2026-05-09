@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,9 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Heart, Baby, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { toast } from "sonner";
+import { gestationFor, statusBadgeClass } from "@/lib/homestead";
 
 export const Route = createFileRoute("/_authenticated/animals/$animalId")({ component: AnimalDetail });
 
@@ -68,6 +69,14 @@ function AnimalDetail() {
     },
   });
 
+  const { data: weights } = useQuery({
+    queryKey: ["weights", animalId],
+    queryFn: async () => {
+      const { data } = await supabase.from("weight_logs").select("*").eq("animal_id", animalId).order("weighed_on", { ascending: false });
+      return data ?? [];
+    },
+  });
+
   const { data: males } = useQuery({
     queryKey: ["males-list"],
     queryFn: async () => {
@@ -91,9 +100,9 @@ function AnimalDetail() {
   });
 
   const addPreg = useMutation({
-    mutationFn: async (p: { bred_date: string; sire_id: string | null; expected_due: string | null; notes: string | null }) => {
+    mutationFn: async (p: { bred_date: string; sire_id: string | null; expected_due: string | null; notes: string | null; status: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await supabase.from("pregnancies").insert({ animal_id: animalId, created_by: u.user?.id, status: "active", ...p });
+      const { error } = await supabase.from("pregnancies").insert({ animal_id: animalId, created_by: u.user?.id, ...p } as never);
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["pregs", animalId] }); toast.success("Pregnancy added"); },
@@ -101,12 +110,43 @@ function AnimalDetail() {
   });
 
   const updatePreg = useMutation({
-    mutationFn: async ({ id, ...p }: { id: string; status?: "active" | "born" | "lost"; actual_birth?: string; offspring_count?: number }) => {
-      const { error } = await supabase.from("pregnancies").update(p).eq("id", id);
+    mutationFn: async ({ id, ...p }: { id: string } & Record<string, unknown>) => {
+      const { error } = await supabase.from("pregnancies").update(p as never).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["pregs", animalId] }),
   });
+
+  const addWeight = useMutation({
+    mutationFn: async (p: { weight: number; unit: string; weighed_on: string; notes: string | null }) => {
+      const { data: u } = await supabase.auth.getUser();
+      const { error } = await supabase.from("weight_logs").insert({ animal_id: animalId, created_by: u.user?.id, ...p });
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["weights", animalId] }); toast.success("Weight logged"); },
+  });
+
+  const delWeight = useMutation({
+    mutationFn: async (id: string) => { const { error } = await supabase.from("weight_logs").delete().eq("id", id); if (error) throw error; },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["weights", animalId] }),
+  });
+
+  const timeline = useMemo(() => {
+    if (!animal) return [];
+    type Event = { date: string; label: string; icon: "born" | "added" | "heat" | "bred" | "preg" | "due" | "birth" | "weight" | "status" };
+    const events: Event[] = [];
+    if (animal.date_of_birth) events.push({ date: animal.date_of_birth, label: `Born`, icon: "born" });
+    events.push({ date: animal.created_at?.slice(0, 10) ?? "", label: "Added to homestead", icon: "added" });
+    (heats ?? []).forEach((h) => events.push({ date: h.event_date, label: "Heat observed", icon: "heat" }));
+    (pregs ?? []).forEach((p) => {
+      events.push({ date: p.bred_date, label: `Bred${p.notes ? ` — ${p.notes}` : ""}`, icon: "bred" });
+      if (p.expected_due) events.push({ date: p.expected_due, label: "Expected due date", icon: "due" });
+      if (p.actual_birth) events.push({ date: p.actual_birth, label: `Birth — ${p.offspring_count ?? "?"} born${p.survived_count != null ? `, ${p.survived_count} survived` : ""}`, icon: "birth" });
+    });
+    (weights ?? []).forEach((w) => events.push({ date: w.weighed_on, label: `Weighed ${w.weight} ${w.unit}`, icon: "weight" }));
+    if (animal.status !== "active") events.push({ date: animal.updated_at?.slice(0, 10) ?? "", label: `Marked ${animal.status}`, icon: "status" });
+    return events.filter((e) => e.date).sort((a, b) => b.date.localeCompare(a.date));
+  }, [animal, heats, pregs, weights]);
 
   if (!animal) return <div className="text-muted-foreground">Loading…</div>;
 
@@ -116,12 +156,20 @@ function AnimalDetail() {
         <ArrowLeft className="h-4 w-4" /> All animals
       </Link>
 
-      <div className="flex items-start justify-between flex-wrap gap-4">
-        <div>
+      <div className="flex items-start gap-4 flex-wrap">
+        {animal.photo_url ? (
+          <img src={animal.photo_url} alt={animal.name} className="h-24 w-24 rounded-xl object-cover" />
+        ) : (
+          <div className="h-24 w-24 rounded-xl bg-muted flex items-center justify-center"><PawPrint className="h-9 w-9 text-muted-foreground" /></div>
+        )}
+        <div className="flex-1 min-w-0">
           <h1 className="text-3xl font-display font-semibold">{animal.name}</h1>
           <p className="text-muted-foreground">{animal.species}{animal.breed ? ` · ${animal.breed}` : ""} · {animal.sex}</p>
+          <div className="flex gap-2 flex-wrap mt-2">
+            <Badge className={statusBadgeClass(animal.status)}>{animal.status}</Badge>
+            {(animal.temperament_tags ?? []).map((t: string) => <Badge key={t} variant="outline">{t}</Badge>)}
+          </div>
         </div>
-        <Badge variant={animal.status === "active" ? "default" : "secondary"}>{animal.status}</Badge>
       </div>
 
       <div className="grid md:grid-cols-3 gap-3">
@@ -142,13 +190,31 @@ function AnimalDetail() {
         </Card>
       </div>
 
-      <Tabs defaultValue={animal.sex === "female" ? "pregnancies" : "offspring"}>
-        <TabsList>
+      <Tabs defaultValue="timeline">
+        <TabsList className="flex-wrap h-auto">
+          <TabsTrigger value="timeline"><History className="h-4 w-4 mr-1" />Timeline</TabsTrigger>
           {animal.sex === "female" && <TabsTrigger value="heats">Heats</TabsTrigger>}
           {animal.sex === "female" && <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>}
+          <TabsTrigger value="weight"><Scale className="h-4 w-4 mr-1" />Weight</TabsTrigger>
           <TabsTrigger value="offspring">Offspring</TabsTrigger>
+          <TabsTrigger value="medical"><Stethoscope className="h-4 w-4 mr-1" />Medical</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="timeline" className="space-y-2">
+          {timeline.length === 0 ? <p className="text-muted-foreground text-sm">No events yet.</p> : (
+            <Card>
+              <ul className="divide-y">
+                {timeline.map((e, i) => (
+                  <li key={i} className="px-4 py-3 flex items-start gap-3">
+                    <div className="text-xs text-muted-foreground w-24 flex-shrink-0">{format(new Date(e.date), "MMM d, yyyy")}</div>
+                    <div className="text-sm">{e.label}</div>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+        </TabsContent>
 
         <TabsContent value="heats" className="space-y-3">
           <HeatAdd onAdd={(d) => addHeat.mutate(d)} />
@@ -167,7 +233,7 @@ function AnimalDetail() {
         </TabsContent>
 
         <TabsContent value="pregnancies" className="space-y-3">
-          <PregAdd males={males ?? []} onAdd={(p) => addPreg.mutate(p)} />
+          <PregAdd species={animal.species} males={males ?? []} onAdd={(p) => addPreg.mutate(p)} />
           {(pregs ?? []).length === 0 ? <p className="text-muted-foreground text-sm">No pregnancies tracked.</p> : (
             <div className="space-y-2">
               {pregs?.map((p) => (
@@ -178,24 +244,49 @@ function AnimalDetail() {
                       <div className="text-sm text-muted-foreground">
                         {p.expected_due && `Due ${format(new Date(p.expected_due), "MMM d")}`}
                         {p.actual_birth && ` · Born ${format(new Date(p.actual_birth), "MMM d")}`}
-                        {p.offspring_count != null && ` · ${p.offspring_count} offspring`}
+                        {p.offspring_count != null && ` · ${p.offspring_count} born`}
+                        {p.survived_count != null && `, ${p.survived_count} survived`}
                       </div>
                     </div>
-                    <Badge variant={p.status === "active" ? "default" : "secondary"}>{p.status}</Badge>
+                    <Badge className={statusBadgeClass(p.status)}>{p.status}</Badge>
                   </div>
-                  {p.status === "active" && (
-                    <div className="mt-3 flex gap-2">
+                  {!["delivered", "born", "lost"].includes(p.status) && (
+                    <div className="mt-3 flex gap-2 flex-wrap">
+                      {p.status === "suspected" && (
+                        <Button size="sm" variant="outline" onClick={() => updatePreg.mutate({ id: p.id, status: "confirmed" })}>Confirm</Button>
+                      )}
                       <Button size="sm" variant="outline" onClick={() => {
                         const date = prompt("Birth date (YYYY-MM-DD)?", new Date().toISOString().slice(0,10));
-                        const count = prompt("Offspring count?");
-                        if (date) updatePreg.mutate({ id: p.id, status: "born", actual_birth: date, offspring_count: count ? Number(count) : 0 });
-                      }}><Baby className="h-4 w-4" /> Mark born</Button>
+                        if (!date) return;
+                        const count = prompt("Number born?");
+                        const survived = prompt("Number survived?", count ?? "");
+                        updatePreg.mutate({ id: p.id, status: "delivered", actual_birth: date, offspring_count: count ? Number(count) : 0, survived_count: survived ? Number(survived) : null });
+                      }}><Baby className="h-4 w-4" /> Mark delivered</Button>
                       <Button size="sm" variant="ghost" onClick={() => updatePreg.mutate({ id: p.id, status: "lost" })}>Mark lost</Button>
                     </div>
                   )}
                 </Card>
               ))}
             </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="weight" className="space-y-3">
+          <WeightAdd onAdd={(p) => addWeight.mutate(p)} />
+          {(weights ?? []).length === 0 ? <p className="text-muted-foreground text-sm">No weights logged.</p> : (
+            <Card>
+              <ul className="divide-y">
+                {weights?.map((w) => (
+                  <li key={w.id} className="px-4 py-3 flex items-center justify-between">
+                    <div>
+                      <div className="font-medium">{w.weight} {w.unit}</div>
+                      <div className="text-xs text-muted-foreground">{format(new Date(w.weighed_on), "MMM d, yyyy")}{w.notes ? ` · ${w.notes}` : ""}</div>
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => delWeight.mutate(w.id)}><Trash2 className="h-4 w-4" /></Button>
+                  </li>
+                ))}
+              </ul>
+            </Card>
           )}
         </TabsContent>
 
@@ -212,6 +303,10 @@ function AnimalDetail() {
               ))}
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="medical">
+          <Card className="p-4 whitespace-pre-wrap text-sm">{animal.medical_notes || <span className="text-muted-foreground">No medical notes.</span>}</Card>
         </TabsContent>
 
         <TabsContent value="notes">
@@ -232,11 +327,38 @@ function HeatAdd({ onAdd }: { onAdd: (d: string) => void }) {
   );
 }
 
-function PregAdd({ males, onAdd }: { males: { id: string; name: string }[]; onAdd: (p: { bred_date: string; sire_id: string | null; expected_due: string | null; notes: string | null }) => void }) {
+function WeightAdd({ onAdd }: { onAdd: (p: { weight: number; unit: string; weighed_on: string; notes: string | null }) => void }) {
+  const [weight, setWeight] = useState("");
+  const [unit, setUnit] = useState("lb");
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [notes, setNotes] = useState("");
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); if (!weight) return; onAdd({ weight: Number(weight), unit, weighed_on: date, notes: notes || null }); setWeight(""); setNotes(""); }}
+      className="flex flex-wrap gap-2 items-end"
+    >
+      <div><Label className="text-xs">Weight</Label><Input type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} className="w-24" required /></div>
+      <div>
+        <Label className="text-xs">Unit</Label>
+        <Select value={unit} onValueChange={setUnit}>
+          <SelectTrigger className="w-20"><SelectValue /></SelectTrigger>
+          <SelectContent><SelectItem value="lb">lb</SelectItem><SelectItem value="kg">kg</SelectItem><SelectItem value="oz">oz</SelectItem></SelectContent>
+        </Select>
+      </div>
+      <div><Label className="text-xs">Date</Label><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>
+      <div className="flex-1 min-w-[140px]"><Label className="text-xs">Notes</Label><Input value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={200} /></div>
+      <Button type="submit" size="sm"><Plus className="h-4 w-4" /> Log</Button>
+    </form>
+  );
+}
+
+function PregAdd({ species, males, onAdd }: { species: string; males: { id: string; name: string }[]; onAdd: (p: { bred_date: string; sire_id: string | null; expected_due: string | null; notes: string | null; status: string }) => void }) {
   const [open, setOpen] = useState(false);
   const [bred, setBred] = useState(new Date().toISOString().slice(0, 10));
   const [sire, setSire] = useState<string>("none");
-  const [gestation, setGestation] = useState("150");
+  const defaultGest = String(gestationFor(species));
+  const [gestation, setGestation] = useState(defaultGest);
+  const [status, setStatus] = useState("suspected");
   const [notes, setNotes] = useState("");
 
   const due = bred ? format(addDays(new Date(bred), Number(gestation) || 0), "yyyy-MM-dd") : null;
@@ -246,7 +368,7 @@ function PregAdd({ males, onAdd }: { males: { id: string; name: string }[]; onAd
       <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4" /> Add pregnancy</Button></DialogTrigger>
       <DialogContent>
         <DialogHeader><DialogTitle>New pregnancy</DialogTitle></DialogHeader>
-        <form onSubmit={(e) => { e.preventDefault(); onAdd({ bred_date: bred, sire_id: sire === "none" ? null : sire, expected_due: due, notes: notes || null }); setOpen(false); }} className="space-y-3">
+        <form onSubmit={(e) => { e.preventDefault(); onAdd({ bred_date: bred, sire_id: sire === "none" ? null : sire, expected_due: due, notes: notes || null, status }); setOpen(false); }} className="space-y-3">
           <div><Label>Bred date</Label><Input type="date" value={bred} onChange={(e) => setBred(e.target.value)} required /></div>
           <div>
             <Label>Sire</Label>
@@ -259,9 +381,19 @@ function PregAdd({ males, onAdd }: { males: { id: string; name: string }[]; onAd
             </Select>
           </div>
           <div>
+            <Label>Status</Label>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="suspected">Suspected</SelectItem>
+                <SelectItem value="confirmed">Confirmed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
             <Label>Gestation (days)</Label>
             <Input type="number" value={gestation} onChange={(e) => setGestation(e.target.value)} />
-            <p className="text-xs text-muted-foreground mt-1">Goat ~150 · Sheep ~147 · Pig ~114 · Cow ~283 · Rabbit ~31</p>
+            <p className="text-xs text-muted-foreground mt-1">Default for {species || "species"}: {defaultGest} days. Pig 114 · Goat 150 · Cow 283 · Rabbit 31 · Chicken 21 · Dog/Cat 63</p>
             {due && <p className="text-xs text-muted-foreground mt-1">Expected due: <strong>{format(new Date(due), "MMM d, yyyy")}</strong></p>}
           </div>
           <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} /></div>
