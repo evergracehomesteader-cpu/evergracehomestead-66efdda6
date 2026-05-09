@@ -14,6 +14,7 @@ const items = [
   { title: "Garden", url: "/garden", icon: Sprout },
   { title: "Compost", url: "/compost", icon: Recycle },
   { title: "Bills", url: "/bills", icon: Receipt },
+  { title: "Barter", url: "/barter", icon: Handshake },
 ];
 
 export function AppSidebar() {
