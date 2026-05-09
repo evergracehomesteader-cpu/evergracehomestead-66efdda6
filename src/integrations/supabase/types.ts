@@ -83,6 +83,163 @@ export type Database = {
           },
         ]
       }
+      barter_contacts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          location: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      barter_deals: {
+        Row: {
+          category: Database["public"]["Enums"]["barter_category"]
+          contact_id: string | null
+          contact_info: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          estimated_value_cents: number
+          given_summary: string | null
+          id: string
+          location: string | null
+          notes: string | null
+          person_name: string | null
+          photo_urls: string[]
+          received_summary: string | null
+          status: Database["public"]["Enums"]["barter_status"]
+          tags: string[]
+          title: string
+          trade_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: Database["public"]["Enums"]["barter_category"]
+          contact_id?: string | null
+          contact_info?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          estimated_value_cents?: number
+          given_summary?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          person_name?: string | null
+          photo_urls?: string[]
+          received_summary?: string | null
+          status?: Database["public"]["Enums"]["barter_status"]
+          tags?: string[]
+          title: string
+          trade_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["barter_category"]
+          contact_id?: string | null
+          contact_info?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          estimated_value_cents?: number
+          given_summary?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          person_name?: string | null
+          photo_urls?: string[]
+          received_summary?: string | null
+          status?: Database["public"]["Enums"]["barter_status"]
+          tags?: string[]
+          title?: string
+          trade_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "barter_deals_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "barter_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      barter_items: {
+        Row: {
+          created_at: string
+          deal_id: string
+          description: string
+          direction: Database["public"]["Enums"]["barter_direction"]
+          id: string
+          link_id: string | null
+          link_type: Database["public"]["Enums"]["barter_link_type"]
+          quantity: number | null
+          unit: string | null
+          value_cents: number | null
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          description: string
+          direction: Database["public"]["Enums"]["barter_direction"]
+          id?: string
+          link_id?: string | null
+          link_type?: Database["public"]["Enums"]["barter_link_type"]
+          quantity?: number | null
+          unit?: string | null
+          value_cents?: number | null
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          description?: string
+          direction?: Database["public"]["Enums"]["barter_direction"]
+          id?: string
+          link_id?: string | null
+          link_type?: Database["public"]["Enums"]["barter_link_type"]
+          quantity?: number | null
+          unit?: string | null
+          value_cents?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "barter_items_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "barter_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bills: {
         Row: {
           amount_cents: number
@@ -457,6 +614,24 @@ export type Database = {
     Enums: {
       animal_sex: "female" | "male" | "unknown"
       animal_status: "active" | "sold" | "deceased" | "archived"
+      barter_category:
+        | "livestock"
+        | "feed"
+        | "equipment"
+        | "labor"
+        | "produce"
+        | "building_materials"
+        | "services"
+        | "other"
+      barter_direction: "given" | "received"
+      barter_link_type:
+        | "animal"
+        | "feed"
+        | "garden"
+        | "equipment"
+        | "service"
+        | "other"
+      barter_status: "pending" | "completed" | "cancelled"
       pregnancy_status: "active" | "born" | "lost"
     }
     CompositeTypes: {
@@ -587,6 +762,26 @@ export const Constants = {
     Enums: {
       animal_sex: ["female", "male", "unknown"],
       animal_status: ["active", "sold", "deceased", "archived"],
+      barter_category: [
+        "livestock",
+        "feed",
+        "equipment",
+        "labor",
+        "produce",
+        "building_materials",
+        "services",
+        "other",
+      ],
+      barter_direction: ["given", "received"],
+      barter_link_type: [
+        "animal",
+        "feed",
+        "garden",
+        "equipment",
+        "service",
+        "other",
+      ],
+      barter_status: ["pending", "completed", "cancelled"],
       pregnancy_status: ["active", "born", "lost"],
     },
   },

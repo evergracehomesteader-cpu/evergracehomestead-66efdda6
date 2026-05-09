@@ -17,6 +17,7 @@ import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/f
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompostRouteImport } from './routes/_authenticated/compost'
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
+import { Route as AuthenticatedBarterRouteImport } from './routes/_authenticated/barter'
 import { Route as AuthenticatedAnimalsRouteImport } from './routes/_authenticated/animals'
 import { Route as AuthenticatedAnimalsAnimalIdRouteImport } from './routes/_authenticated/animals.$animalId'
 
@@ -59,6 +60,11 @@ const AuthenticatedBillsRoute = AuthenticatedBillsRouteImport.update({
   path: '/bills',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedBarterRoute = AuthenticatedBarterRouteImport.update({
+  id: '/barter',
+  path: '/barter',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAnimalsRoute = AuthenticatedAnimalsRouteImport.update({
   id: '/animals',
   path: '/animals',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/_authenticated/barter': typeof AuthenticatedBarterRoute
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
   '/_authenticated/compost': typeof AuthenticatedCompostRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/animals'
+    | '/barter'
     | '/bills'
     | '/compost'
     | '/dashboard'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/animals'
+    | '/barter'
     | '/bills'
     | '/compost'
     | '/dashboard'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/_authenticated/animals'
+    | '/_authenticated/barter'
     | '/_authenticated/bills'
     | '/_authenticated/compost'
     | '/_authenticated/dashboard'
@@ -207,6 +219,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBillsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/barter': {
+      id: '/_authenticated/barter'
+      path: '/barter'
+      fullPath: '/barter'
+      preLoaderRoute: typeof AuthenticatedBarterRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/animals': {
       id: '/_authenticated/animals'
       path: '/animals'
@@ -237,6 +256,7 @@ const AuthenticatedAnimalsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAnimalsRoute: typeof AuthenticatedAnimalsRouteWithChildren
+  AuthenticatedBarterRoute: typeof AuthenticatedBarterRoute
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
   AuthenticatedCompostRoute: typeof AuthenticatedCompostRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -246,6 +266,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnimalsRoute: AuthenticatedAnimalsRouteWithChildren,
+  AuthenticatedBarterRoute: AuthenticatedBarterRoute,
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
   AuthenticatedCompostRoute: AuthenticatedCompostRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,

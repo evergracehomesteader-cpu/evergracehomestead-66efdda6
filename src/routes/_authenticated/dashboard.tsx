@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart } from "lucide-react";
+import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake } from "lucide-react";
 import { format, addDays, isBefore } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
@@ -69,9 +69,24 @@ function Dashboard() {
       return data;
     },
   });
+  const barter = useQuery({
+    queryKey: ["dash-barter"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("barter_deals")
+        .select("id, title, person_name, status, due_date, trade_date, created_at")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const lowStock = (feed.data ?? []).filter((f) => Number(f.stock_qty) <= Number(f.low_stock_threshold) && Number(f.low_stock_threshold) > 0);
   const upcomingBills = (bills.data ?? []).filter((b) => b.due_date && isBefore(new Date(b.due_date), addDays(new Date(), 14)));
+  const pendingBarter = (barter.data ?? []).filter((b) => b.status === "pending");
+  const upcomingBarter = pendingBarter.filter((b) => b.due_date && isBefore(new Date(b.due_date), addDays(new Date(), 14)));
+  const recentBarter = (barter.data ?? []).slice(0, 5);
+  const completedBarterCount = (barter.data ?? []).filter((b) => b.status === "completed").length;
 
   return (
     <div className="space-y-6">
@@ -80,11 +95,12 @@ function Dashboard() {
         <p className="text-muted-foreground">Today's snapshot of your homestead.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Stat icon={PawPrint} label="Active animals" value={animals.data?.length ?? "—"} to="/animals" />
         <Stat icon={Wheat} label="Feed items" value={feed.data?.length ?? "—"} to="/feed" />
         <Stat icon={Sprout} label="Garden plots" value={garden.data?.length ?? "—"} to="/garden" />
         <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />
+        <Stat icon={Handshake} label="Pending barter" value={pendingBarter.length} to="/barter" accent="bg-warning/15 text-warning" />
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
@@ -142,6 +158,55 @@ function Dashboard() {
                 <li key={b.id} className="flex justify-between">
                   <span>{b.name}</span>
                   <span className="text-muted-foreground">{b.due_date ? format(new Date(b.due_date), "MMM d") : ""}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        <Card className="p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Handshake className="h-4 w-4 text-warning" />
+            <h3 className="font-semibold">Barter due soon</h3>
+          </div>
+          {upcomingBarter.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No pending trades due soon.</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {upcomingBarter.map((b) => (
+                <li key={b.id} className="flex justify-between gap-2">
+                  <span className="truncate">{b.title}</span>
+                  <span className="text-warning font-medium whitespace-nowrap">{b.due_date ? format(new Date(b.due_date), "MMM d") : ""}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+
+        <Card className="p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Handshake className="h-4 w-4 text-success" />
+            <h3 className="font-semibold">Completed trades</h3>
+          </div>
+          <div className="text-3xl font-display font-semibold">{completedBarterCount}</div>
+          <p className="text-sm text-muted-foreground">Total completed barter deals.</p>
+        </Card>
+
+        <Card className="p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Handshake className="h-4 w-4 text-primary" />
+            <h3 className="font-semibold">Recent barter</h3>
+          </div>
+          {recentBarter.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No trades yet.</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {recentBarter.map((b) => (
+                <li key={b.id} className="flex justify-between gap-2">
+                  <span className="truncate">{b.title}</span>
+                  <span className="text-muted-foreground text-xs whitespace-nowrap">{b.person_name ?? "—"}</span>
                 </li>
               ))}
             </ul>
