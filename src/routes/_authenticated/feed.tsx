@@ -9,9 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Wheat, ShoppingCart, Trash2, Pencil } from "lucide-react";
-import { format } from "date-fns";
+import { Plus, Wheat, ShoppingCart, Trash2, Pencil, Calculator } from "lucide-react";
+import { format, differenceInDays, parseISO } from "date-fns";
 import { toast } from "sonner";
+import { useMemo } from "react";
+import { SearchBar } from "@/components/SearchFilter";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 
 export const Route = createFileRoute("/_authenticated/feed")({ component: FeedPage });
 
@@ -29,6 +32,7 @@ function FeedPage() {
   const [editItem, setEditItem] = useState<FeedItem | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [purchaseFor, setPurchaseFor] = useState<FeedItem | null>(null);
+  const [search, setSearch] = useState("");
 
   const { data: items } = useQuery({
     queryKey: ["feed"],
@@ -46,6 +50,45 @@ function FeedPage() {
       return (data ?? []) as Purchase[];
     },
   });
+
+  const { data: logs } = useQuery({
+    queryKey: ["feed-logs"],
+    queryFn: async () => {
+      const { data } = await supabase.from("feed_logs").select("feed_item_id,quantity,fed_on").order("fed_on", { ascending: false }).limit(500);
+      return (data ?? []) as { feed_item_id: string; quantity: number; fed_on: string }[];
+    },
+  });
+
+  // Daily usage rate per item from last 30 days of logs
+  const usageByItem = useMemo(() => {
+    const m = new Map<string, number>(); // qty/day
+    const now = new Date();
+    const grouped = new Map<string, { qty: number; firstDay: string }>();
+    (logs ?? []).forEach((l) => {
+      const days = differenceInDays(now, parseISO(l.fed_on));
+      if (days > 30) return;
+      const cur = grouped.get(l.feed_item_id) ?? { qty: 0, firstDay: l.fed_on };
+      cur.qty += Number(l.quantity);
+      if (l.fed_on < cur.firstDay) cur.firstDay = l.fed_on;
+      grouped.set(l.feed_item_id, cur);
+    });
+    grouped.forEach((v, k) => {
+      const span = Math.max(1, differenceInDays(now, parseISO(v.firstDay)) || 1);
+      m.set(k, v.qty / span);
+    });
+    return m;
+  }, [logs]);
+
+  const filteredItems = useMemo(() => {
+    if (!search) return items ?? [];
+    const q = search.toLowerCase();
+    return (items ?? []).filter((f) =>
+      f.name.toLowerCase().includes(q) ||
+      (f.store ?? "").toLowerCase().includes(q) ||
+      (f.species_for ?? "").toLowerCase().includes(q)
+    );
+  }, [items, search]);
+
 
   const save = useMutation({
     mutationFn: async (p: Partial<FeedItem> & { id?: string }) => {
@@ -91,7 +134,7 @@ function FeedPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 pb-20">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-display font-semibold">Feed</h1>
@@ -103,6 +146,8 @@ function FeedPage() {
         </Dialog>
       </div>
 
+      <SearchBar value={search} onChange={setSearch} placeholder="Search feed by name, store, species…" />
+
       {(items ?? []).length === 0 ? (
         <Card className="p-12 text-center">
           <Wheat className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
@@ -110,8 +155,11 @@ function FeedPage() {
         </Card>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {items?.map((f) => {
+          {filteredItems.map((f) => {
             const low = Number(f.low_stock_threshold) > 0 && Number(f.stock_qty) <= Number(f.low_stock_threshold);
+            const dailyUse = usageByItem.get(f.id) ?? 0;
+            const daysLeft = dailyUse > 0 ? Math.floor(Number(f.stock_qty) / dailyUse) : null;
+            const monthlyCost = dailyUse > 0 && f.price_cents != null ? (dailyUse * 30 * (f.price_cents / 100)) : null;
             return (
               <Card key={f.id} className="p-4 flex flex-col gap-2">
                 <div className="flex items-start justify-between gap-2">
@@ -128,10 +176,30 @@ function FeedPage() {
                   <span className="text-xs text-muted-foreground">{f.unit}</span>
                 </div>
                 <div className="text-sm text-muted-foreground">{fmt(f.price_cents)} per {f.unit}</div>
+
+                {(dailyUse > 0 || daysLeft != null) && (
+                  <div className="rounded-md bg-muted/40 p-2 text-xs space-y-0.5">
+                    <div className="flex items-center gap-1 font-medium text-foreground">
+                      <Calculator className="h-3 w-3" /> Usage
+                    </div>
+                    <div>~{dailyUse.toFixed(2)} {f.unit}/day</div>
+                    {daysLeft != null && (
+                      <div className={daysLeft < 7 ? "text-warning font-medium" : "text-muted-foreground"}>
+                        ~{daysLeft} day{daysLeft === 1 ? "" : "s"} of stock left
+                      </div>
+                    )}
+                    {monthlyCost != null && <div>~${monthlyCost.toFixed(2)}/mo at this rate</div>}
+                  </div>
+                )}
+
                 <div className="flex gap-1 mt-auto pt-2">
                   <Button size="sm" variant="outline" onClick={() => setPurchaseFor(f)}><ShoppingCart className="h-3 w-3" /> Buy</Button>
                   <Button size="sm" variant="ghost" onClick={() => setEditItem(f)}><Pencil className="h-3 w-3" /></Button>
-                  <Button size="sm" variant="ghost" onClick={() => { if (confirm(`Delete ${f.name}?`)) del.mutate(f.id); }}><Trash2 className="h-3 w-3" /></Button>
+                  <ConfirmDelete
+                    trigger={<Button size="sm" variant="ghost"><Trash2 className="h-3 w-3" /></Button>}
+                    title={`Delete ${f.name}?`}
+                    onConfirm={() => del.mutate(f.id)}
+                  />
                 </div>
               </Card>
             );

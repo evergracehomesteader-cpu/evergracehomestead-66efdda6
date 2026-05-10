@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
@@ -7,7 +7,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 
-const items = [
+const manage = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Animals", url: "/animals", icon: PawPrint },
   { title: "Feed", url: "/feed", icon: Wheat },
@@ -17,9 +17,28 @@ const items = [
   { title: "Barter", url: "/barter", icon: Handshake },
 ];
 
+const plan = [
+  { title: "Tasks", url: "/tasks", icon: ListTodo },
+  { title: "Calendar", url: "/calendar", icon: CalendarDays },
+  { title: "Reminders", url: "/reminders", icon: Bell },
+  { title: "Reports", url: "/reports", icon: BarChart3 },
+];
+
 export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { user, signOut } = useAuth();
+
+  const renderItems = (items: { title: string; url: string; icon: typeof Home }[]) =>
+    items.map((item) => (
+      <SidebarMenuItem key={item.url}>
+        <SidebarMenuButton asChild isActive={path === item.url || path.startsWith(item.url + "/")}>
+          <Link to={item.url}>
+            <item.icon className="h-4 w-4" />
+            <span>{item.title}</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    ));
 
   return (
     <Sidebar collapsible="icon">
@@ -35,18 +54,13 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Manage</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild isActive={path === item.url || path.startsWith(item.url + "/")}>
-                    <Link to={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            <SidebarMenu>{renderItems(manage)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Plan</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>{renderItems(plan)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
