@@ -321,6 +321,21 @@ function BarterPage() {
   );
 }
 
+function ValueComparison({ given, received }: { given: Item[]; received: Item[] }) {
+  const g = given.reduce((s, i) => s + Number(i.value_cents ?? 0), 0);
+  const r = received.reduce((s, i) => s + Number(i.value_cents ?? 0), 0);
+  if (g === 0 && r === 0) return null;
+  const diff = r - g;
+  const cls = diff === 0 ? "text-muted-foreground" : diff > 0 ? "text-success" : "text-warning";
+  const sign = diff > 0 ? "+" : "";
+  return (
+    <div className="text-xs flex items-center justify-between rounded-md bg-muted/40 px-2 py-1">
+      <span className="text-muted-foreground">Gave {fmt(g)} · Got {fmt(r)}</span>
+      <span className={`font-medium ${cls}`}>{sign}{fmt(diff)}</span>
+    </div>
+  );
+}
+
 function ItemList({ label, items }: { label: string; items: Item[] }) {
   return (
     <div>
