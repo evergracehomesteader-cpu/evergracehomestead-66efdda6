@@ -14,11 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      animal_events: {
+        Row: {
+          animal_id: string
+          created_at: string
+          created_by: string | null
+          details: Json | null
+          event_date: string
+          event_type: string
+          id: string
+          title: string
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string
+          created_by?: string | null
+          details?: Json | null
+          event_date?: string
+          event_type: string
+          id?: string
+          title: string
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string
+          created_by?: string | null
+          details?: Json | null
+          event_date?: string
+          event_type?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       animals: {
         Row: {
           breed: string | null
           created_at: string
           created_by: string | null
+          current_pen: string | null
           date_of_birth: string | null
           father_id: string | null
           id: string
@@ -38,6 +72,7 @@ export type Database = {
           breed?: string | null
           created_at?: string
           created_by?: string | null
+          current_pen?: string | null
           date_of_birth?: string | null
           father_id?: string | null
           id?: string
@@ -57,6 +92,7 @@ export type Database = {
           breed?: string | null
           created_at?: string
           created_by?: string | null
+          current_pen?: string | null
           date_of_birth?: string | null
           father_id?: string | null
           id?: string
@@ -471,11 +507,13 @@ export type Database = {
           crop: string | null
           expected_harvest: string | null
           id: string
+          last_watered_on: string | null
           name: string
           notes: string | null
           planted_on: string | null
           status: string
           updated_at: string
+          watering_interval_days: number | null
         }
         Insert: {
           created_at?: string
@@ -483,11 +521,13 @@ export type Database = {
           crop?: string | null
           expected_harvest?: string | null
           id?: string
+          last_watered_on?: string | null
           name: string
           notes?: string | null
           planted_on?: string | null
           status?: string
           updated_at?: string
+          watering_interval_days?: number | null
         }
         Update: {
           created_at?: string
@@ -495,11 +535,13 @@ export type Database = {
           crop?: string | null
           expected_harvest?: string | null
           id?: string
+          last_watered_on?: string | null
           name?: string
           notes?: string | null
           planted_on?: string | null
           status?: string
           updated_at?: string
+          watering_interval_days?: number | null
         }
         Relationships: []
       }
@@ -537,6 +579,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      income_entries: {
+        Row: {
+          amount_cents: number
+          category: string
+          created_at: string
+          created_by: string | null
+          entry_date: string
+          id: string
+          link_id: string | null
+          link_type: string | null
+          notes: string | null
+          source: string
+        }
+        Insert: {
+          amount_cents?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          link_id?: string | null
+          link_type?: string | null
+          notes?: string | null
+          source: string
+        }
+        Update: {
+          amount_cents?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          link_id?: string | null
+          link_type?: string | null
+          notes?: string | null
+          source?: string
+        }
+        Relationships: []
       }
       pregnancies: {
         Row: {
@@ -616,6 +697,51 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          category: string
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          link_id: string | null
+          link_type: string | null
+          notes: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          link_id?: string | null
+          link_type?: string | null
+          notes?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          link_id?: string | null
+          link_type?: string | null
+          notes?: string | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
