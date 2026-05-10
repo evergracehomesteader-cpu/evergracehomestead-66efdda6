@@ -134,7 +134,7 @@ function FeedPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 pb-20">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-display font-semibold">Feed</h1>
@@ -146,6 +146,8 @@ function FeedPage() {
         </Dialog>
       </div>
 
+      <SearchBar value={search} onChange={setSearch} placeholder="Search feed by name, store, species…" />
+
       {(items ?? []).length === 0 ? (
         <Card className="p-12 text-center">
           <Wheat className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
@@ -153,8 +155,11 @@ function FeedPage() {
         </Card>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {items?.map((f) => {
+          {filteredItems.map((f) => {
             const low = Number(f.low_stock_threshold) > 0 && Number(f.stock_qty) <= Number(f.low_stock_threshold);
+            const dailyUse = usageByItem.get(f.id) ?? 0;
+            const daysLeft = dailyUse > 0 ? Math.floor(Number(f.stock_qty) / dailyUse) : null;
+            const monthlyCost = dailyUse > 0 && f.price_cents != null ? (dailyUse * 30 * (f.price_cents / 100)) : null;
             return (
               <Card key={f.id} className="p-4 flex flex-col gap-2">
                 <div className="flex items-start justify-between gap-2">
@@ -171,10 +176,30 @@ function FeedPage() {
                   <span className="text-xs text-muted-foreground">{f.unit}</span>
                 </div>
                 <div className="text-sm text-muted-foreground">{fmt(f.price_cents)} per {f.unit}</div>
+
+                {(dailyUse > 0 || daysLeft != null) && (
+                  <div className="rounded-md bg-muted/40 p-2 text-xs space-y-0.5">
+                    <div className="flex items-center gap-1 font-medium text-foreground">
+                      <Calculator className="h-3 w-3" /> Usage
+                    </div>
+                    <div>~{dailyUse.toFixed(2)} {f.unit}/day</div>
+                    {daysLeft != null && (
+                      <div className={daysLeft < 7 ? "text-warning font-medium" : "text-muted-foreground"}>
+                        ~{daysLeft} day{daysLeft === 1 ? "" : "s"} of stock left
+                      </div>
+                    )}
+                    {monthlyCost != null && <div>~${monthlyCost.toFixed(2)}/mo at this rate</div>}
+                  </div>
+                )}
+
                 <div className="flex gap-1 mt-auto pt-2">
                   <Button size="sm" variant="outline" onClick={() => setPurchaseFor(f)}><ShoppingCart className="h-3 w-3" /> Buy</Button>
                   <Button size="sm" variant="ghost" onClick={() => setEditItem(f)}><Pencil className="h-3 w-3" /></Button>
-                  <Button size="sm" variant="ghost" onClick={() => { if (confirm(`Delete ${f.name}?`)) del.mutate(f.id); }}><Trash2 className="h-3 w-3" /></Button>
+                  <ConfirmDelete
+                    trigger={<Button size="sm" variant="ghost"><Trash2 className="h-3 w-3" /></Button>}
+                    title={`Delete ${f.name}?`}
+                    onConfirm={() => del.mutate(f.id)}
+                  />
                 </div>
               </Card>
             );
