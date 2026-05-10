@@ -9,9 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Wheat, ShoppingCart, Trash2, Pencil } from "lucide-react";
-import { format } from "date-fns";
+import { Plus, Wheat, ShoppingCart, Trash2, Pencil, Calculator } from "lucide-react";
+import { format, differenceInDays, parseISO } from "date-fns";
 import { toast } from "sonner";
+import { useMemo } from "react";
+import { SearchBar } from "@/components/SearchFilter";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 
 export const Route = createFileRoute("/_authenticated/feed")({ component: FeedPage });
 
