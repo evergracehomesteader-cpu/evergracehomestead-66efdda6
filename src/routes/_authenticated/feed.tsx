@@ -32,6 +32,7 @@ function FeedPage() {
   const [editItem, setEditItem] = useState<FeedItem | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [purchaseFor, setPurchaseFor] = useState<FeedItem | null>(null);
+  const [search, setSearch] = useState("");
 
   const { data: items } = useQuery({
     queryKey: ["feed"],
@@ -49,6 +50,45 @@ function FeedPage() {
       return (data ?? []) as Purchase[];
     },
   });
+
+  const { data: logs } = useQuery({
+    queryKey: ["feed-logs"],
+    queryFn: async () => {
+      const { data } = await supabase.from("feed_logs").select("feed_item_id,quantity,fed_on").order("fed_on", { ascending: false }).limit(500);
+      return (data ?? []) as { feed_item_id: string; quantity: number; fed_on: string }[];
+    },
+  });
+
+  // Daily usage rate per item from last 30 days of logs
+  const usageByItem = useMemo(() => {
+    const m = new Map<string, number>(); // qty/day
+    const now = new Date();
+    const grouped = new Map<string, { qty: number; firstDay: string }>();
+    (logs ?? []).forEach((l) => {
+      const days = differenceInDays(now, parseISO(l.fed_on));
+      if (days > 30) return;
+      const cur = grouped.get(l.feed_item_id) ?? { qty: 0, firstDay: l.fed_on };
+      cur.qty += Number(l.quantity);
+      if (l.fed_on < cur.firstDay) cur.firstDay = l.fed_on;
+      grouped.set(l.feed_item_id, cur);
+    });
+    grouped.forEach((v, k) => {
+      const span = Math.max(1, differenceInDays(now, parseISO(v.firstDay)) || 1);
+      m.set(k, v.qty / span);
+    });
+    return m;
+  }, [logs]);
+
+  const filteredItems = useMemo(() => {
+    if (!search) return items ?? [];
+    const q = search.toLowerCase();
+    return (items ?? []).filter((f) =>
+      f.name.toLowerCase().includes(q) ||
+      (f.store ?? "").toLowerCase().includes(q) ||
+      (f.species_for ?? "").toLowerCase().includes(q)
+    );
+  }, [items, search]);
+
 
   const save = useMutation({
     mutationFn: async (p: Partial<FeedItem> & { id?: string }) => {
