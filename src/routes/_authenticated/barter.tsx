@@ -279,6 +279,7 @@ function BarterPage() {
                     <div><span className="text-muted-foreground">Got:</span> {d.received_summary}</div>
                   ) : null}
                 </div>
+                <ValueComparison given={given} received={received} />
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>{fmt(d.estimated_value_cents)}</span>
                   {d.due_date && d.status === "pending" && <span>due {format(new Date(d.due_date), "MMM d")}</span>}
