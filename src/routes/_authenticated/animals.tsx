@@ -22,6 +22,7 @@ type Animal = {
   status: AnimalStatus; notes: string | null; medical_notes: string | null;
   temperament_tags: string[]; photo_url: string | null;
   mother_id: string | null; father_id: string | null;
+  purchase_cost_cents?: number | null; purchase_date?: string | null;
 };
 
 function AnimalsPage() {
@@ -198,6 +199,10 @@ function AnimalForm({ animals, onSubmit, submitting }: { animals: Animal[]; onSu
           </div>
         </div>
         <div><Label>Temperament tags (comma separated)</Label><Input value={tagsText} onChange={(e) => setTagsText(e.target.value)} placeholder="friendly, skittish, leader" /></div>
+        <div className="grid grid-cols-2 gap-3">
+          <div><Label>Purchase cost ($)</Label><Input type="number" step="0.01" value={form.purchase_cost_cents ? (form.purchase_cost_cents / 100).toString() : ""} onChange={(e) => set("purchase_cost_cents", e.target.value ? Math.round(Number(e.target.value) * 100) : 0)} /></div>
+          <div><Label>Purchase date</Label><Input type="date" value={form.purchase_date ?? ""} onChange={(e) => set("purchase_date", e.target.value || null)} /></div>
+        </div>
         <div><Label>Medical notes</Label><Textarea value={form.medical_notes ?? ""} onChange={(e) => set("medical_notes", e.target.value || null)} maxLength={2000} placeholder="Vaccinations, treatments, conditions…" /></div>
         <div><Label>Notes</Label><Textarea value={form.notes ?? ""} onChange={(e) => set("notes", e.target.value || null)} maxLength={2000} /></div>
         <DialogFooter><Button type="submit" disabled={submitting || uploading}>{submitting ? "Saving…" : "Save"}</Button></DialogFooter>
