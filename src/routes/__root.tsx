@@ -36,8 +36,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Homestead — Animals, Feed, Garden & Bills" },
+      { title: "The Homestead — Animals, Feed, Garden & Bills" },
       { name: "description", content: "Track livestock heats, pregnancies, lineage, feed stock, garden, compost, and household bills in one homestead app." },
+      { property: "og:title", content: "The Homestead — Animals, Feed, Garden & Bills" },
+      { name: "twitter:title", content: "The Homestead — Animals, Feed, Garden & Bills" },
+      { property: "og:description", content: "Track livestock heats, pregnancies, lineage, feed stock, garden, compost, and household bills in one homestead app." },
+      { name: "twitter:description", content: "Track livestock heats, pregnancies, lineage, feed stock, garden, compost, and household bills in one homestead app." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/CBQungzLGwMoWHODfllSLZEksJ82/social-images/social-1778522355890-1000004319.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/CBQungzLGwMoWHODfllSLZEksJ82/social-images/social-1778522355890-1000004319.webp" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
