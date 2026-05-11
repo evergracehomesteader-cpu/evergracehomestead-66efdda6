@@ -1,73 +1,99 @@
-## Phase 2: Smart Tracking, Reminders & Reports
+# Phase 3 — Homestead Intelligence
 
-This is a large multi-system upgrade. Here's the plan, scoped to ship in one pass while keeping the existing structure, RLS, and rustic-modern style.
+Builds on Phase 1/2 schema. Four feature pillars, each touching DB + UI.
 
-### 1. Database additions (one migration)
+## 1. Advanced Animal Records
 
 New tables:
-- `tasks` — id, title, notes, due_date, completed, completed_at, category (general/animal/garden/compost/feed/bill), link_type, link_id, created_by, timestamps
-- `animal_events` — id, animal_id, event_type (photo/medical/breeding/heat/birth/move/status/note), event_date, title, details (jsonb), created_by, created_at — unified timeline feed
-- `income_entries` — id, source, category (sale/barter/other), amount_cents, entry_date, link_type, link_id, notes, created_by — for financial reports (expenses already covered by `bills` + `feed_purchases`)
+- `health_records` — vaccination, deworming, treatment, injury, illness, vet visit, body condition note. Fields: animal_id, record_type, product (med name), dosage, administered_on, withdrawal_meat_until, withdrawal_milk_until, withdrawal_eggs_until, vet_contact, notes.
+- `contacts` — vet/farrier/breeder/buyer directory. Fields: name, role, phone, email, location, notes.
 
-Add: `current_pen` text on `animals` (for move tracking).
+UI on `/animals/$animalId`:
+- New **Health** tab: timeline of records, add/edit/delete, color-coded by type.
+- New **Withdrawals** banner: shows active withholding periods (red badge) for meat/milk/eggs.
+- **Growth chart**: line chart of weight_logs over time (recharts) on Weight tab.
+- **Body condition** notes feed into health timeline.
 
-Compost: add `last_turned_on` (date) on a new lightweight `compost_piles` table OR reuse `compost_entries` via an `entry_type='turn'` row (already supported — just surface it). Use existing column.
+New route `/contacts` — directory page (vet, feed store, breeder, buyer).
 
-Garden: add `last_watered_on`, `watering_interval_days` to `garden_plots`.
+## 2. Lineage & Breeding Tree
 
-All tables get `*_all_auth` RLS (matching existing pattern).
+Reuse existing `animals.mother_id` / `father_id`.
 
-### 2. New shared module: `src/lib/reminders.ts`
+UI on `/animals/$animalId`:
+- New **Lineage** tab: visual 3-generation tree (grandparents → parents → self → offspring) using a CSS grid layout, no extra deps.
+- **Breeding pair history** — recompute from `pregnancies` grouped by (animal_id, sire_id).
 
-Pure function `computeReminders({ animals, heats, pregs, feed, bills, tasks, garden, compost, barter })` returns a typed list:
+New on `PregAdd` dialog and a dedicated **Plan breeding** action:
+- **Inbreeding warning** — when selecting a sire, walk up to 3 generations of ancestors on both sides; if any common ancestor found, show red alert with the relation.
+
+New table `breeding_decisions` — per-animal note: decision (`keep`, `breed`, `sell`, `butcher`), target_date, reason. Surfaced as a card on the animal detail page.
+
+## 3. Production Tracking
+
+New table `production_logs`:
+- animal_id (nullable, for group entries), group_label, product_type (eggs, milk, meat, offspring, harvest, compost), quantity, unit, produced_on, value_cents, notes.
+
+Garden harvests and compost output also flow into this single table for unified reporting.
+
+New route `/production`:
+- Quick-log buttons per type (Eggs / Milk / Meat / Harvest / Compost).
+- Filter by animal, type, date range.
+- Daily/weekly/monthly totals + trend chart.
+
+Hooks into existing dashboard: today's egg/milk count card.
+
+## 4. Profit & Cost Per Animal
+
+Derives entirely from existing + new tables — no new "cost" table. Per-animal P&L computed from:
+- **Purchase cost**: new `animals.purchase_cost_cents`, `purchase_date` columns.
+- **Feed cost**: `feed_logs.quantity` × current `feed_items.price_cents` / package_size, joined by animal_id.
+- **Medical cost**: new `health_records.cost_cents`.
+- **Breeding cost**: new `pregnancies.breeding_cost_cents`.
+- **Sale / income**: existing `income_entries` filtered by `link_type='animal'` and `link_id=animal.id`.
+- **Production value**: `production_logs.value_cents` for that animal.
+
+UI:
+- New **Finances** tab on animal detail: card grid (Invested / Earned / Net), itemized table.
+- `/reports` page gets a **Top earners / biggest losses** ranked list.
+
+## Schema diagram
+
+```text
+animals ──┬─ health_records ─── contacts (vet)
+          ├─ weight_logs (existing)
+          ├─ pregnancies (existing, +breeding_cost_cents)
+          ├─ production_logs
+          ├─ breeding_decisions
+          └─ income_entries (existing, link_type='animal')
 ```
-{ id, kind, severity: 'info'|'warning'|'urgent', title, subtitle, dueDate, link }
-```
-Rules:
-- Heat: females with last heat >18 days ago (species-aware)
-- Breeding follow-up: pregnancy `suspected` >21 days → confirm
-- Pregnancy watch: `active` within 7 days of due
-- Due countdowns: pregnancies, bills, tasks, barter
-- Feed restock: stock ≤ threshold
-- Compost turn: last turn >7 days
-- Garden water/harvest: based on interval + expected_harvest
 
-### 3. Routes added/updated
+## Technical notes
+
+- All new tables: `created_by uuid`, RLS `*_all_auth` policy (matches existing shared-family model), `updated_at` trigger where mutable.
+- Charts use existing `recharts` (already in shadcn chart component).
+- Lineage tree: pure CSS grid, recursive React component, capped at 3 generations to keep mobile-friendly.
+- Inbreeding check runs client-side after fetching ancestor IDs (≤30 rows).
+- Withdrawal banner: client-side computed from `health_records` where `withdrawal_*_until >= today`.
+- Money everywhere in cents (matches existing pattern).
+- No new npm deps.
+
+## Files
 
 New:
-- `src/routes/_authenticated/tasks.tsx` — list, add, complete, delete, filter by status/category
-- `src/routes/_authenticated/calendar.tsx` — month view (react-day-picker) overlaying heats, breedings, due dates, births
-- `src/routes/_authenticated/reports.tsx` — monthly income/expense/feed/barter/profit cards + month picker
-- `src/routes/_authenticated/reminders.tsx` — full reminder list
+- `supabase/migrations/<ts>_phase3.sql`
+- `src/lib/lineage.ts` (ancestor walk + inbreeding detection)
+- `src/lib/animal-finance.ts` (P&L compute)
+- `src/components/LineageTree.tsx`
+- `src/components/WithdrawalBanner.tsx`
+- `src/routes/_authenticated/contacts.tsx`
+- `src/routes/_authenticated/production.tsx`
 
-Updated:
-- `dashboard.tsx` — Today's tasks, Urgent alerts (top), Upcoming births, Low feed, Pending barter, Monthly snapshot row
-- `animals.$animalId.tsx` — unified Timeline tab pulling from `animal_events` + derived events
-- `feed.tsx` — per-item Usage Calculator card (days remaining from avg log usage, monthly $/lb, low projection)
-- `barter.tsx` — value comparison badge (given vs received), already-linked items kept
-- `AppSidebar.tsx` — add Tasks, Calendar, Reports, Reminders entries
+Edited:
+- `src/routes/_authenticated/animals.$animalId.tsx` — Health, Lineage, Finances tabs + growth chart + decision card.
+- `src/routes/_authenticated/animals.tsx` — purchase cost field on add form.
+- `src/routes/_authenticated/dashboard.tsx` — today's production card, withdrawal alerts.
+- `src/routes/_authenticated/reports.tsx` — top earners.
+- `src/components/AppSidebar.tsx` — Contacts + Production nav.
 
-### 4. Search & Filters
-
-Add a reusable `<SearchBar />` + filter chips component (`src/components/SearchFilter.tsx`) and wire into animals, feed, bills, barter, tasks, garden, compost lists.
-
-### 5. Mobile usability
-
-- Floating "+" FAB on key list pages
-- Larger tap targets on row actions
-- AlertDialog confirmations on all deletes (centralized helper)
-- Photo upload: switch to drag/preview/remove pattern with progress
-
-### 6. Security
-Keep `*_all_auth` RLS, photo buckets stay as configured, all writes set `created_by = auth.uid()`, zod validation on all forms, AlertDialog on delete.
-
-### Out of scope (per user)
-No public sharing, no marketplace, no AI.
-
-### Technical notes
-- Reminder computation is client-side from already-fetched react-query data (no new server fn needed).
-- Calendar uses existing shadcn Calendar with custom day modifiers.
-- Reports use date-fns month windows over `bills`, `feed_purchases`, `barter_deals` (estimated_value), `income_entries`.
-- All new dirs follow existing `src/routes/_authenticated/*` convention.
-
-Approve and I'll run the migration + build everything.
+Out of scope (explicit): public sharing, marketplace, AI predictions.
