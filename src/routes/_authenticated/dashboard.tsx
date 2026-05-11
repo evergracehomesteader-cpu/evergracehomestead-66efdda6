@@ -133,6 +133,8 @@ function Dashboard() {
         <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />
         <Stat icon={Handshake} label="Pending barter" value={pendingBarter.length} to="/barter" accent="bg-warning/15 text-warning" />
         <Stat icon={Bell} label="Reminders" value={reminders.length} to="/reminders" accent="bg-primary/10 text-primary" />
+        <Stat icon={Egg} label="Eggs today" value={todayEggs || "—"} to="/production" accent="bg-success/15 text-success" />
+        <Stat icon={Heart} label="Milk today" value={todayMilk || "—"} to="/production" accent="bg-accent/15 text-accent" />
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
