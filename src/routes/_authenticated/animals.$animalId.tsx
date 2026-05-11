@@ -246,14 +246,20 @@ function AnimalDetail() {
         </Card>
       </div>
 
+      <WithdrawalBanner records={healthRecs ?? []} />
+
+      <DecisionCard decisions={decisions ?? []} onAdd={(p) => addDecision.mutate(p)} onDelete={(id) => delDecision.mutate(id)} />
+
       <Tabs defaultValue="timeline">
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="timeline"><History className="h-4 w-4 mr-1" />Timeline</TabsTrigger>
           {animal.sex === "female" && <TabsTrigger value="heats">Heats</TabsTrigger>}
           {animal.sex === "female" && <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>}
           <TabsTrigger value="weight"><Scale className="h-4 w-4 mr-1" />Weight</TabsTrigger>
+          <TabsTrigger value="health"><Stethoscope className="h-4 w-4 mr-1" />Health</TabsTrigger>
+          <TabsTrigger value="lineage"><GitBranch className="h-4 w-4 mr-1" />Lineage</TabsTrigger>
+          <TabsTrigger value="finance"><DollarSign className="h-4 w-4 mr-1" />Finance</TabsTrigger>
           <TabsTrigger value="offspring">Offspring</TabsTrigger>
-          <TabsTrigger value="medical"><Stethoscope className="h-4 w-4 mr-1" />Medical</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
 
@@ -329,6 +335,22 @@ function AnimalDetail() {
 
         <TabsContent value="weight" className="space-y-3">
           <WeightAdd onAdd={(p) => addWeight.mutate(p)} />
+          {(weights ?? []).length >= 2 && (
+            <Card className="p-3">
+              <div className="text-xs font-medium text-muted-foreground mb-2">Growth chart</div>
+              <div className="h-40">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={[...(weights ?? [])].reverse().map((w) => ({ date: format(new Date(w.weighed_on), "M/d"), weight: Number(w.weight) }))}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
+                    <Line type="monotone" dataKey="weight" stroke="hsl(var(--primary))" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          )}
           {(weights ?? []).length === 0 ? <p className="text-muted-foreground text-sm">No weights logged.</p> : (
             <Card>
               <ul className="divide-y">
@@ -346,6 +368,73 @@ function AnimalDetail() {
           )}
         </TabsContent>
 
+        <TabsContent value="health" className="space-y-3">
+          <HealthAdd onAdd={(p) => addHealth.mutate(p)} />
+          {(healthRecs ?? []).length === 0 ? <p className="text-muted-foreground text-sm">No health records yet.</p> : (
+            <Card>
+              <ul className="divide-y">
+                {healthRecs!.map((h) => (
+                  <li key={h.id} className="px-4 py-3 flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="outline" className="capitalize">{h.record_type.replace("_", " ")}</Badge>
+                        {h.product && <span className="font-medium text-sm">{h.product}</span>}
+                        {h.cost_cents > 0 && <span className="text-xs text-muted-foreground">${(h.cost_cents / 100).toFixed(2)}</span>}
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {format(new Date(h.administered_on), "MMM d, yyyy")}
+                        {h.dosage && ` · ${h.dosage}`}
+                        {h.body_condition_score != null && ` · BCS ${h.body_condition_score}`}
+                      </div>
+                      {(h.withdrawal_meat_until || h.withdrawal_milk_until || h.withdrawal_eggs_until) && (
+                        <div className="text-xs mt-1 flex flex-wrap gap-1">
+                          {h.withdrawal_meat_until && <Badge variant="destructive" className="text-[10px]">meat → {format(new Date(h.withdrawal_meat_until), "MMM d")}</Badge>}
+                          {h.withdrawal_milk_until && <Badge variant="destructive" className="text-[10px]">milk → {format(new Date(h.withdrawal_milk_until), "MMM d")}</Badge>}
+                          {h.withdrawal_eggs_until && <Badge variant="destructive" className="text-[10px]">eggs → {format(new Date(h.withdrawal_eggs_until), "MMM d")}</Badge>}
+                        </div>
+                      )}
+                      {h.notes && <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{h.notes}</p>}
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => delHealth.mutate(h.id)}><Trash2 className="h-4 w-4" /></Button>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+          {animal.medical_notes && (
+            <Card className="p-4">
+              <div className="text-xs font-medium text-muted-foreground mb-1">Medical notes</div>
+              <div className="whitespace-pre-wrap text-sm">{animal.medical_notes}</div>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="lineage">
+          <LineageTree animalId={animalId} />
+        </TabsContent>
+
+        <TabsContent value="finance" className="space-y-3">
+          {!finance ? <p className="text-sm text-muted-foreground">Calculating…</p> : (
+            <>
+              <div className="grid grid-cols-3 gap-2">
+                <Card className="p-3"><div className="text-xs text-muted-foreground">Invested</div><div className="text-xl font-display font-semibold text-destructive">${(finance.invested / 100).toFixed(2)}</div></Card>
+                <Card className="p-3"><div className="text-xs text-muted-foreground">Earned</div><div className="text-xl font-display font-semibold text-success">${(finance.earned / 100).toFixed(2)}</div></Card>
+                <Card className="p-3"><div className="text-xs text-muted-foreground">Net</div><div className={`text-xl font-display font-semibold ${finance.net >= 0 ? "text-success" : "text-destructive"}`}>${(finance.net / 100).toFixed(2)}</div></Card>
+              </div>
+              <Card>
+                <ul className="divide-y">
+                  {finance.items.map((it) => (
+                    <li key={it.label} className="px-4 py-2 flex justify-between text-sm">
+                      <span>{it.label}</span>
+                      <span className={it.kind === "in" ? "text-success" : "text-destructive"}>{it.kind === "in" ? "+" : "−"}${(it.cents / 100).toFixed(2)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </>
+          )}
+        </TabsContent>
+
         <TabsContent value="offspring">
           {(offspring ?? []).length === 0 ? <p className="text-muted-foreground text-sm">No offspring recorded.</p> : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -359,10 +448,6 @@ function AnimalDetail() {
               ))}
             </div>
           )}
-        </TabsContent>
-
-        <TabsContent value="medical">
-          <Card className="p-4 whitespace-pre-wrap text-sm">{animal.medical_notes || <span className="text-muted-foreground">No medical notes.</span>}</Card>
         </TabsContent>
 
         <TabsContent value="notes">
