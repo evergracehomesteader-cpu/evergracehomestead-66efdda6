@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
+import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg } from "lucide-react";
 import { format, addDays, isBefore, startOfMonth, endOfMonth, parseISO, isWithinInterval } from "date-fns";
 import { computeReminders, severityClass } from "@/lib/reminders";
 
@@ -55,6 +55,13 @@ function Dashboard() {
     queryFn: async () => {
       const c = supabase as never as { from: (t: string) => { select: (s: string) => Promise<{ data: { amount_cents: number; entry_date: string }[] }> } };
       return (await c.from("income_entries").select("amount_cents,entry_date")).data ?? [];
+    },
+  });
+  const production = useQuery({
+    queryKey: ["dash-prod"],
+    queryFn: async () => {
+      const c = supabase as never as { from: (t: string) => { select: (s: string) => Promise<{ data: { product_type: string; quantity: number; unit: string; produced_on: string }[] }> } };
+      return (await c.from("production_logs").select("product_type,quantity,unit,produced_on")).data ?? [];
     },
   });
 
