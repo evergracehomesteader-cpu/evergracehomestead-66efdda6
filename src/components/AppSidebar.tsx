@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
@@ -15,6 +15,8 @@ const manage = [
   { title: "Compost", url: "/compost", icon: Recycle },
   { title: "Bills", url: "/bills", icon: Receipt },
   { title: "Barter", url: "/barter", icon: Handshake },
+  { title: "Production", url: "/production", icon: Egg },
+  { title: "Contacts", url: "/contacts", icon: UserRound },
 ];
 
 const plan = [

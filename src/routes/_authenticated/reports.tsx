@@ -42,9 +42,13 @@ function ReportsPage() {
   const { data: income } = useQuery({
     queryKey: ["rep-income"],
     queryFn: async () => {
-      const c = supabase as never as { from: (t: string) => { select: (s: string) => { order: (col: string, o: { ascending: boolean }) => Promise<{ data: Income[] }> } } };
+      const c = supabase as never as { from: (t: string) => { select: (s: string) => { order: (col: string, o: { ascending: boolean }) => Promise<{ data: (Income & { link_type?: string | null; link_id?: string | null })[] }> } } };
       return (await c.from("income_entries").select("*").order("entry_date", { ascending: false })).data ?? [];
     },
+  });
+  const { data: allAnimals } = useQuery({
+    queryKey: ["rep-animals"],
+    queryFn: async () => (await supabase.from("animals").select("id,name")).data ?? [],
   });
 
   const inMonth = (d: string | null) => !!d && isWithinInterval(parseISO(d), { start, end });
@@ -128,6 +132,28 @@ function ReportsPage() {
           )}
         </Card>
       </div>
+
+      <Card className="p-4">
+        <h3 className="font-semibold mb-3">Top earners (animals)</h3>
+        {(() => {
+          const totals = new Map<string, number>();
+          (income ?? []).forEach((i) => {
+            if (i.link_type === "animal" && i.link_id) totals.set(i.link_id, (totals.get(i.link_id) ?? 0) + Number(i.amount_cents));
+          });
+          const ranked = [...totals.entries()].map(([id, cents]) => ({ id, cents, name: allAnimals?.find((a) => a.id === id)?.name ?? "Unknown" })).sort((a, b) => b.cents - a.cents).slice(0, 10);
+          if (ranked.length === 0) return <p className="text-sm text-muted-foreground">No income linked to animals yet.</p>;
+          return (
+            <ul className="space-y-1 text-sm">
+              {ranked.map((r) => (
+                <li key={r.id} className="flex justify-between">
+                  <span>{r.name}</span>
+                  <span className="font-medium text-success">{fmt(r.cents)}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
+      </Card>
 
       <div>
         <div className="flex items-center justify-between mb-3">

@@ -15,9 +15,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
+import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedContactsRouteImport } from './routes/_authenticated/contacts'
 import { Route as AuthenticatedCompostRouteImport } from './routes/_authenticated/compost'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
@@ -54,6 +56,11 @@ const AuthenticatedRemindersRoute = AuthenticatedRemindersRouteImport.update({
   path: '/reminders',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedProductionRoute = AuthenticatedProductionRouteImport.update({
+  id: '/production',
+  path: '/production',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
   id: '/garden',
   path: '/garden',
@@ -67,6 +74,11 @@ const AuthenticatedFeedRoute = AuthenticatedFeedRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedContactsRoute = AuthenticatedContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedCompostRoute = AuthenticatedCompostRouteImport.update({
@@ -109,9 +121,11 @@ export interface FileRoutesByFullPath {
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/compost': typeof AuthenticatedCompostRoute
+  '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/production': typeof AuthenticatedProductionRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -125,9 +139,11 @@ export interface FileRoutesByTo {
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/compost': typeof AuthenticatedCompostRoute
+  '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/production': typeof AuthenticatedProductionRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -143,9 +159,11 @@ export interface FileRoutesById {
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/compost': typeof AuthenticatedCompostRoute
+  '/_authenticated/contacts': typeof AuthenticatedContactsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
+  '/_authenticated/production': typeof AuthenticatedProductionRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -161,9 +179,11 @@ export interface FileRouteTypes {
     | '/bills'
     | '/calendar'
     | '/compost'
+    | '/contacts'
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/production'
     | '/reminders'
     | '/reports'
     | '/tasks'
@@ -177,9 +197,11 @@ export interface FileRouteTypes {
     | '/bills'
     | '/calendar'
     | '/compost'
+    | '/contacts'
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/production'
     | '/reminders'
     | '/reports'
     | '/tasks'
@@ -194,9 +216,11 @@ export interface FileRouteTypes {
     | '/_authenticated/bills'
     | '/_authenticated/calendar'
     | '/_authenticated/compost'
+    | '/_authenticated/contacts'
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
     | '/_authenticated/garden'
+    | '/_authenticated/production'
     | '/_authenticated/reminders'
     | '/_authenticated/reports'
     | '/_authenticated/tasks'
@@ -253,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRemindersRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/production': {
+      id: '/_authenticated/production'
+      path: '/production'
+      fullPath: '/production'
+      preLoaderRoute: typeof AuthenticatedProductionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/garden': {
       id: '/_authenticated/garden'
       path: '/garden'
@@ -272,6 +303,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/contacts': {
+      id: '/_authenticated/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AuthenticatedContactsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/compost': {
@@ -336,9 +374,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedCompostRoute: typeof AuthenticatedCompostRoute
+  AuthenticatedContactsRoute: typeof AuthenticatedContactsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
+  AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
   AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -350,9 +390,11 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedCompostRoute: AuthenticatedCompostRoute,
+  AuthenticatedContactsRoute: AuthenticatedContactsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
+  AuthenticatedProductionRoute: AuthenticatedProductionRoute,
   AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,

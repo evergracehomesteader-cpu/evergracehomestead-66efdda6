@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
+import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg } from "lucide-react";
 import { format, addDays, isBefore, startOfMonth, endOfMonth, parseISO, isWithinInterval } from "date-fns";
 import { computeReminders, severityClass } from "@/lib/reminders";
 
@@ -57,6 +57,13 @@ function Dashboard() {
       return (await c.from("income_entries").select("amount_cents,entry_date")).data ?? [];
     },
   });
+  const production = useQuery({
+    queryKey: ["dash-prod"],
+    queryFn: async () => {
+      const c = supabase as never as { from: (t: string) => { select: (s: string) => Promise<{ data: { product_type: string; quantity: number; unit: string; produced_on: string }[] }> } };
+      return (await c.from("production_logs").select("product_type,quantity,unit,produced_on")).data ?? [];
+    },
+  });
 
   const reminders = computeReminders({
     animals: animals.data, heats: heats.data,
@@ -70,6 +77,9 @@ function Dashboard() {
   const lowStock = (feed.data ?? []).filter((f) => Number(f.stock_qty) <= Number(f.low_stock_threshold) && Number(f.low_stock_threshold) > 0);
   const upcomingBirths = (pregs.data ?? []).filter((p) => p.expected_due && isBefore(new Date(p.expected_due), addDays(new Date(), 30)));
   const pendingBarter = (barter.data ?? []).filter((b) => b.status === "pending");
+  const todayProd = (production.data ?? []).filter((p) => p.produced_on === today);
+  const todayEggs = todayProd.filter((p) => p.product_type === "eggs").reduce((s, p) => s + Number(p.quantity), 0);
+  const todayMilk = todayProd.filter((p) => p.product_type === "milk").reduce((s, p) => s + Number(p.quantity), 0);
 
   // Monthly snapshot
   const start = startOfMonth(new Date());
@@ -123,6 +133,8 @@ function Dashboard() {
         <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />
         <Stat icon={Handshake} label="Pending barter" value={pendingBarter.length} to="/barter" accent="bg-warning/15 text-warning" />
         <Stat icon={Bell} label="Reminders" value={reminders.length} to="/reminders" accent="bg-primary/10 text-primary" />
+        <Stat icon={Egg} label="Eggs today" value={todayEggs || "—"} to="/production" accent="bg-success/15 text-success" />
+        <Stat icon={Heart} label="Milk today" value={todayMilk || "—"} to="/production" accent="bg-accent/15 text-accent" />
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">

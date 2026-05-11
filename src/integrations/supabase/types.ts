@@ -61,6 +61,8 @@ export type Database = {
           name: string
           notes: string | null
           photo_url: string | null
+          purchase_cost_cents: number
+          purchase_date: string | null
           sex: Database["public"]["Enums"]["animal_sex"]
           species: string
           status: Database["public"]["Enums"]["animal_status"]
@@ -81,6 +83,8 @@ export type Database = {
           name: string
           notes?: string | null
           photo_url?: string | null
+          purchase_cost_cents?: number
+          purchase_date?: string | null
           sex?: Database["public"]["Enums"]["animal_sex"]
           species: string
           status?: Database["public"]["Enums"]["animal_status"]
@@ -101,6 +105,8 @@ export type Database = {
           name?: string
           notes?: string | null
           photo_url?: string | null
+          purchase_cost_cents?: number
+          purchase_date?: string | null
           sex?: Database["public"]["Enums"]["animal_sex"]
           species?: string
           status?: Database["public"]["Enums"]["animal_status"]
@@ -327,6 +333,39 @@ export type Database = {
         }
         Relationships: []
       }
+      breeding_decisions: {
+        Row: {
+          animal_id: string
+          created_at: string
+          created_by: string | null
+          decision: string
+          id: string
+          reason: string | null
+          target_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string
+          created_by?: string | null
+          decision?: string
+          id?: string
+          reason?: string | null
+          target_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string
+          created_by?: string | null
+          decision?: string
+          id?: string
+          reason?: string | null
+          target_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       compost_entries: {
         Row: {
           created_at: string
@@ -357,6 +396,45 @@ export type Database = {
           material?: string | null
           notes?: string | null
           quantity?: string | null
+        }
+        Relationships: []
+      }
+      contacts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          location: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          role?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -545,6 +623,66 @@ export type Database = {
         }
         Relationships: []
       }
+      health_records: {
+        Row: {
+          administered_on: string
+          animal_id: string
+          body_condition_score: number | null
+          contact_id: string | null
+          cost_cents: number
+          created_at: string
+          created_by: string | null
+          dosage: string | null
+          id: string
+          notes: string | null
+          product: string | null
+          record_type: string
+          updated_at: string
+          vet_contact: string | null
+          withdrawal_eggs_until: string | null
+          withdrawal_meat_until: string | null
+          withdrawal_milk_until: string | null
+        }
+        Insert: {
+          administered_on?: string
+          animal_id: string
+          body_condition_score?: number | null
+          contact_id?: string | null
+          cost_cents?: number
+          created_at?: string
+          created_by?: string | null
+          dosage?: string | null
+          id?: string
+          notes?: string | null
+          product?: string | null
+          record_type?: string
+          updated_at?: string
+          vet_contact?: string | null
+          withdrawal_eggs_until?: string | null
+          withdrawal_meat_until?: string | null
+          withdrawal_milk_until?: string | null
+        }
+        Update: {
+          administered_on?: string
+          animal_id?: string
+          body_condition_score?: number | null
+          contact_id?: string | null
+          cost_cents?: number
+          created_at?: string
+          created_by?: string | null
+          dosage?: string | null
+          id?: string
+          notes?: string | null
+          product?: string | null
+          record_type?: string
+          updated_at?: string
+          vet_contact?: string | null
+          withdrawal_eggs_until?: string | null
+          withdrawal_meat_until?: string | null
+          withdrawal_milk_until?: string | null
+        }
+        Relationships: []
+      }
       heat_events: {
         Row: {
           animal_id: string
@@ -624,6 +762,7 @@ export type Database = {
           actual_birth: string | null
           animal_id: string
           bred_date: string
+          breeding_cost_cents: number
           created_at: string
           created_by: string | null
           expected_due: string | null
@@ -639,6 +778,7 @@ export type Database = {
           actual_birth?: string | null
           animal_id: string
           bred_date: string
+          breeding_cost_cents?: number
           created_at?: string
           created_by?: string | null
           expected_due?: string | null
@@ -654,6 +794,7 @@ export type Database = {
           actual_birth?: string | null
           animal_id?: string
           bred_date?: string
+          breeding_cost_cents?: number
           created_at?: string
           created_by?: string | null
           expected_due?: string | null
@@ -681,6 +822,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      production_logs: {
+        Row: {
+          animal_id: string | null
+          created_at: string
+          created_by: string | null
+          group_label: string | null
+          id: string
+          notes: string | null
+          produced_on: string
+          product_type: string
+          quantity: number
+          unit: string
+          value_cents: number
+        }
+        Insert: {
+          animal_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          group_label?: string | null
+          id?: string
+          notes?: string | null
+          produced_on?: string
+          product_type: string
+          quantity?: number
+          unit?: string
+          value_cents?: number
+        }
+        Update: {
+          animal_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          group_label?: string | null
+          id?: string
+          notes?: string | null
+          produced_on?: string
+          product_type?: string
+          quantity?: number
+          unit?: string
+          value_cents?: number
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
