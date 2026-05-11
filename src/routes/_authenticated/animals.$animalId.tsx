@@ -99,6 +99,48 @@ function AnimalDetail() {
     },
   });
 
+  const sb = supabase as unknown as SbAny;
+  type Health = { id: string; record_type: string; product: string | null; dosage: string | null; administered_on: string; withdrawal_meat_until: string | null; withdrawal_milk_until: string | null; withdrawal_eggs_until: string | null; vet_contact: string | null; cost_cents: number; body_condition_score: number | null; notes: string | null };
+  const { data: healthRecs } = useQuery({
+    queryKey: ["health", animalId],
+    queryFn: async () => ((await sb.from("health_records").select("*").eq("animal_id", animalId).order("administered_on", { ascending: false })).data ?? []) as Health[],
+  });
+  type Decision = { id: string; decision: string; target_date: string | null; reason: string | null; created_at: string };
+  const { data: decisions } = useQuery({
+    queryKey: ["decisions", animalId],
+    queryFn: async () => ((await sb.from("breeding_decisions").select("*").eq("animal_id", animalId).order("created_at", { ascending: false })).data ?? []) as Decision[],
+  });
+  const { data: finance } = useQuery({
+    queryKey: ["finance", animalId, healthRecs?.length, weights?.length],
+    queryFn: () => loadAnimalFinance(animalId),
+    enabled: !!animal,
+  });
+
+  const addHealth = useMutation({
+    mutationFn: async (p: Omit<Health, "id">) => {
+      const { data: u } = await supabase.auth.getUser();
+      const { error } = await sb.from("health_records").insert({ animal_id: animalId, created_by: u.user?.id, ...p });
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["health", animalId] }); toast.success("Health record added"); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+  const delHealth = useMutation({
+    mutationFn: async (id: string) => { const { error } = await sb.from("health_records").delete().eq("id", id); if (error) throw error; },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["health", animalId] }),
+  });
+  const addDecision = useMutation({
+    mutationFn: async (p: { decision: string; reason: string | null; target_date: string | null }) => {
+      const { data: u } = await supabase.auth.getUser();
+      const { error } = await sb.from("breeding_decisions").insert({ animal_id: animalId, created_by: u.user?.id, ...p });
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["decisions", animalId] }); toast.success("Decision saved"); },
+  });
+  const delDecision = useMutation({
+    mutationFn: async (id: string) => { const { error } = await sb.from("breeding_decisions").delete().eq("id", id); if (error) throw error; },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["decisions", animalId] }),
+  });
   const addHeat = useMutation({
     mutationFn: async (event_date: string) => {
       const { data: u } = await supabase.auth.getUser();
