@@ -77,6 +77,9 @@ function Dashboard() {
   const lowStock = (feed.data ?? []).filter((f) => Number(f.stock_qty) <= Number(f.low_stock_threshold) && Number(f.low_stock_threshold) > 0);
   const upcomingBirths = (pregs.data ?? []).filter((p) => p.expected_due && isBefore(new Date(p.expected_due), addDays(new Date(), 30)));
   const pendingBarter = (barter.data ?? []).filter((b) => b.status === "pending");
+  const todayProd = (production.data ?? []).filter((p) => p.produced_on === today);
+  const todayEggs = todayProd.filter((p) => p.product_type === "eggs").reduce((s, p) => s + Number(p.quantity), 0);
+  const todayMilk = todayProd.filter((p) => p.product_type === "milk").reduce((s, p) => s + Number(p.quantity), 0);
 
   // Monthly snapshot
   const start = startOfMonth(new Date());
