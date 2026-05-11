@@ -42,9 +42,13 @@ function ReportsPage() {
   const { data: income } = useQuery({
     queryKey: ["rep-income"],
     queryFn: async () => {
-      const c = supabase as never as { from: (t: string) => { select: (s: string) => { order: (col: string, o: { ascending: boolean }) => Promise<{ data: Income[] }> } } };
+      const c = supabase as never as { from: (t: string) => { select: (s: string) => { order: (col: string, o: { ascending: boolean }) => Promise<{ data: (Income & { link_type?: string | null; link_id?: string | null })[] }> } } };
       return (await c.from("income_entries").select("*").order("entry_date", { ascending: false })).data ?? [];
     },
+  });
+  const { data: allAnimals } = useQuery({
+    queryKey: ["rep-animals"],
+    queryFn: async () => (await supabase.from("animals").select("id,name")).data ?? [],
   });
 
   const inMonth = (d: string | null) => !!d && isWithinInterval(parseISO(d), { start, end });
