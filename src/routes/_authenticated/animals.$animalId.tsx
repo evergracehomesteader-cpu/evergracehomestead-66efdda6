@@ -11,10 +11,24 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History, GitBranch, DollarSign, Target } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { toast } from "sonner";
 import { gestationFor, statusBadgeClass } from "@/lib/homestead";
+import { LineageTree } from "@/components/LineageTree";
+import { WithdrawalBanner } from "@/components/WithdrawalBanner";
+import { loadAnimalFinance } from "@/lib/animal-finance";
+import { findCommonAncestors } from "@/lib/lineage";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+
+type SbAny = {
+  from: (t: string) => {
+    select: (s: string) => { eq: (c: string, v: string) => { order: (col: string, o?: { ascending: boolean }) => Promise<{ data: unknown[] | null }> } };
+    insert: (r: unknown) => Promise<{ error: Error | null }>;
+    update: (r: unknown) => { eq: (c: string, v: string) => Promise<{ error: Error | null }> };
+    delete: () => { eq: (c: string, v: string) => Promise<{ error: Error | null }> };
+  };
+};
 
 export const Route = createFileRoute("/_authenticated/animals/$animalId")({ component: AnimalDetail });
 
