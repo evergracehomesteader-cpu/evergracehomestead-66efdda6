@@ -295,7 +295,7 @@ function AnimalDetail() {
         </TabsContent>
 
         <TabsContent value="pregnancies" className="space-y-3">
-          <PregAdd species={animal.species} males={males ?? []} onAdd={(p) => addPreg.mutate(p)} />
+          <PregAdd damId={animalId} species={animal.species} males={males ?? []} onAdd={(p) => addPreg.mutate(p)} />
           {(pregs ?? []).length === 0 ? <p className="text-muted-foreground text-sm">No pregnancies tracked.</p> : (
             <div className="space-y-2">
               {pregs?.map((p) => (
