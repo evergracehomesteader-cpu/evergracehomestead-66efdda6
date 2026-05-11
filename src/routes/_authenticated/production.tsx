@@ -183,7 +183,7 @@ function ProductionPage() {
 function ProductionForm({ defaultType, animals, onSubmit, submitting }: { defaultType: string; animals: { id: string; name: string }[]; onSubmit: (p: Omit<Prod, "id">) => void; submitting: boolean }) {
   const [type, setType] = useState(defaultType);
   const [qty, setQty] = useState("");
-  const [unit, setUnit] = useState(TYPES.find((t) => t.v === defaultType)?.unit ?? "ea");
+  const [unit, setUnit] = useState<string>(TYPES.find((t) => t.v === defaultType)?.unit ?? "ea");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [animal, setAnimal] = useState("none");
   const [group, setGroup] = useState("");

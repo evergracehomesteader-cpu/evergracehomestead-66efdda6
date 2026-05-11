@@ -32,7 +32,7 @@ export async function loadAnimalFinance(animalId: string): Promise<AnimalFinance
     feedItems = (data ?? []) as typeof feedItems;
   }
   const priceMap = new Map(feedItems.map((f) => [f.id, { price: Number(f.price_cents ?? 0), pkg: Number(f.package_size ?? 0) }]));
-  const feedCents = (logsData ?? []).reduce((s, l) => {
+  const feedCents: number = (logsData ?? []).reduce<number>((s, l) => {
     const p = priceMap.get(l.feed_item_id as string);
     if (!p || !p.pkg) return s;
     return s + (Number(l.quantity) / p.pkg) * p.price;
@@ -40,19 +40,19 @@ export async function loadAnimalFinance(animalId: string): Promise<AnimalFinance
 
   // Medical
   const { data: hr } = await sb.from("health_records").select("cost_cents").eq("animal_id", animalId);
-  const medicalCents = (hr ?? []).reduce((s, r) => s + Number((r as { cost_cents?: number }).cost_cents ?? 0), 0);
+  const medicalCents: number = (hr ?? []).reduce<number>((s, r) => s + Number((r as { cost_cents?: number }).cost_cents ?? 0), 0);
 
   // Breeding (animal_id is the dam)
   const { data: pregs } = await supabase.from("pregnancies").select("breeding_cost_cents").eq("animal_id", animalId);
-  const breedingCents = (pregs ?? []).reduce((s, p) => s + Number((p as { breeding_cost_cents?: number }).breeding_cost_cents ?? 0), 0);
+  const breedingCents: number = (pregs ?? []).reduce<number>((s, p) => s + Number((p as { breeding_cost_cents?: number }).breeding_cost_cents ?? 0), 0);
 
   // Income linked to this animal
   const { data: inc } = await sb.from("income_entries").select("amount_cents, link_type, link_id").eq("link_id", animalId);
-  const incomeCents = (inc ?? []).filter((i) => (i as { link_type?: string }).link_type === "animal").reduce((s, i) => s + Number((i as { amount_cents?: number }).amount_cents ?? 0), 0);
+  const incomeCents: number = (inc ?? []).filter((i) => (i as { link_type?: string }).link_type === "animal").reduce<number>((s, i) => s + Number((i as { amount_cents?: number }).amount_cents ?? 0), 0);
 
   // Production value attributed to this animal
   const { data: prod } = await sb.from("production_logs").select("value_cents").eq("animal_id", animalId);
-  const productionCents = (prod ?? []).reduce((s, p) => s + Number((p as { value_cents?: number }).value_cents ?? 0), 0);
+  const productionCents: number = (prod ?? []).reduce<number>((s, p) => s + Number((p as { value_cents?: number }).value_cents ?? 0), 0);
 
   const invested = purchaseCents + Math.round(feedCents) + medicalCents + breedingCents;
   const earned = incomeCents + productionCents;
