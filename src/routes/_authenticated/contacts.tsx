@@ -31,6 +31,7 @@ type SbAny = {
 function ContactsPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Contact | null>(null);
   const sb = supabase as unknown as SbAny;
 
   const { data } = useQuery({
@@ -38,13 +39,19 @@ function ContactsPage() {
     queryFn: async () => (await sb.from("contacts").select("*").order("name")).data ?? [],
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Omit<Contact, "id">) => {
+  const save = useMutation({
+    mutationFn: async (p: Omit<Contact, "id"> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await sb.from("contacts").insert({ ...p, created_by: u.user?.id });
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await sb.from("contacts").update(rest).eq("id", id);
+        if (error) throw error;
+      } else {
+        const { error } = await sb.from("contacts").insert({ ...p, created_by: u.user?.id });
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["contacts"] }); setOpen(false); toast.success("Contact added"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["contacts"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
     onError: (e) => toast.error((e as Error).message),
   });
 
