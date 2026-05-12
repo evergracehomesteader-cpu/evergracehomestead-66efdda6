@@ -16,26 +16,39 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/garden")({ component: GardenPage });
 
+type Plot = {
+  id: string; name: string; crop: string | null; planted_on: string | null;
+  expected_harvest: string | null; status: string; notes: string | null;
+};
+
 function GardenPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Plot | null>(null);
 
   const { data: plots } = useQuery({
     queryKey: ["garden"],
     queryFn: async () => {
       const { data, error } = await supabase.from("garden_plots").select("*").order("planted_on", { ascending: false });
       if (error) throw error;
-      return data;
+      return data as Plot[];
     },
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Record<string, unknown>) => {
+  const save = useMutation({
+    mutationFn: async (p: Record<string, unknown> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await supabase.from("garden_plots").insert({ ...p, created_by: u.user?.id } as never);
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await supabase.from("garden_plots").update(rest as never).eq("id", id as string);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("garden_plots").insert({ ...p, created_by: u.user?.id } as never);
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["garden"] }); setOpen(false); toast.success("Plot added"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["garden"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   const update = useMutation({
