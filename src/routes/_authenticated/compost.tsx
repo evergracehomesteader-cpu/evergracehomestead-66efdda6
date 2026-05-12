@@ -62,7 +62,7 @@ function CompostPage() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Log entry</Button></DialogTrigger>
-          <CompostForm onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <CompostForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
