@@ -154,6 +154,7 @@ function TasksPage() {
                       )}
                     </div>
                   </div>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(t)}><Pencil className="h-4 w-4" /></Button>
                   <ConfirmDelete
                     trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>}
                     title={`Delete "${t.title}"?`}
@@ -164,6 +165,12 @@ function TasksPage() {
             })}
           </ul>
         </Card>
+      )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <TaskForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
       )}
     </div>
   );
