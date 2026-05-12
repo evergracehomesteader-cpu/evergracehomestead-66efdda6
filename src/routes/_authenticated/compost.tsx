@@ -83,21 +83,36 @@ function CompostPage() {
                     <div className="text-xs text-muted-foreground">{format(new Date(e.entry_date), "MMM d, yyyy")}{e.notes ? ` · ${e.notes}` : ""}</div>
                   </div>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => del.mutate(e.id)}><Trash2 className="h-4 w-4" /></Button>
+                <div className="flex gap-1">
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(e)}><Pencil className="h-4 w-4" /></Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => del.mutate(e.id)}><Trash2 className="h-4 w-4" /></Button>
+                </div>
               </li>
             ))}
           </ul>
         </Card>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <CompostForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function CompostForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
-  const [f, setF] = useState({ entry_type: "add", material: "", quantity: "", entry_date: new Date().toISOString().slice(0, 10), notes: "" });
+function CompostForm({ initial, onSubmit, submitting }: { initial?: Entry; onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
+  const [f, setF] = useState({
+    entry_type: initial?.entry_type ?? "add",
+    material: initial?.material ?? "",
+    quantity: initial?.quantity ?? "",
+    entry_date: initial?.entry_date ?? new Date().toISOString().slice(0, 10),
+    notes: initial?.notes ?? "",
+  });
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>Compost entry</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit entry" : "Compost entry"}</DialogTitle></DialogHeader>
       <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, material: f.material || null, quantity: f.quantity || null, notes: f.notes || null }); }} className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div>
