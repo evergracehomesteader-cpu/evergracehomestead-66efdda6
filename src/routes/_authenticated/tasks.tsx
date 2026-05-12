@@ -29,6 +29,7 @@ const CATEGORIES = ["general", "animal", "garden", "compost", "feed", "bill"];
 function TasksPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Task | null>(null);
   const [filter, setFilter] = useState<"open" | "today" | "overdue" | "done" | "all">("open");
   const [cat, setCat] = useState<string>("all");
   const [search, setSearch] = useState("");
