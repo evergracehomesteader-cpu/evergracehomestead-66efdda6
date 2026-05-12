@@ -23,6 +23,7 @@ type SbAny = {
   from: (t: string) => {
     select: (s: string) => { order: (col: string, o?: { ascending: boolean }) => Promise<{ data: Contact[] | null }> };
     insert: (r: unknown) => Promise<{ error: Error | null }>;
+    update: (r: unknown) => { eq: (col: string, v: string) => Promise<{ error: Error | null }> };
     delete: () => { eq: (col: string, v: string) => Promise<{ error: Error | null }> };
   };
 };
