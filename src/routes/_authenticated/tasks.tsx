@@ -176,14 +176,14 @@ function TasksPage() {
   );
 }
 
-function TaskForm({ onSubmit, submitting }: { onSubmit: (p: Partial<Task>) => void; submitting: boolean }) {
-  const [title, setTitle] = useState("");
-  const [notes, setNotes] = useState("");
-  const [due, setDue] = useState("");
-  const [category, setCategory] = useState("general");
+function TaskForm({ initial, onSubmit, submitting }: { initial?: Task; onSubmit: (p: Partial<Task>) => void; submitting: boolean }) {
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
+  const [due, setDue] = useState(initial?.due_date ?? "");
+  const [category, setCategory] = useState(initial?.category ?? "general");
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>New task</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit task" : "New task"}</DialogTitle></DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();
