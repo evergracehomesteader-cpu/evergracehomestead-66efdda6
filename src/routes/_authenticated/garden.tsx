@@ -51,14 +51,6 @@ function GardenPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const update = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("garden_plots").update({ status }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["garden"] }),
-  });
-
   const del = useMutation({
     mutationFn: async (id: string) => { const { error } = await supabase.from("garden_plots").delete().eq("id", id); if (error) throw error; },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["garden"] }),
