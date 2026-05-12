@@ -102,20 +102,26 @@ function ContactsPage() {
           ))}
         </div>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <ContactForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function ContactForm({ onSubmit, submitting }: { onSubmit: (p: Omit<Contact, "id">) => void; submitting: boolean }) {
-  const [name, setName] = useState("");
-  const [role, setRole] = useState("vet");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");
-  const [notes, setNotes] = useState("");
+function ContactForm({ initial, onSubmit, submitting }: { initial?: Contact; onSubmit: (p: Omit<Contact, "id">) => void; submitting: boolean }) {
+  const [name, setName] = useState(initial?.name ?? "");
+  const [role, setRole] = useState(initial?.role ?? "vet");
+  const [phone, setPhone] = useState(initial?.phone ?? "");
+  const [email, setEmail] = useState(initial?.email ?? "");
+  const [location, setLocation] = useState(initial?.location ?? "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>Add contact</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit contact" : "Add contact"}</DialogTitle></DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();
