@@ -10,40 +10,45 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Sprout, Trash2 } from "lucide-react";
+import { Plus, Sprout, Trash2, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/garden")({ component: GardenPage });
 
+type Plot = {
+  id: string; name: string; crop: string | null; planted_on: string | null;
+  expected_harvest: string | null; status: string; notes: string | null;
+};
+
 function GardenPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Plot | null>(null);
 
   const { data: plots } = useQuery({
     queryKey: ["garden"],
     queryFn: async () => {
       const { data, error } = await supabase.from("garden_plots").select("*").order("planted_on", { ascending: false });
       if (error) throw error;
-      return data;
+      return data as Plot[];
     },
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Record<string, unknown>) => {
+  const save = useMutation({
+    mutationFn: async (p: Record<string, unknown> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await supabase.from("garden_plots").insert({ ...p, created_by: u.user?.id } as never);
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await supabase.from("garden_plots").update(rest as never).eq("id", id as string);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("garden_plots").insert({ ...p, created_by: u.user?.id } as never);
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["garden"] }); setOpen(false); toast.success("Plot added"); },
-  });
-
-  const update = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("garden_plots").update({ status }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["garden"] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["garden"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   const del = useMutation({
@@ -60,7 +65,7 @@ function GardenPage() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Add plot</Button></DialogTrigger>
-          <PlotForm onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <PlotForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
@@ -86,7 +91,7 @@ function GardenPage() {
               </div>
               {p.notes && <p className="text-sm">{p.notes}</p>}
               <div className="flex gap-1 pt-1">
-                <Select value={p.status} onValueChange={(v) => update.mutate({ id: p.id, status: v })}>
+                <Select value={p.status} onValueChange={(v) => save.mutate({ id: p.id, status: v })}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="planned">Planned</SelectItem>
@@ -95,21 +100,35 @@ function GardenPage() {
                     <SelectItem value="failed">Failed</SelectItem>
                   </SelectContent>
                 </Select>
+                <Button size="sm" variant="ghost" onClick={() => setEditing(p)}><Pencil className="h-4 w-4" /></Button>
                 <Button size="sm" variant="ghost" onClick={() => { if (confirm(`Delete ${p.name}?`)) del.mutate(p.id); }}><Trash2 className="h-4 w-4" /></Button>
               </div>
             </Card>
           ))}
         </div>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <PlotForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function PlotForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
-  const [f, setF] = useState({ name: "", crop: "", planted_on: "", expected_harvest: "", status: "growing", notes: "" });
+function PlotForm({ initial, onSubmit, submitting }: { initial?: Plot; onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
+  const [f, setF] = useState({
+    name: initial?.name ?? "",
+    crop: initial?.crop ?? "",
+    planted_on: initial?.planted_on ?? "",
+    expected_harvest: initial?.expected_harvest ?? "",
+    status: initial?.status ?? "growing",
+    notes: initial?.notes ?? "",
+  });
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>New plot</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit plot" : "New plot"}</DialogTitle></DialogHeader>
       <form onSubmit={(e) => { e.preventDefault(); if (!f.name) { toast.error("Name required"); return; } onSubmit({ ...f, planted_on: f.planted_on || null, expected_harvest: f.expected_harvest || null, crop: f.crop || null, notes: f.notes || null }); }} className="space-y-3">
         <div><Label>Plot name *</Label><Input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} required maxLength={100} /></div>
         <div><Label>Crop</Label><Input value={f.crop} onChange={(e) => setF({ ...f, crop: e.target.value })} placeholder="Tomatoes" maxLength={100} /></div>

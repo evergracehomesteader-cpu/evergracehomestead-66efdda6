@@ -10,34 +10,49 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Receipt, Check, Trash2 } from "lucide-react";
+import { Plus, Receipt, Check, Trash2, Pencil } from "lucide-react";
 import { format, isBefore } from "date-fns";
 import { toast } from "sonner";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 
 export const Route = createFileRoute("/_authenticated/bills")({ component: BillsPage });
+
+type Bill = {
+  id: string; name: string; category: string | null; amount_cents: number;
+  due_date: string | null; recurring: string; notes: string | null;
+  paid: boolean; paid_on: string | null;
+};
 
 const fmt = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 function BillsPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Bill | null>(null);
 
   const { data: bills } = useQuery({
     queryKey: ["bills"],
     queryFn: async () => {
       const { data, error } = await supabase.from("bills").select("*").order("paid").order("due_date", { ascending: true, nullsFirst: false });
       if (error) throw error;
-      return data;
+      return data as Bill[];
     },
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Record<string, unknown>) => {
+  const save = useMutation({
+    mutationFn: async (p: Record<string, unknown> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await supabase.from("bills").insert({ ...p, created_by: u.user?.id } as never);
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await supabase.from("bills").update(rest as never).eq("id", id as string);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("bills").insert({ ...p, created_by: u.user?.id } as never);
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["bills"] }); setOpen(false); toast.success("Bill added"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["bills"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   const togglePaid = useMutation({
@@ -64,7 +79,7 @@ function BillsPage() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Add bill</Button></DialogTrigger>
-          <BillForm onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <BillForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
@@ -92,12 +107,17 @@ function BillsPage() {
                       {b.paid && b.paid_on && ` · Paid ${format(new Date(b.paid_on), "MMM d")}`}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <span className="font-semibold">{fmt(b.amount_cents)}</span>
                     <Button size="sm" variant={b.paid ? "ghost" : "outline"} onClick={() => togglePaid.mutate({ id: b.id, paid: !b.paid })}>
                       <Check className="h-4 w-4" /> {b.paid ? "Unpay" : "Mark paid"}
                     </Button>
-                    <Button size="sm" variant="ghost" onClick={() => { if (confirm(`Delete ${b.name}?`)) del.mutate(b.id); }}><Trash2 className="h-4 w-4" /></Button>
+                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(b)}><Pencil className="h-4 w-4" /></Button>
+                    <ConfirmDelete
+                      trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>}
+                      title={`Delete ${b.name}?`}
+                      onConfirm={() => del.mutate(b.id)}
+                    />
                   </div>
                 </li>
               );
@@ -105,15 +125,28 @@ function BillsPage() {
           </ul>
         </Card>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <BillForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function BillForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
-  const [f, setF] = useState({ name: "", category: "", amount: "", due_date: "", recurring: "none", notes: "" });
+function BillForm({ initial, onSubmit, submitting }: { initial?: Bill; onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
+  const [f, setF] = useState({
+    name: initial?.name ?? "",
+    category: initial?.category ?? "",
+    amount: initial ? (initial.amount_cents / 100).toFixed(2) : "",
+    due_date: initial?.due_date ?? "",
+    recurring: initial?.recurring ?? "none",
+    notes: initial?.notes ?? "",
+  });
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>Add bill</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit bill" : "Add bill"}</DialogTitle></DialogHeader>
       <form onSubmit={(e) => { e.preventDefault(); if (!f.name) { toast.error("Name required"); return; } onSubmit({ name: f.name, category: f.category || null, amount_cents: Math.round(Number(f.amount || 0) * 100), due_date: f.due_date || null, recurring: f.recurring, notes: f.notes || null }); }} className="space-y-3">
         <div><Label>Name *</Label><Input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} required maxLength={100} /></div>
         <div className="grid grid-cols-2 gap-3">

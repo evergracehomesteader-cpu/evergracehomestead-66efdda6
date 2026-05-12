@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Egg, Milk, Beef, Sprout, Recycle, PawPrint, Trash2 } from "lucide-react";
+import { Plus, Egg, Milk, Beef, Sprout, Recycle, PawPrint, Trash2, Pencil } from "lucide-react";
 import { format, parseISO, startOfMonth, endOfMonth, isWithinInterval, subDays } from "date-fns";
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
@@ -36,6 +36,7 @@ type SbAny = {
   from: (t: string) => {
     select: (s: string) => { order: (c: string, o?: { ascending: boolean }) => Promise<{ data: Prod[] | null }> };
     insert: (r: unknown) => Promise<{ error: Error | null }>;
+    update: (r: unknown) => { eq: (c: string, v: string) => Promise<{ error: Error | null }> };
     delete: () => { eq: (c: string, v: string) => Promise<{ error: Error | null }> };
   };
 };
@@ -44,6 +45,7 @@ function ProductionPage() {
   const qc = useQueryClient();
   const sb = supabase as unknown as SbAny;
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Prod | null>(null);
   const [defaultType, setDefaultType] = useState<string>("eggs");
   const [filter, setFilter] = useState<string>("all");
 
@@ -56,13 +58,19 @@ function ProductionPage() {
     queryFn: async () => (await supabase.from("animals").select("id,name").order("name")).data ?? [],
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Omit<Prod, "id">) => {
+  const save = useMutation({
+    mutationFn: async (p: Omit<Prod, "id"> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await sb.from("production_logs").insert({ ...p, created_by: u.user?.id });
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await sb.from("production_logs").update(rest).eq("id", id);
+        if (error) throw error;
+      } else {
+        const { error } = await sb.from("production_logs").insert({ ...p, created_by: u.user?.id });
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["prod"] }); setOpen(false); toast.success("Logged"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["prod"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
     onError: (e) => toast.error((e as Error).message),
   });
   const del = useMutation({
@@ -145,7 +153,7 @@ function ProductionPage() {
         ))}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="sm" className="ml-auto"><Plus className="h-4 w-4" /> Log production</Button></DialogTrigger>
-          <ProductionForm defaultType={defaultType} animals={animals ?? []} onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <ProductionForm defaultType={defaultType} animals={animals ?? []} onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
@@ -169,6 +177,7 @@ function ProductionPage() {
                       {l.value_cents > 0 && ` · $${(l.value_cents / 100).toFixed(2)}`}
                     </div>
                   </div>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(l)}><Pencil className="h-4 w-4" /></Button>
                   <ConfirmDelete trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>} onConfirm={() => del.mutate(l.id)} />
                 </li>
               );
@@ -176,23 +185,29 @@ function ProductionPage() {
           </ul>
         </Card>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <ProductionForm initial={editing} defaultType={editing.product_type} animals={animals ?? []} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function ProductionForm({ defaultType, animals, onSubmit, submitting }: { defaultType: string; animals: { id: string; name: string }[]; onSubmit: (p: Omit<Prod, "id">) => void; submitting: boolean }) {
-  const [type, setType] = useState(defaultType);
-  const [qty, setQty] = useState("");
-  const [unit, setUnit] = useState<string>(TYPES.find((t) => t.v === defaultType)?.unit ?? "ea");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [animal, setAnimal] = useState("none");
-  const [group, setGroup] = useState("");
-  const [value, setValue] = useState("");
-  const [notes, setNotes] = useState("");
+function ProductionForm({ initial, defaultType, animals, onSubmit, submitting }: { initial?: Prod; defaultType: string; animals: { id: string; name: string }[]; onSubmit: (p: Omit<Prod, "id">) => void; submitting: boolean }) {
+  const [type, setType] = useState(initial?.product_type ?? defaultType);
+  const [qty, setQty] = useState(initial ? String(initial.quantity) : "");
+  const [unit, setUnit] = useState<string>(initial?.unit ?? TYPES.find((t) => t.v === defaultType)?.unit ?? "ea");
+  const [date, setDate] = useState(initial?.produced_on ?? new Date().toISOString().slice(0, 10));
+  const [animal, setAnimal] = useState(initial?.animal_id ?? "none");
+  const [group, setGroup] = useState(initial?.group_label ?? "");
+  const [value, setValue] = useState(initial && initial.value_cents > 0 ? (initial.value_cents / 100).toFixed(2) : "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
 
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto">
-      <DialogHeader><DialogTitle>Log production</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit production" : "Log production"}</DialogTitle></DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();

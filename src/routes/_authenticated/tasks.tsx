@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, ListTodo, Trash2 } from "lucide-react";
+import { Plus, ListTodo, Trash2, Pencil } from "lucide-react";
 import { format, isBefore, parseISO } from "date-fns";
 import { toast } from "sonner";
 import { SearchBar, FilterChips } from "@/components/SearchFilter";
@@ -29,6 +29,7 @@ const CATEGORIES = ["general", "animal", "garden", "compost", "feed", "bill"];
 function TasksPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Task | null>(null);
   const [filter, setFilter] = useState<"open" | "today" | "overdue" | "done" | "all">("open");
   const [cat, setCat] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -56,7 +57,7 @@ function TasksPage() {
         if (error) throw error;
       }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["tasks"] }); setOpen(false); toast.success("Saved"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["tasks"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
     onError: (e) => toast.error((e as Error).message),
   });
 
@@ -153,6 +154,7 @@ function TasksPage() {
                       )}
                     </div>
                   </div>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(t)}><Pencil className="h-4 w-4" /></Button>
                   <ConfirmDelete
                     trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>}
                     title={`Delete "${t.title}"?`}
@@ -164,18 +166,24 @@ function TasksPage() {
           </ul>
         </Card>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <TaskForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function TaskForm({ onSubmit, submitting }: { onSubmit: (p: Partial<Task>) => void; submitting: boolean }) {
-  const [title, setTitle] = useState("");
-  const [notes, setNotes] = useState("");
-  const [due, setDue] = useState("");
-  const [category, setCategory] = useState("general");
+function TaskForm({ initial, onSubmit, submitting }: { initial?: Task; onSubmit: (p: Partial<Task>) => void; submitting: boolean }) {
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
+  const [due, setDue] = useState(initial?.due_date ?? "");
+  const [category, setCategory] = useState(initial?.category ?? "general");
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>New task</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit task" : "New task"}</DialogTitle></DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Phone, Mail, MapPin, UserRound, Trash2 } from "lucide-react";
+import { Plus, Phone, Mail, MapPin, UserRound, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 
@@ -23,6 +23,7 @@ type SbAny = {
   from: (t: string) => {
     select: (s: string) => { order: (col: string, o?: { ascending: boolean }) => Promise<{ data: Contact[] | null }> };
     insert: (r: unknown) => Promise<{ error: Error | null }>;
+    update: (r: unknown) => { eq: (col: string, v: string) => Promise<{ error: Error | null }> };
     delete: () => { eq: (col: string, v: string) => Promise<{ error: Error | null }> };
   };
 };
@@ -30,6 +31,7 @@ type SbAny = {
 function ContactsPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Contact | null>(null);
   const sb = supabase as unknown as SbAny;
 
   const { data } = useQuery({
@@ -37,13 +39,19 @@ function ContactsPage() {
     queryFn: async () => (await sb.from("contacts").select("*").order("name")).data ?? [],
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Omit<Contact, "id">) => {
+  const save = useMutation({
+    mutationFn: async (p: Omit<Contact, "id"> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await sb.from("contacts").insert({ ...p, created_by: u.user?.id });
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await sb.from("contacts").update(rest).eq("id", id);
+        if (error) throw error;
+      } else {
+        const { error } = await sb.from("contacts").insert({ ...p, created_by: u.user?.id });
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["contacts"] }); setOpen(false); toast.success("Contact added"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["contacts"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
     onError: (e) => toast.error((e as Error).message),
   });
 
@@ -61,7 +69,7 @@ function ContactsPage() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="lg"><Plus className="h-4 w-4" /> Add contact</Button></DialogTrigger>
-          <ContactForm onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <ContactForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
@@ -79,7 +87,10 @@ function ContactsPage() {
                   <div className="font-semibold truncate">{c.name}</div>
                   <div className="text-xs text-muted-foreground capitalize">{c.role.replace("_", " ")}</div>
                 </div>
-                <ConfirmDelete trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>} onConfirm={() => del.mutate(c.id)} />
+                <div className="flex gap-1">
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(c)}><Pencil className="h-4 w-4" /></Button>
+                  <ConfirmDelete trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>} onConfirm={() => del.mutate(c.id)} />
+                </div>
               </div>
               <div className="mt-2 space-y-1 text-sm">
                 {c.phone && <div className="flex items-center gap-2"><Phone className="h-3 w-3 text-muted-foreground" /><a href={`tel:${c.phone}`} className="hover:underline">{c.phone}</a></div>}
@@ -91,20 +102,26 @@ function ContactsPage() {
           ))}
         </div>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <ContactForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function ContactForm({ onSubmit, submitting }: { onSubmit: (p: Omit<Contact, "id">) => void; submitting: boolean }) {
-  const [name, setName] = useState("");
-  const [role, setRole] = useState("vet");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");
-  const [notes, setNotes] = useState("");
+function ContactForm({ initial, onSubmit, submitting }: { initial?: Contact; onSubmit: (p: Omit<Contact, "id">) => void; submitting: boolean }) {
+  const [name, setName] = useState(initial?.name ?? "");
+  const [role, setRole] = useState(initial?.role ?? "vet");
+  const [phone, setPhone] = useState(initial?.phone ?? "");
+  const [email, setEmail] = useState(initial?.email ?? "");
+  const [location, setLocation] = useState(initial?.location ?? "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>Add contact</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit contact" : "Add contact"}</DialogTitle></DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();

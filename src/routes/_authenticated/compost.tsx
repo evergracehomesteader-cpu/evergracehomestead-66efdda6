@@ -10,32 +10,42 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Recycle, Trash2 } from "lucide-react";
+import { Plus, Recycle, Trash2, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/compost")({ component: CompostPage });
 
+type Entry = { id: string; entry_type: string; material: string | null; quantity: string | null; entry_date: string; notes: string | null };
+
 function CompostPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Entry | null>(null);
 
   const { data: entries } = useQuery({
     queryKey: ["compost"],
     queryFn: async () => {
       const { data, error } = await supabase.from("compost_entries").select("*").order("entry_date", { ascending: false });
       if (error) throw error;
-      return data;
+      return data as Entry[];
     },
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Record<string, unknown>) => {
+  const save = useMutation({
+    mutationFn: async (p: Record<string, unknown> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await supabase.from("compost_entries").insert({ ...p, created_by: u.user?.id } as never);
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await supabase.from("compost_entries").update(rest as never).eq("id", id as string);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("compost_entries").insert({ ...p, created_by: u.user?.id } as never);
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["compost"] }); setOpen(false); toast.success("Entry added"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["compost"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   const del = useMutation({
@@ -52,7 +62,7 @@ function CompostPage() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Log entry</Button></DialogTrigger>
-          <CompostForm onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <CompostForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
@@ -73,21 +83,36 @@ function CompostPage() {
                     <div className="text-xs text-muted-foreground">{format(new Date(e.entry_date), "MMM d, yyyy")}{e.notes ? ` · ${e.notes}` : ""}</div>
                   </div>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => del.mutate(e.id)}><Trash2 className="h-4 w-4" /></Button>
+                <div className="flex gap-1">
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(e)}><Pencil className="h-4 w-4" /></Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => del.mutate(e.id)}><Trash2 className="h-4 w-4" /></Button>
+                </div>
               </li>
             ))}
           </ul>
         </Card>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <CompostForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function CompostForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
-  const [f, setF] = useState({ entry_type: "add", material: "", quantity: "", entry_date: new Date().toISOString().slice(0, 10), notes: "" });
+function CompostForm({ initial, onSubmit, submitting }: { initial?: Entry; onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
+  const [f, setF] = useState({
+    entry_type: initial?.entry_type ?? "add",
+    material: initial?.material ?? "",
+    quantity: initial?.quantity ?? "",
+    entry_date: initial?.entry_date ?? new Date().toISOString().slice(0, 10),
+    notes: initial?.notes ?? "",
+  });
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>Compost entry</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit entry" : "Compost entry"}</DialogTitle></DialogHeader>
       <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, material: f.material || null, quantity: f.quantity || null, notes: f.notes || null }); }} className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div>
