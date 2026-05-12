@@ -85,7 +85,7 @@ function LoginPage() {
           </div>
         </Card>
         <p className="text-xs text-muted-foreground text-center mt-6">
-          All signed-in family members share the same homestead data.
+          All signed-in family members share the same EverGrace Homestead data.
         </p>
       </div>
     </div>
