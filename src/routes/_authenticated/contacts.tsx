@@ -87,7 +87,10 @@ function ContactsPage() {
                   <div className="font-semibold truncate">{c.name}</div>
                   <div className="text-xs text-muted-foreground capitalize">{c.role.replace("_", " ")}</div>
                 </div>
-                <ConfirmDelete trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>} onConfirm={() => del.mutate(c.id)} />
+                <div className="flex gap-1">
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(c)}><Pencil className="h-4 w-4" /></Button>
+                  <ConfirmDelete trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>} onConfirm={() => del.mutate(c.id)} />
+                </div>
               </div>
               <div className="mt-2 space-y-1 text-sm">
                 {c.phone && <div className="flex items-center gap-2"><Phone className="h-3 w-3 text-muted-foreground" /><a href={`tel:${c.phone}`} className="hover:underline">{c.phone}</a></div>}
