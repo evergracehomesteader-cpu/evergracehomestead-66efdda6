@@ -69,7 +69,7 @@ function ContactsPage() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="lg"><Plus className="h-4 w-4" /> Add contact</Button></DialogTrigger>
-          <ContactForm onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <ContactForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
