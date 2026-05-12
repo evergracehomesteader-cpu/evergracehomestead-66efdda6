@@ -60,8 +60,8 @@ function LoginPage() {
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground mb-4">
             <Sprout className="h-7 w-7" />
           </div>
-          <h1 className="text-3xl font-display font-semibold">Homestead</h1>
-          <p className="text-muted-foreground text-sm mt-1">Animals · Feed · Garden · Bills</p>
+          <h1 className="text-3xl font-display font-semibold">EverGrace Homestead</h1>
+          <p className="text-muted-foreground text-sm mt-1">Livestock · Feed · Garden · Finances</p>
         </div>
         <Card className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
