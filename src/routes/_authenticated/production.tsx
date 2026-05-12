@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Egg, Milk, Beef, Sprout, Recycle, PawPrint, Trash2 } from "lucide-react";
+import { Plus, Egg, Milk, Beef, Sprout, Recycle, PawPrint, Trash2, Pencil } from "lucide-react";
 import { format, parseISO, startOfMonth, endOfMonth, isWithinInterval, subDays } from "date-fns";
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
