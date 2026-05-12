@@ -153,7 +153,7 @@ function ProductionPage() {
         ))}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="sm" className="ml-auto"><Plus className="h-4 w-4" /> Log production</Button></DialogTrigger>
-          <ProductionForm defaultType={defaultType} animals={animals ?? []} onSubmit={(p) => create.mutate(p)} submitting={create.isPending} />
+          <ProductionForm defaultType={defaultType} animals={animals ?? []} onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
