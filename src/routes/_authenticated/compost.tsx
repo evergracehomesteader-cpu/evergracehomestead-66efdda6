@@ -16,26 +16,36 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/compost")({ component: CompostPage });
 
+type Entry = { id: string; entry_type: string; material: string | null; quantity: string | null; entry_date: string; notes: string | null };
+
 function CompostPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Entry | null>(null);
 
   const { data: entries } = useQuery({
     queryKey: ["compost"],
     queryFn: async () => {
       const { data, error } = await supabase.from("compost_entries").select("*").order("entry_date", { ascending: false });
       if (error) throw error;
-      return data;
+      return data as Entry[];
     },
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Record<string, unknown>) => {
+  const save = useMutation({
+    mutationFn: async (p: Record<string, unknown> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await supabase.from("compost_entries").insert({ ...p, created_by: u.user?.id } as never);
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await supabase.from("compost_entries").update(rest as never).eq("id", id as string);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("compost_entries").insert({ ...p, created_by: u.user?.id } as never);
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["compost"] }); setOpen(false); toast.success("Entry added"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["compost"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   const del = useMutation({
