@@ -99,7 +99,7 @@ function GardenPage() {
               </div>
               {p.notes && <p className="text-sm">{p.notes}</p>}
               <div className="flex gap-1 pt-1">
-                <Select value={p.status} onValueChange={(v) => update.mutate({ id: p.id, status: v })}>
+                <Select value={p.status} onValueChange={(v) => save.mutate({ id: p.id, status: v })}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="planned">Planned</SelectItem>
@@ -108,21 +108,35 @@ function GardenPage() {
                     <SelectItem value="failed">Failed</SelectItem>
                   </SelectContent>
                 </Select>
+                <Button size="sm" variant="ghost" onClick={() => setEditing(p)}><Pencil className="h-4 w-4" /></Button>
                 <Button size="sm" variant="ghost" onClick={() => { if (confirm(`Delete ${p.name}?`)) del.mutate(p.id); }}><Trash2 className="h-4 w-4" /></Button>
               </div>
             </Card>
           ))}
         </div>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <PlotForm initial={editing} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function PlotForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
-  const [f, setF] = useState({ name: "", crop: "", planted_on: "", expected_harvest: "", status: "growing", notes: "" });
+function PlotForm({ initial, onSubmit, submitting }: { initial?: Plot; onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
+  const [f, setF] = useState({
+    name: initial?.name ?? "",
+    crop: initial?.crop ?? "",
+    planted_on: initial?.planted_on ?? "",
+    expected_harvest: initial?.expected_harvest ?? "",
+    status: initial?.status ?? "growing",
+    notes: initial?.notes ?? "",
+  });
   return (
     <DialogContent>
-      <DialogHeader><DialogTitle>New plot</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit plot" : "New plot"}</DialogTitle></DialogHeader>
       <form onSubmit={(e) => { e.preventDefault(); if (!f.name) { toast.error("Name required"); return; } onSubmit({ ...f, planted_on: f.planted_on || null, expected_harvest: f.expected_harvest || null, crop: f.crop || null, notes: f.notes || null }); }} className="space-y-3">
         <div><Label>Plot name *</Label><Input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} required maxLength={100} /></div>
         <div><Label>Crop</Label><Input value={f.crop} onChange={(e) => setF({ ...f, crop: e.target.value })} placeholder="Tomatoes" maxLength={100} /></div>
