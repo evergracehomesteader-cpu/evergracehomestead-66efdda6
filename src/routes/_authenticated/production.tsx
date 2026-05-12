@@ -36,6 +36,7 @@ type SbAny = {
   from: (t: string) => {
     select: (s: string) => { order: (c: string, o?: { ascending: boolean }) => Promise<{ data: Prod[] | null }> };
     insert: (r: unknown) => Promise<{ error: Error | null }>;
+    update: (r: unknown) => { eq: (c: string, v: string) => Promise<{ error: Error | null }> };
     delete: () => { eq: (c: string, v: string) => Promise<{ error: Error | null }> };
   };
 };
@@ -44,6 +45,7 @@ function ProductionPage() {
   const qc = useQueryClient();
   const sb = supabase as unknown as SbAny;
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Prod | null>(null);
   const [defaultType, setDefaultType] = useState<string>("eggs");
   const [filter, setFilter] = useState<string>("all");
 
@@ -56,13 +58,19 @@ function ProductionPage() {
     queryFn: async () => (await supabase.from("animals").select("id,name").order("name")).data ?? [],
   });
 
-  const create = useMutation({
-    mutationFn: async (p: Omit<Prod, "id">) => {
+  const save = useMutation({
+    mutationFn: async (p: Omit<Prod, "id"> & { id?: string }) => {
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await sb.from("production_logs").insert({ ...p, created_by: u.user?.id });
-      if (error) throw error;
+      if (p.id) {
+        const { id, ...rest } = p;
+        const { error } = await sb.from("production_logs").update(rest).eq("id", id);
+        if (error) throw error;
+      } else {
+        const { error } = await sb.from("production_logs").insert({ ...p, created_by: u.user?.id });
+        if (error) throw error;
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["prod"] }); setOpen(false); toast.success("Logged"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["prod"] }); setOpen(false); setEditing(null); toast.success("Saved"); },
     onError: (e) => toast.error((e as Error).message),
   });
   const del = useMutation({
