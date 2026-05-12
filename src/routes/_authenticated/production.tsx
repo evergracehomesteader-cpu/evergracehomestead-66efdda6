@@ -177,6 +177,7 @@ function ProductionPage() {
                       {l.value_cents > 0 && ` · $${(l.value_cents / 100).toFixed(2)}`}
                     </div>
                   </div>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(l)}><Pencil className="h-4 w-4" /></Button>
                   <ConfirmDelete trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>} onConfirm={() => del.mutate(l.id)} />
                 </li>
               );
@@ -184,23 +185,29 @@ function ProductionPage() {
           </ul>
         </Card>
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <ProductionForm initial={editing} defaultType={editing.product_type} animals={animals ?? []} onSubmit={(p) => save.mutate({ ...p, id: editing.id })} submitting={save.isPending} />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-function ProductionForm({ defaultType, animals, onSubmit, submitting }: { defaultType: string; animals: { id: string; name: string }[]; onSubmit: (p: Omit<Prod, "id">) => void; submitting: boolean }) {
-  const [type, setType] = useState(defaultType);
-  const [qty, setQty] = useState("");
-  const [unit, setUnit] = useState<string>(TYPES.find((t) => t.v === defaultType)?.unit ?? "ea");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [animal, setAnimal] = useState("none");
-  const [group, setGroup] = useState("");
-  const [value, setValue] = useState("");
-  const [notes, setNotes] = useState("");
+function ProductionForm({ initial, defaultType, animals, onSubmit, submitting }: { initial?: Prod; defaultType: string; animals: { id: string; name: string }[]; onSubmit: (p: Omit<Prod, "id">) => void; submitting: boolean }) {
+  const [type, setType] = useState(initial?.product_type ?? defaultType);
+  const [qty, setQty] = useState(initial ? String(initial.quantity) : "");
+  const [unit, setUnit] = useState<string>(initial?.unit ?? TYPES.find((t) => t.v === defaultType)?.unit ?? "ea");
+  const [date, setDate] = useState(initial?.produced_on ?? new Date().toISOString().slice(0, 10));
+  const [animal, setAnimal] = useState(initial?.animal_id ?? "none");
+  const [group, setGroup] = useState(initial?.group_label ?? "");
+  const [value, setValue] = useState(initial && initial.value_cents > 0 ? (initial.value_cents / 100).toFixed(2) : "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
 
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto">
-      <DialogHeader><DialogTitle>Log production</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit production" : "Log production"}</DialogTitle></DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();
