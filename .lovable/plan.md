@@ -1,99 +1,100 @@
-# Phase 3 — Homestead Intelligence
 
-Builds on Phase 1/2 schema. Four feature pillars, each touching DB + UI.
+# EverGrace Homestead — Master Codex Implementation Plan
 
-## 1. Advanced Animal Records
+This codex is large enough that doing it in one pass would produce broken, half-wired modules. I'll deliver it in **6 phases**, each shippable on its own. Approve phase by phase. Existing data is preserved at every step.
 
-New tables:
-- `health_records` — vaccination, deworming, treatment, injury, illness, vet visit, body condition note. Fields: animal_id, record_type, product (med name), dosage, administered_on, withdrawal_meat_until, withdrawal_milk_until, withdrawal_eggs_until, vet_contact, notes.
-- `contacts` — vet/farrier/breeder/buyer directory. Fields: name, role, phone, email, location, notes.
+## Guiding rules (apply to every phase)
 
-UI on `/animals/$animalId`:
-- New **Health** tab: timeline of records, add/edit/delete, color-coded by type.
-- New **Withdrawals** banner: shows active withholding periods (red badge) for meat/milk/eggs.
-- **Growth chart**: line chart of weight_logs over time (recharts) on Weight tab.
-- **Body condition** notes feed into health timeline.
+- **No data loss.** Every migration is additive (new columns/tables) or backfills before dropping anything.
+- **Beginner-friendly labels everywhere**: "Boy Pig (Boar)" style, with technical term in parentheses. Centralized in `src/lib/terminology.ts`.
+- **Mobile-first**: every new screen designed at 389px width first.
+- **Search + filter** standard on every list (reuse `SearchFilter.tsx`).
+- **Edit + delete** on every record (reuse the `save` mutation pattern + `ConfirmDelete`).
+- **Roles**: a separate `user_roles` table (admin / member / viewer) with `has_role()` security-definer function — never on profiles.
 
-New route `/contacts` — directory page (vet, feed store, breeder, buyer).
+---
 
-## 2. Lineage & Breeding Tree
+## Phase 1 — Animals & Breeding foundation (schema + UI)
 
-Reuse existing `animals.mother_id` / `father_id`.
+The biggest single piece. Everything else references animals.
 
-UI on `/animals/$animalId`:
-- New **Lineage** tab: visual 3-generation tree (grandparents → parents → self → offspring) using a CSS grid layout, no extra deps.
-- **Breeding pair history** — recompute from `pregnancies` grouped by (animal_id, sire_id).
+**Schema migration** (additive to existing `animals`):
+- `breed_type` (purebred / cross / unknown), `secondary_breed`, `breed_percentage`, `breed_notes`
+- `front_photo_url`, `side_photo_url`, `additional_photo_urls[]` (existing `photo_url` becomes `front_photo_url` via backfill)
+- `auto_marking_description`, `user_edited_description`
+- `life_stage`, `manual_life_stage_override`
+- `is_intact_male`, `male_reproductive_status`, `castration_date`, `testicle_status_notes`
+- `ownership`, `id_tag` (rename of existing `tag` via view), `temporary_record`
+- New enum values for `animal_status`: `breeding, pregnant, grow_out, retained, pending_sale, pending_trade, butcher_planned, medical_hold, quarantine, pet`
 
-New on `PregAdd` dialog and a dedicated **Plan breeding** action:
-- **Inbreeding warning** — when selecting a sire, walk up to 3 generations of ancestors on both sides; if any common ancestor found, show red alert with the relation.
+**New tables**:
+- `species_catalog` (name, common_breeds[], breeding_age_male/female_months, gestation_days) — seeded with Pigs/Goats/Chickens/Ducks/Dogs/Cats and the breed lists you provided
+- `breeds_catalog` (species_id, breed_name, is_custom)
+- `life_stage_rules` (per-species age thresholds + display terms)
+- `litters` (mother_id, father_id, birth_date, male/female/unknown counts)
 
-New table `breeding_decisions` — per-animal note: decision (`keep`, `breed`, `sell`, `butcher`), target_date, reason. Surfaced as a card on the animal detail page.
+**UI**:
+- Animals list: dual-line card (`Name • Sex` / `Species • Breed • Life Stage`), status badge, front+side photo thumbs
+- Add/Edit form: species → breed dropdown cascade, breed-type toggle reveals secondary breed, "Does he have testicles?" plain-language intact field
+- Auto life stage from birthdate + species rules, manual override
+- `quickAddLitter` action that creates litter + N baby animal records linked to mother/father
+- Breeding selector filter: hides babies/juveniles and castrated males
 
-## 3. Production Tracking
+## Phase 2 — Inventories (Feed, Food, Groceries, Medications, Supplies)
 
-New table `production_logs`:
-- animal_id (nullable, for group entries), group_label, product_type (eggs, milk, meat, offspring, harvest, compost), quantity, unit, produced_on, value_cents, notes.
+Five new/upgraded list modules — same CRUD pattern, different fields.
 
-Garden harvests and compost output also flow into this single table for unified reporting.
+- `feed_items` upgrade: add `brand`, `bag_weight`, `bags_purchased`, `cost_per_bag`, `estimated_days_remaining` (computed), `low_inventory_alert` flag
+- New `food_inventory`, `groceries`, `human_medications`, `animal_medications`, `needed_supplies` tables
+- Each gets a route under `_authenticated/`, search/filter, edit/delete, low-stock + expiration warnings
+- Animal medications link to `animals.id` and write a `health_records` row when administered (withdrawal periods auto-set)
 
-New route `/production`:
-- Quick-log buttons per type (Eggs / Milk / Meat / Harvest / Compost).
-- Filter by animal, type, date range.
-- Daily/weekly/monthly totals + trend chart.
+## Phase 3 — Operations (Water, Generator, Solar, Market Sales, Honey-Do)
 
-Hooks into existing dashboard: today's egg/milk count card.
+Smaller log-style modules:
+- `water_systems` + daily usage logs, freeze/low alerts (computed from latest readings)
+- `generator_logs`, `solar_logs` with daily cost rollups
+- `market_sales` with itemized line items and profit calc
+- `honey_do_list` (separate from `tasks` — explicitly user-requested)
+- Tasks upgrade: `assigned_to_user_ids[]`, multi-assignee, member-can-only-complete-own-task rule via RLS
 
-## 4. Profit & Cost Per Animal
+## Phase 4 — Roles, multi-user, admin approval
 
-Derives entirely from existing + new tables — no new "cost" table. Per-animal P&L computed from:
-- **Purchase cost**: new `animals.purchase_cost_cents`, `purchase_date` columns.
-- **Feed cost**: `feed_logs.quantity` × current `feed_items.price_cents` / package_size, joined by animal_id.
-- **Medical cost**: new `health_records.cost_cents`.
-- **Breeding cost**: new `pregnancies.breeding_cost_cents`.
-- **Sale / income**: existing `income_entries` filtered by `link_type='animal'` and `link_id=animal.id`.
-- **Production value**: `production_logs.value_cents` for that animal.
+- `user_roles` table + `has_role()` SECURITY DEFINER function
+- `app_role` enum: `admin`, `member`, `viewer`, `pending`
+- New users land as `pending`; admin approval screen promotes them
+- All RLS policies migrate from "any authenticated" → role-checked
+- User management screen (admin only): invite, approve, change role, deactivate
+- **Important**: this is a breaking change to existing RLS. I'll write a backfill that promotes existing users to `admin` so nothing locks them out.
 
-UI:
-- New **Finances** tab on animal detail: card grid (Invested / Earned / Net), itemized table.
-- `/reports` page gets a **Top earners / biggest losses** ranked list.
+## Phase 5 — Offline-first sync
 
-## Schema diagram
+The big infrastructure piece. Implementation:
 
-```text
-animals ──┬─ health_records ─── contacts (vet)
-          ├─ weight_logs (existing)
-          ├─ pregnancies (existing, +breeding_cost_cents)
-          ├─ production_logs
-          ├─ breeding_decisions
-          └─ income_entries (existing, link_type='animal')
-```
+- **Dexie (IndexedDB)** mirror of all writeable tables
+- Mutation queue: every create/update/delete writes to Dexie first, then enqueues a sync job
+- Service worker (Workbox) for app-shell + read caching → app installable + works offline
+- Background sync replays the queue when `navigator.onLine` flips true
+- Conflict resolution: last-write-wins by `updated_at`, but the loser is kept in a `sync_conflicts` table with a banner UI for review
+- "Pending sync" indicator in the header; per-record "synced/pending/conflict" badge
 
-## Technical notes
+This phase touches every existing mutation. I'll abstract them through a single `useSyncedMutation()` hook to keep the diff manageable.
 
-- All new tables: `created_by uuid`, RLS `*_all_auth` policy (matches existing shared-family model), `updated_at` trigger where mutable.
-- Charts use existing `recharts` (already in shadcn chart component).
-- Lineage tree: pure CSS grid, recursive React component, capped at 3 generations to keep mobile-friendly.
-- Inbreeding check runs client-side after fetching ancestor IDs (≤30 rows).
-- Withdrawal banner: client-side computed from `health_records` where `withdrawal_*_until >= today`.
-- Money everywhere in cents (matches existing pattern).
-- No new npm deps.
+## Phase 6 — Dashboard rebuild + AI marking descriptions + cache/version
 
-## Files
+- Dashboard widgets per spec: Upcoming Births, Feed Warnings, Food Alerts, Medication Alerts, Needed Supplies, Generator Costs, Solar Reserve, Active Chores, Honey-Do, Pending Sales, Market Sales
+- AI marking description: edge function `describe-animal` that calls `google/gemini-2.5-flash` with the front+side photo URLs, returns suggested text, user reviews/edits before save
+- Version checking: build hash exposed at `/api/version`; client polls and shows "New version available — reload" toast
+- Service worker `skipWaiting` + cache versioning so deployments don't strand users on stale UI
 
-New:
-- `supabase/migrations/<ts>_phase3.sql`
-- `src/lib/lineage.ts` (ancestor walk + inbreeding detection)
-- `src/lib/animal-finance.ts` (P&L compute)
-- `src/components/LineageTree.tsx`
-- `src/components/WithdrawalBanner.tsx`
-- `src/routes/_authenticated/contacts.tsx`
-- `src/routes/_authenticated/production.tsx`
+---
 
-Edited:
-- `src/routes/_authenticated/animals.$animalId.tsx` — Health, Lineage, Finances tabs + growth chart + decision card.
-- `src/routes/_authenticated/animals.tsx` — purchase cost field on add form.
-- `src/routes/_authenticated/dashboard.tsx` — today's production card, withdrawal alerts.
-- `src/routes/_authenticated/reports.tsx` — top earners.
-- `src/components/AppSidebar.tsx` — Contacts + Production nav.
+## What I'm explicitly NOT doing without confirmation
 
-Out of scope (explicit): public sharing, marketplace, AI predictions.
+- Weather alerts (no weather provider chosen — needs an API key; recommend OpenWeatherMap)
+- Push notifications for alerts (needs a separate setup)
+- Native mobile app (this is a PWA — installable but not in app stores)
+
+## How to proceed
+
+Reply with **"Start Phase 1"** (or any phase number) and I'll write the migration first, wait for your approval, then ship the code. If you want to reorder phases or drop one, say so now.
