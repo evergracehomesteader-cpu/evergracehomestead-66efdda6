@@ -49,70 +49,124 @@ export type Database = {
       }
       animals: {
         Row: {
+          additional_photo_urls: string[]
+          auto_marking_description: string | null
           breed: string | null
+          breed_notes: string | null
+          breed_percentage: string | null
+          breed_type: string
+          castration_date: string | null
           created_at: string
           created_by: string | null
           current_pen: string | null
           date_of_birth: string | null
           father_id: string | null
+          front_photo_url: string | null
           id: string
+          is_intact_male: string
+          life_stage: string | null
+          litter_id: string | null
+          male_reproductive_status: string
+          manual_life_stage_override: boolean
           medical_notes: string | null
           mother_id: string | null
           name: string
           notes: string | null
+          ownership: string
           photo_url: string | null
           purchase_cost_cents: number
           purchase_date: string | null
+          secondary_breed: string | null
           sex: Database["public"]["Enums"]["animal_sex"]
+          side_photo_url: string | null
           species: string
           status: Database["public"]["Enums"]["animal_status"]
           tag: string | null
           temperament_tags: string[]
+          temporary_record: boolean
+          testicle_status_notes: string | null
           updated_at: string
+          user_edited_description: string | null
         }
         Insert: {
+          additional_photo_urls?: string[]
+          auto_marking_description?: string | null
           breed?: string | null
+          breed_notes?: string | null
+          breed_percentage?: string | null
+          breed_type?: string
+          castration_date?: string | null
           created_at?: string
           created_by?: string | null
           current_pen?: string | null
           date_of_birth?: string | null
           father_id?: string | null
+          front_photo_url?: string | null
           id?: string
+          is_intact_male?: string
+          life_stage?: string | null
+          litter_id?: string | null
+          male_reproductive_status?: string
+          manual_life_stage_override?: boolean
           medical_notes?: string | null
           mother_id?: string | null
           name: string
           notes?: string | null
+          ownership?: string
           photo_url?: string | null
           purchase_cost_cents?: number
           purchase_date?: string | null
+          secondary_breed?: string | null
           sex?: Database["public"]["Enums"]["animal_sex"]
+          side_photo_url?: string | null
           species: string
           status?: Database["public"]["Enums"]["animal_status"]
           tag?: string | null
           temperament_tags?: string[]
+          temporary_record?: boolean
+          testicle_status_notes?: string | null
           updated_at?: string
+          user_edited_description?: string | null
         }
         Update: {
+          additional_photo_urls?: string[]
+          auto_marking_description?: string | null
           breed?: string | null
+          breed_notes?: string | null
+          breed_percentage?: string | null
+          breed_type?: string
+          castration_date?: string | null
           created_at?: string
           created_by?: string | null
           current_pen?: string | null
           date_of_birth?: string | null
           father_id?: string | null
+          front_photo_url?: string | null
           id?: string
+          is_intact_male?: string
+          life_stage?: string | null
+          litter_id?: string | null
+          male_reproductive_status?: string
+          manual_life_stage_override?: boolean
           medical_notes?: string | null
           mother_id?: string | null
           name?: string
           notes?: string | null
+          ownership?: string
           photo_url?: string | null
           purchase_cost_cents?: number
           purchase_date?: string | null
+          secondary_breed?: string | null
           sex?: Database["public"]["Enums"]["animal_sex"]
+          side_photo_url?: string | null
           species?: string
           status?: Database["public"]["Enums"]["animal_status"]
           tag?: string | null
           temperament_tags?: string[]
+          temporary_record?: boolean
+          testicle_status_notes?: string | null
           updated_at?: string
+          user_edited_description?: string | null
         }
         Relationships: [
           {
@@ -365,6 +419,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      breeds_catalog: {
+        Row: {
+          breed_name: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_custom: boolean
+          species_id: string
+        }
+        Insert: {
+          breed_name: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_custom?: boolean
+          species_id: string
+        }
+        Update: {
+          breed_name?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_custom?: boolean
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breeds_catalog_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       compost_entries: {
         Row: {
@@ -757,6 +846,48 @@ export type Database = {
         }
         Relationships: []
       }
+      litters: {
+        Row: {
+          birth_date: string
+          created_at: string
+          created_by: string | null
+          father_id: string | null
+          female_count: number
+          id: string
+          male_count: number
+          mother_id: string | null
+          notes: string | null
+          unknown_count: number
+          updated_at: string
+        }
+        Insert: {
+          birth_date?: string
+          created_at?: string
+          created_by?: string | null
+          father_id?: string | null
+          female_count?: number
+          id?: string
+          male_count?: number
+          mother_id?: string | null
+          notes?: string | null
+          unknown_count?: number
+          updated_at?: string
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string
+          created_by?: string | null
+          father_id?: string | null
+          female_count?: number
+          id?: string
+          male_count?: number
+          mother_id?: string | null
+          notes?: string | null
+          unknown_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pregnancies: {
         Row: {
           actual_birth: string | null
@@ -883,6 +1014,57 @@ export type Database = {
         }
         Relationships: []
       }
+      species_catalog: {
+        Row: {
+          adult_female_term: string | null
+          adult_male_term: string | null
+          baby_term: string | null
+          baby_to_juvenile_age_months: number | null
+          breeding_age_female_months: number | null
+          breeding_age_male_months: number | null
+          created_at: string
+          female_with_babies_term: string | null
+          gestation_days: number | null
+          id: string
+          juvenile_term: string | null
+          juvenile_to_adult_age_months: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          adult_female_term?: string | null
+          adult_male_term?: string | null
+          baby_term?: string | null
+          baby_to_juvenile_age_months?: number | null
+          breeding_age_female_months?: number | null
+          breeding_age_male_months?: number | null
+          created_at?: string
+          female_with_babies_term?: string | null
+          gestation_days?: number | null
+          id?: string
+          juvenile_term?: string | null
+          juvenile_to_adult_age_months?: number | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          adult_female_term?: string | null
+          adult_male_term?: string | null
+          baby_term?: string | null
+          baby_to_juvenile_age_months?: number | null
+          breeding_age_female_months?: number | null
+          breeding_age_male_months?: number | null
+          created_at?: string
+          female_with_babies_term?: string | null
+          gestation_days?: number | null
+          id?: string
+          juvenile_term?: string | null
+          juvenile_to_adult_age_months?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           category: string
@@ -985,6 +1167,16 @@ export type Database = {
         | "archived"
         | "butchered"
         | "missing"
+        | "breeding"
+        | "pregnant"
+        | "grow_out"
+        | "retained"
+        | "pending_sale"
+        | "pending_trade"
+        | "butcher_planned"
+        | "medical_hold"
+        | "quarantine"
+        | "pet"
       barter_category:
         | "livestock"
         | "feed"
@@ -1145,6 +1337,16 @@ export const Constants = {
         "archived",
         "butchered",
         "missing",
+        "breeding",
+        "pregnant",
+        "grow_out",
+        "retained",
+        "pending_sale",
+        "pending_trade",
+        "butcher_planned",
+        "medical_hold",
+        "quarantine",
+        "pet",
       ],
       barter_category: [
         "livestock",
