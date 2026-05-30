@@ -169,14 +169,14 @@ function AnimalsPage() {
                       <Link to="/animals/$animalId" params={{ animalId: a.id }} className="flex gap-3 items-start flex-1 min-w-0">
                         <div className="flex flex-col gap-1 flex-shrink-0">
                           {front ? (
-                            <img src={front} alt={a.name} className="h-16 w-16 rounded-md object-cover" />
+                            <SignedImg src={front} bucket="animal-photos" alt={a.name} className="h-16 w-16 rounded-md object-cover" fallback={<div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>} />
                           ) : (
                             <div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center">
                               <PawPrint className="h-6 w-6 text-muted-foreground" />
                             </div>
                           )}
                           {a.side_photo_url && (
-                            <img src={a.side_photo_url} alt="" className="h-10 w-16 rounded-md object-cover" />
+                            <SignedImg src={a.side_photo_url} bucket="animal-photos" alt="" className="h-10 w-16 rounded-md object-cover" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
