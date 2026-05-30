@@ -387,14 +387,15 @@ function DealForm({
   }, [initialItems]);
 
   const handleUpload = async (file: File) => {
+    const invalid = validateImageFile(file);
+    if (invalid) { toast.error(invalid); return; }
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
+      const ext = (file.type.split("/")[1] ?? "jpg").toLowerCase();
       const path = `${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("barter-photos").upload(path, file);
+      const { error } = await supabase.storage.from("barter-photos").upload(path, file, { contentType: file.type });
       if (error) throw error;
-      const { data } = supabase.storage.from("barter-photos").getPublicUrl(path);
-      setF((cur) => ({ ...cur, photo_urls: [...(cur.photo_urls ?? []), data.publicUrl] }));
+      setF((cur) => ({ ...cur, photo_urls: [...(cur.photo_urls ?? []), path] }));
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
