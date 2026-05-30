@@ -295,15 +295,16 @@ function AnimalForm({
   const dads = breedingParents("male");
 
   const upload = async (file: File, slot: "front" | "side") => {
+    const invalid = validateImageFile(file);
+    if (invalid) { toast.error(invalid); return; }
     setUploading(slot);
     try {
-      const ext = file.name.split(".").pop();
+      const ext = (file.type.split("/")[1] ?? "jpg").toLowerCase();
       const path = `${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("animal-photos").upload(path, file);
+      const { error } = await supabase.storage.from("animal-photos").upload(path, file, { contentType: file.type });
       if (error) throw error;
-      const { data } = supabase.storage.from("animal-photos").getPublicUrl(path);
-      if (slot === "front") set("front_photo_url", data.publicUrl);
-      else set("side_photo_url", data.publicUrl);
+      if (slot === "front") set("front_photo_url", path);
+      else set("side_photo_url", path);
     } catch (e) { toast.error((e as Error).message); } finally { setUploading(null); }
   };
 
