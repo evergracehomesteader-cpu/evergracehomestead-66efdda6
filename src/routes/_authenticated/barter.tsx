@@ -490,7 +490,7 @@ function DealForm({
           <div className="flex flex-wrap gap-2 mt-1">
             {(f.photo_urls ?? []).map((u) => (
               <div key={u} className="relative">
-                <img src={u} alt="" className="h-16 w-16 object-cover rounded-md" />
+                <SignedImg src={u} bucket="barter-photos" alt="" className="h-16 w-16 object-cover rounded-md" />
                 <button type="button" onClick={() => setF({ ...f, photo_urls: (f.photo_urls ?? []).filter((p) => p !== u) })} className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full h-5 w-5 flex items-center justify-center text-xs">×</button>
               </div>
             ))}
