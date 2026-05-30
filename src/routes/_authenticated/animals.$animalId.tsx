@@ -18,6 +18,7 @@ import { gestationFor, statusBadgeClass } from "@/lib/homestead";
 import { LineageTree } from "@/components/LineageTree";
 import { WithdrawalBanner } from "@/components/WithdrawalBanner";
 import { loadAnimalFinance } from "@/lib/animal-finance";
+import { SignedImg } from "@/components/SignedImg";
 import { findCommonAncestors } from "@/lib/lineage";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
