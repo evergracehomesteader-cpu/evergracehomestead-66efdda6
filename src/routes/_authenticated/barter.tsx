@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Handshake, Trash2, Pencil, Check, X, ImagePlus, MapPin, Link2, PawPrint, Wheat, Sprout, Wrench, Briefcase, Package } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { validateImageFile } from "@/lib/photo-storage";
+import { SignedImg } from "@/components/SignedImg";
 
 export const Route = createFileRoute("/_authenticated/barter")({ component: BarterPage });
 
@@ -263,7 +265,7 @@ function BarterPage() {
                 {d.photo_urls.length > 0 && (
                   <div className="flex gap-1 overflow-x-auto">
                     {d.photo_urls.slice(0, 3).map((u) => (
-                      <img key={u} src={u} alt="" className="h-16 w-16 object-cover rounded-md flex-shrink-0" />
+                      <SignedImg key={u} src={u} bucket="barter-photos" alt="" className="h-16 w-16 object-cover rounded-md flex-shrink-0" />
                     ))}
                   </div>
                 )}
@@ -385,14 +387,15 @@ function DealForm({
   }, [initialItems]);
 
   const handleUpload = async (file: File) => {
+    const invalid = validateImageFile(file);
+    if (invalid) { toast.error(invalid); return; }
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
+      const ext = (file.type.split("/")[1] ?? "jpg").toLowerCase();
       const path = `${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("barter-photos").upload(path, file);
+      const { error } = await supabase.storage.from("barter-photos").upload(path, file, { contentType: file.type });
       if (error) throw error;
-      const { data } = supabase.storage.from("barter-photos").getPublicUrl(path);
-      setF((cur) => ({ ...cur, photo_urls: [...(cur.photo_urls ?? []), data.publicUrl] }));
+      setF((cur) => ({ ...cur, photo_urls: [...(cur.photo_urls ?? []), path] }));
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
@@ -487,7 +490,7 @@ function DealForm({
           <div className="flex flex-wrap gap-2 mt-1">
             {(f.photo_urls ?? []).map((u) => (
               <div key={u} className="relative">
-                <img src={u} alt="" className="h-16 w-16 object-cover rounded-md" />
+                <SignedImg src={u} bucket="barter-photos" alt="" className="h-16 w-16 object-cover rounded-md" />
                 <button type="button" onClick={() => setF({ ...f, photo_urls: (f.photo_urls ?? []).filter((p) => p !== u) })} className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full h-5 w-5 flex items-center justify-center text-xs">×</button>
               </div>
             ))}

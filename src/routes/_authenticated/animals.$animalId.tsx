@@ -18,6 +18,7 @@ import { gestationFor, statusBadgeClass } from "@/lib/homestead";
 import { LineageTree } from "@/components/LineageTree";
 import { WithdrawalBanner } from "@/components/WithdrawalBanner";
 import { loadAnimalFinance } from "@/lib/animal-finance";
+import { SignedImg } from "@/components/SignedImg";
 import { findCommonAncestors } from "@/lib/lineage";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
@@ -214,7 +215,7 @@ function AnimalDetail() {
 
       <div className="flex items-start gap-4 flex-wrap">
         {animal.photo_url ? (
-          <img src={animal.photo_url} alt={animal.name} className="h-24 w-24 rounded-xl object-cover" />
+          <SignedImg src={animal.photo_url} bucket="animal-photos" alt={animal.name} className="h-24 w-24 rounded-xl object-cover" fallback={<div className="h-24 w-24 rounded-xl bg-muted flex items-center justify-center"><PawPrint className="h-9 w-9 text-muted-foreground" /></div>} />
         ) : (
           <div className="h-24 w-24 rounded-xl bg-muted flex items-center justify-center"><PawPrint className="h-9 w-9 text-muted-foreground" /></div>
         )}

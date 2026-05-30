@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { statusBadgeClass } from "@/lib/homestead";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { cn } from "@/lib/utils";
+import { validateImageFile } from "@/lib/photo-storage";
+import { SignedImg } from "@/components/SignedImg";
 import {
   ANIMAL_STATUS_OPTIONS,
   BREED_TYPE_OPTIONS,
@@ -167,14 +169,14 @@ function AnimalsPage() {
                       <Link to="/animals/$animalId" params={{ animalId: a.id }} className="flex gap-3 items-start flex-1 min-w-0">
                         <div className="flex flex-col gap-1 flex-shrink-0">
                           {front ? (
-                            <img src={front} alt={a.name} className="h-16 w-16 rounded-md object-cover" />
+                            <SignedImg src={front} bucket="animal-photos" alt={a.name} className="h-16 w-16 rounded-md object-cover" fallback={<div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>} />
                           ) : (
                             <div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center">
                               <PawPrint className="h-6 w-6 text-muted-foreground" />
                             </div>
                           )}
                           {a.side_photo_url && (
-                            <img src={a.side_photo_url} alt="" className="h-10 w-16 rounded-md object-cover" />
+                            <SignedImg src={a.side_photo_url} bucket="animal-photos" alt="" className="h-10 w-16 rounded-md object-cover" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -295,15 +297,16 @@ function AnimalForm({
   const dads = breedingParents("male");
 
   const upload = async (file: File, slot: "front" | "side") => {
+    const invalid = validateImageFile(file);
+    if (invalid) { toast.error(invalid); return; }
     setUploading(slot);
     try {
-      const ext = file.name.split(".").pop();
+      const ext = (file.type.split("/")[1] ?? "jpg").toLowerCase();
       const path = `${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("animal-photos").upload(path, file);
+      const { error } = await supabase.storage.from("animal-photos").upload(path, file, { contentType: file.type });
       if (error) throw error;
-      const { data } = supabase.storage.from("animal-photos").getPublicUrl(path);
-      if (slot === "front") set("front_photo_url", data.publicUrl);
-      else set("side_photo_url", data.publicUrl);
+      if (slot === "front") set("front_photo_url", path);
+      else set("side_photo_url", path);
     } catch (e) { toast.error((e as Error).message); } finally { setUploading(null); }
   };
 
@@ -528,7 +531,7 @@ function PhotoSlot({ label, url, uploading, onPick }: { label: string; url: stri
     <div>
       <Label>{label}</Label>
       <div className="flex items-center gap-2 mt-1">
-        {url ? <img src={url} alt="" className="h-16 w-16 rounded-md object-cover" /> : (
+        {url ? <SignedImg src={url} bucket="animal-photos" alt="" className="h-16 w-16 rounded-md object-cover" fallback={<div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>} /> : (
           <div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>
         )}
         <label className="inline-flex items-center gap-1 px-2 py-1.5 rounded-md border cursor-pointer hover:bg-accent text-xs">
