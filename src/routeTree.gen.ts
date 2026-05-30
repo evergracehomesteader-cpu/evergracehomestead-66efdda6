@@ -13,9 +13,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
+import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -46,6 +48,11 @@ const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
   path: '/tasks',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -59,6 +66,11 @@ const AuthenticatedRemindersRoute = AuthenticatedRemindersRouteImport.update({
 const AuthenticatedProductionRoute = AuthenticatedProductionRouteImport.update({
   id: '/production',
   path: '/production',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
+  id: '/litters',
+  path: '/litters',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
@@ -125,9 +137,11 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/litters': typeof AuthenticatedLittersRoute
   '/production': typeof AuthenticatedProductionRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
 }
@@ -143,9 +157,11 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/litters': typeof AuthenticatedLittersRoute
   '/production': typeof AuthenticatedProductionRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
 }
@@ -163,9 +179,11 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
+  '/_authenticated/litters': typeof AuthenticatedLittersRoute
   '/_authenticated/production': typeof AuthenticatedProductionRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
 }
@@ -183,9 +201,11 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/litters'
     | '/production'
     | '/reminders'
     | '/reports'
+    | '/settings'
     | '/tasks'
     | '/animals/$animalId'
   fileRoutesByTo: FileRoutesByTo
@@ -201,9 +221,11 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/litters'
     | '/production'
     | '/reminders'
     | '/reports'
+    | '/settings'
     | '/tasks'
     | '/animals/$animalId'
   id:
@@ -220,9 +242,11 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
     | '/_authenticated/garden'
+    | '/_authenticated/litters'
     | '/_authenticated/production'
     | '/_authenticated/reminders'
     | '/_authenticated/reports'
+    | '/_authenticated/settings'
     | '/_authenticated/tasks'
     | '/_authenticated/animals/$animalId'
   fileRoutesById: FileRoutesById
@@ -263,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTasksRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/reports': {
       id: '/_authenticated/reports'
       path: '/reports'
@@ -282,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/production'
       fullPath: '/production'
       preLoaderRoute: typeof AuthenticatedProductionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/litters': {
+      id: '/_authenticated/litters'
+      path: '/litters'
+      fullPath: '/litters'
+      preLoaderRoute: typeof AuthenticatedLittersRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/garden': {
@@ -378,9 +416,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
+  AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
   AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
   AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
 }
 
@@ -394,9 +434,11 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
+  AuthenticatedLittersRoute: AuthenticatedLittersRoute,
   AuthenticatedProductionRoute: AuthenticatedProductionRoute,
   AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
 }
 

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
@@ -10,8 +10,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Receipt, Check, Trash2, Pencil } from "lucide-react";
-import { format, isBefore } from "date-fns";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Receipt, Check, Trash2, Pencil, TrendingUp, TrendingDown, DollarSign, PawPrint } from "lucide-react";
+import { format, isBefore, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 
@@ -22,13 +23,13 @@ type Bill = {
   due_date: string | null; recurring: string; notes: string | null;
   paid: boolean; paid_on: string | null;
 };
+type Income = { id: string; source: string; category: string; amount_cents: number; entry_date: string; notes: string | null };
+type AnimalRow = { id: string; name: string; species: string; status: string; expected_sale_price_cents: number | null; sale_price_cents: number | null; sale_date: string | null };
 
 const fmt = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 function BillsPage() {
   const qc = useQueryClient();
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<Bill | null>(null);
 
   const { data: bills } = useQuery({
     queryKey: ["bills"],
@@ -38,6 +39,95 @@ function BillsPage() {
       return data as Bill[];
     },
   });
+
+  const { data: income } = useQuery({
+    queryKey: ["income"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("income_entries").select("*").order("entry_date", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Income[];
+    },
+  });
+
+  const { data: animals } = useQuery({
+    queryKey: ["animals-sales"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("animals").select("id,name,species,status,expected_sale_price_cents,sale_price_cents,sale_date").in("status", ["pending_sale", "sold"]);
+      if (error) throw error;
+      return (data ?? []) as AnimalRow[];
+    },
+  });
+
+  const start = startOfMonth(new Date());
+  const end = endOfMonth(new Date());
+  const inMonth = (d: string | null) => !!d && isWithinInterval(parseISO(d), { start, end });
+
+  const pendingSales = (animals ?? []).filter((a) => a.status === "pending_sale");
+  const completedSales = (animals ?? []).filter((a) => a.status === "sold");
+
+  const projectedSaleIncome = pendingSales.reduce((s, a) => s + (a.expected_sale_price_cents ?? 0), 0);
+  const monthlyIncome = (income ?? []).filter((i) => inMonth(i.entry_date)).reduce((s, i) => s + Number(i.amount_cents), 0);
+  const monthlyBills = (bills ?? []).filter((b) => inMonth(b.due_date)).reduce((s, b) => s + Number(b.amount_cents ?? 0), 0);
+  const projectedTotal = monthlyIncome + projectedSaleIncome;
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-display font-semibold">Bills &amp; Income</h1>
+        <p className="text-muted-foreground">Track money in and out of the homestead.</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <SummaryCard icon={TrendingUp} label="Income this month" value={fmt(monthlyIncome)} accent="bg-success/15 text-success" />
+        <SummaryCard icon={DollarSign} label="Projected from sales" value={fmt(projectedSaleIncome)} accent="bg-warning/15 text-warning" />
+        <SummaryCard icon={TrendingDown} label="Bills this month" value={fmt(monthlyBills)} accent="bg-destructive/15 text-destructive" />
+        <SummaryCard icon={TrendingUp} label="Projected total" value={fmt(projectedTotal)} accent="bg-primary/10 text-primary" />
+      </div>
+
+      <Tabs defaultValue="bills">
+        <TabsList>
+          <TabsTrigger value="bills">Bills</TabsTrigger>
+          <TabsTrigger value="income">Monthly Income</TabsTrigger>
+          <TabsTrigger value="pending">Pending Sales ({pendingSales.length})</TabsTrigger>
+          <TabsTrigger value="completed">Completed Sales ({completedSales.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="bills" className="mt-4">
+          <BillsSection bills={bills ?? []} qc={qc} />
+        </TabsContent>
+        <TabsContent value="income" className="mt-4">
+          <IncomeSection income={income ?? []} qc={qc} />
+        </TabsContent>
+        <TabsContent value="pending" className="mt-4">
+          <SalesSection sales={pendingSales} kind="pending" />
+        </TabsContent>
+        <TabsContent value="completed" className="mt-4">
+          <SalesSection sales={completedSales} kind="completed" />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+function SummaryCard({ icon: Icon, label, value, accent }: { icon: typeof TrendingUp; label: string; value: string; accent: string }) {
+  return (
+    <Card className="p-4">
+      <div className="flex items-center gap-3">
+        <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${accent}`}><Icon className="h-5 w-5" /></div>
+        <div className="min-w-0">
+          <div className="text-lg font-display font-semibold">{value}</div>
+          <div className="text-xs text-muted-foreground truncate">{label}</div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// ---------- Bills section ----------
+
+function BillsSection({ bills, qc }: { bills: Bill[]; qc: ReturnType<typeof useQueryClient> }) {
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Bill | null>(null);
 
   const save = useMutation({
     mutationFn: async (p: Record<string, unknown> & { id?: string }) => {
@@ -68,22 +158,16 @@ function BillsPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["bills"] }),
   });
 
-  const totalUnpaid = (bills ?? []).filter((b) => !b.paid).reduce((s, b) => s + Number(b.amount_cents), 0);
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-display font-semibold">Bills</h1>
-          <p className="text-muted-foreground">Outstanding: <strong>{fmt(totalUnpaid)}</strong></p>
-        </div>
+    <div className="space-y-3">
+      <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Add bill</Button></DialogTrigger>
           <BillForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
         </Dialog>
       </div>
 
-      {(bills ?? []).length === 0 ? (
+      {bills.length === 0 ? (
         <Card className="p-12 text-center">
           <Receipt className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-muted-foreground">No bills yet.</p>
@@ -91,7 +175,7 @@ function BillsPage() {
       ) : (
         <Card>
           <ul className="divide-y">
-            {bills?.map((b) => {
+            {bills.map((b) => {
               const overdue = !b.paid && b.due_date && isBefore(new Date(b.due_date), new Date());
               return (
                 <li key={b.id} className="px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
@@ -171,5 +255,148 @@ function BillForm({ initial, onSubmit, submitting }: { initial?: Bill; onSubmit:
         <DialogFooter><Button type="submit" disabled={submitting}>Save</Button></DialogFooter>
       </form>
     </DialogContent>
+  );
+}
+
+// ---------- Income section ----------
+
+function IncomeSection({ income, qc }: { income: Income[]; qc: ReturnType<typeof useQueryClient> }) {
+  const [open, setOpen] = useState(false);
+
+  const add = useMutation({
+    mutationFn: async (p: Record<string, unknown>) => {
+      const { data: u } = await supabase.auth.getUser();
+      const { error } = await supabase.from("income_entries").insert({ ...p, created_by: u.user?.id } as never);
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["income"] }); setOpen(false); toast.success("Income recorded"); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  const del = useMutation({
+    mutationFn: async (id: string) => { const { error } = await supabase.from("income_entries").delete().eq("id", id); if (error) throw error; },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["income"] }),
+  });
+
+  const total = income.reduce((s, i) => s + Number(i.amount_cents), 0);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">All-time income: <strong>{fmt(total)}</strong></p>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Add income</Button></DialogTrigger>
+          <IncomeForm onSubmit={(p) => add.mutate(p)} submitting={add.isPending} />
+        </Dialog>
+      </div>
+
+      {income.length === 0 ? (
+        <Card className="p-12 text-center">
+          <TrendingUp className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+          <p className="text-muted-foreground">No income recorded yet.</p>
+        </Card>
+      ) : (
+        <Card>
+          <ul className="divide-y">
+            {income.map((i) => (
+              <li key={i.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-medium">{i.source}</span>
+                    <Badge variant="secondary">{i.category}</Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground">{format(parseISO(i.entry_date), "MMM d, yyyy")}{i.notes ? ` · ${i.notes}` : ""}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-success">{fmt(i.amount_cents)}</span>
+                  <ConfirmDelete
+                    trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>}
+                    title={`Delete this income entry?`}
+                    onConfirm={() => del.mutate(i.id)}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function IncomeForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
+  const [f, setF] = useState({
+    source: "", category: "sale", amount: "",
+    entry_date: new Date().toISOString().slice(0, 10), notes: "",
+  });
+  return (
+    <DialogContent>
+      <DialogHeader><DialogTitle>Add income</DialogTitle></DialogHeader>
+      <form onSubmit={(e) => { e.preventDefault(); if (!f.source) { toast.error("Source required"); return; } onSubmit({ source: f.source, category: f.category, amount_cents: Math.round(Number(f.amount || 0) * 100), entry_date: f.entry_date, notes: f.notes || null }); }} className="space-y-3">
+        <div><Label>Source *</Label><Input value={f.source} onChange={(e) => setF({ ...f, source: e.target.value })} required placeholder="Egg sales, Farmers market…" /></div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label>Category</Label>
+            <Select value={f.category} onValueChange={(v) => setF({ ...f, category: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sale">Sale</SelectItem>
+                <SelectItem value="produce">Produce</SelectItem>
+                <SelectItem value="livestock">Livestock</SelectItem>
+                <SelectItem value="service">Service</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div><Label>Amount ($) *</Label><Input type="number" step="0.01" value={f.amount} onChange={(e) => setF({ ...f, amount: e.target.value })} required /></div>
+          <div className="col-span-2"><Label>Date</Label><Input type="date" value={f.entry_date} onChange={(e) => setF({ ...f, entry_date: e.target.value })} /></div>
+        </div>
+        <div><Label>Notes</Label><Textarea value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></div>
+        <DialogFooter><Button type="submit" disabled={submitting}>Save</Button></DialogFooter>
+      </form>
+    </DialogContent>
+  );
+}
+
+// ---------- Sales section ----------
+
+function SalesSection({ sales, kind }: { sales: AnimalRow[]; kind: "pending" | "completed" }) {
+  if (sales.length === 0) {
+    return (
+      <Card className="p-12 text-center">
+        <PawPrint className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+        <p className="text-muted-foreground">
+          {kind === "pending" ? "No animals are pending sale." : "No completed sales yet."}
+        </p>
+        <p className="text-xs text-muted-foreground mt-2">
+          Mark an animal as {kind === "pending" ? "Pending Sale" : "Sold"} from its profile to track it here.
+        </p>
+      </Card>
+    );
+  }
+  const total = sales.reduce((s, a) => s + ((kind === "pending" ? a.expected_sale_price_cents : a.sale_price_cents) ?? 0), 0);
+  return (
+    <div className="space-y-3">
+      <p className="text-sm text-muted-foreground">Total: <strong>{fmt(total)}</strong></p>
+      <Card>
+        <ul className="divide-y">
+          {sales.map((a) => {
+            const price = (kind === "pending" ? a.expected_sale_price_cents : a.sale_price_cents) ?? 0;
+            return (
+              <li key={a.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                <Link to="/animals/$animalId" params={{ animalId: a.id }} className="min-w-0 flex-1 hover:underline">
+                  <div className="font-medium">{a.name}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {a.species}
+                    {kind === "completed" && a.sale_date && ` · Sold ${format(parseISO(a.sale_date), "MMM d, yyyy")}`}
+                  </div>
+                </Link>
+                <span className={`font-semibold ${kind === "completed" ? "text-success" : "text-warning"}`}>{fmt(price)}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </Card>
+    </div>
   );
 }

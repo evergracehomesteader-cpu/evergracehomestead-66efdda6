@@ -60,6 +60,7 @@ export type Database = {
           created_by: string | null
           current_pen: string | null
           date_of_birth: string | null
+          expected_sale_price_cents: number
           father_id: string | null
           front_photo_url: string | null
           id: string
@@ -76,6 +77,8 @@ export type Database = {
           photo_url: string | null
           purchase_cost_cents: number
           purchase_date: string | null
+          sale_date: string | null
+          sale_price_cents: number
           secondary_breed: string | null
           sex: Database["public"]["Enums"]["animal_sex"]
           side_photo_url: string | null
@@ -100,6 +103,7 @@ export type Database = {
           created_by?: string | null
           current_pen?: string | null
           date_of_birth?: string | null
+          expected_sale_price_cents?: number
           father_id?: string | null
           front_photo_url?: string | null
           id?: string
@@ -116,6 +120,8 @@ export type Database = {
           photo_url?: string | null
           purchase_cost_cents?: number
           purchase_date?: string | null
+          sale_date?: string | null
+          sale_price_cents?: number
           secondary_breed?: string | null
           sex?: Database["public"]["Enums"]["animal_sex"]
           side_photo_url?: string | null
@@ -140,6 +146,7 @@ export type Database = {
           created_by?: string | null
           current_pen?: string | null
           date_of_birth?: string | null
+          expected_sale_price_cents?: number
           father_id?: string | null
           front_photo_url?: string | null
           id?: string
@@ -156,6 +163,8 @@ export type Database = {
           photo_url?: string | null
           purchase_cost_cents?: number
           purchase_date?: string | null
+          sale_date?: string | null
+          sale_price_cents?: number
           secondary_breed?: string | null
           sex?: Database["public"]["Enums"]["animal_sex"]
           side_photo_url?: string | null
@@ -1177,6 +1186,7 @@ export type Database = {
         | "medical_hold"
         | "quarantine"
         | "pet"
+        | "retired"
       barter_category:
         | "livestock"
         | "feed"
@@ -1347,6 +1357,7 @@ export const Constants = {
         "medical_hold",
         "quarantine",
         "pet",
+        "retired",
       ],
       barter_category: [
         "livestock",

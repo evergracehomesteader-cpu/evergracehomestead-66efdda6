@@ -10,15 +10,17 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, PawPrint, ImagePlus, Baby } from "lucide-react";
+import { Plus, PawPrint, ImagePlus, Baby, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { statusBadgeClass } from "@/lib/homestead";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 import {
   ANIMAL_STATUS_OPTIONS,
   BREED_TYPE_OPTIONS,
   INTACT_MALE_OPTIONS,
   computeLifeStage,
   displayTerm,
+  isBreedingAge,
   type SpeciesRow,
 } from "@/lib/terminology";
 import { useSpeciesCatalog, useBreedsCatalog, type BreedRow } from "@/hooks/useSpeciesCatalog";
@@ -38,12 +40,15 @@ type Animal = {
   ownership: string; temporary_record: boolean; litter_id: string | null;
   mother_id: string | null; father_id: string | null;
   purchase_cost_cents?: number | null; purchase_date?: string | null;
+  expected_sale_price_cents?: number | null;
+  sale_price_cents?: number | null; sale_date?: string | null;
 };
 
 function AnimalsPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [litterOpen, setLitterOpen] = useState(false);
+  const [editing, setEditing] = useState<Animal | null>(null);
 
   const { data: species = [] } = useSpeciesCatalog();
   const { data: breeds = [] } = useBreedsCatalog();
@@ -58,13 +63,42 @@ function AnimalsPage() {
     },
   });
 
-  const create = useMutation({
-    mutationFn: async (payload: Partial<Animal>) => {
+  const save = useMutation({
+    mutationFn: async (payload: Partial<Animal> & { id?: string }) => {
+      // Duplicate check (same name + species + dob)
+      const list = animals ?? [];
+      const dup = list.find((a) =>
+        a.id !== payload.id &&
+        a.name.trim().toLowerCase() === (payload.name ?? "").trim().toLowerCase() &&
+        a.species.trim().toLowerCase() === (payload.species ?? "").trim().toLowerCase() &&
+        (a.date_of_birth ?? "") === (payload.date_of_birth ?? "")
+      );
+      if (dup) throw new Error("An animal with the same name, species, and birthdate already exists.");
+
       const { data: u } = await supabase.auth.getUser();
-      const { error } = await supabase.from("animals").insert({ ...payload, created_by: u.user?.id } as never);
+      if (payload.id) {
+        const { id, ...rest } = payload;
+        const { error } = await supabase.from("animals").update(rest as never).eq("id", id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("animals").insert({ ...payload, created_by: u.user?.id } as never);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Saved");
+      qc.invalidateQueries({ queryKey: ["animals"] });
+      setOpen(false); setEditing(null);
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("animals").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Animal added"); qc.invalidateQueries({ queryKey: ["animals"] }); setOpen(false); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["animals"] }); toast.success("Animal deleted"); },
     onError: (e) => toast.error((e as Error).message),
   });
 
@@ -86,6 +120,7 @@ function AnimalsPage() {
             </DialogTrigger>
             <QuickLitterForm
               animals={animals ?? []}
+              speciesByName={speciesByName}
               onDone={() => { setLitterOpen(false); qc.invalidateQueries({ queryKey: ["animals"] }); }}
             />
           </Dialog>
@@ -96,9 +131,10 @@ function AnimalsPage() {
             <AnimalForm
               animals={animals ?? []}
               species={species}
+              speciesByName={speciesByName}
               breeds={breeds}
-              onSubmit={(p) => create.mutate(p)}
-              submitting={create.isPending}
+              onSubmit={(p) => save.mutate(p)}
+              submitting={save.isPending}
             />
           </Dialog>
         </div>
@@ -126,8 +162,8 @@ function AnimalsPage() {
                     : a.breed_type === "unknown" ? "Unknown breed" : (a.breed ?? "—");
                   const front = a.front_photo_url ?? a.photo_url;
                   return (
-                    <Link to="/animals/$animalId" params={{ animalId: a.id }} key={a.id}>
-                      <Card className="p-4 hover:shadow-md transition-shadow h-full flex gap-3 items-start">
+                    <Card key={a.id} className="p-4 hover:shadow-md transition-shadow h-full flex gap-3 items-start relative">
+                      <Link to="/animals/$animalId" params={{ animalId: a.id }} className="flex gap-3 items-start flex-1 min-w-0">
                         <div className="flex flex-col gap-1 flex-shrink-0">
                           {front ? (
                             <img src={front} alt={a.name} className="h-16 w-16 rounded-md object-cover" />
@@ -152,6 +188,9 @@ function AnimalsPage() {
                             </div>
                             <Badge className={statusBadgeClass(a.status)}>{a.status.replace(/_/g, " ")}</Badge>
                           </div>
+                          {a.status === "pending_sale" && (a.expected_sale_price_cents ?? 0) > 0 && (
+                            <div className="text-xs text-success mt-1">Expected: ${((a.expected_sale_price_cents ?? 0) / 100).toFixed(2)}</div>
+                          )}
                           {(a.user_edited_description ?? a.auto_marking_description) && (
                             <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
                               {a.user_edited_description ?? a.auto_marking_description}
@@ -159,8 +198,19 @@ function AnimalsPage() {
                           )}
                           {a.tag && <div className="text-xs text-muted-foreground mt-1">Tag: {a.tag}</div>}
                         </div>
-                      </Card>
-                    </Link>
+                      </Link>
+                      <div className="absolute top-2 right-2 flex gap-1">
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); setEditing(a); }}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <ConfirmDelete
+                          trigger={<Button size="icon" variant="ghost" className="h-7 w-7"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                          title={`Delete ${a.name}?`}
+                          description="This permanently removes the animal record. Linked litters keep their reference, but heat/pregnancy/weight/health entries on this animal will be orphaned."
+                          onConfirm={() => del.mutate(a.id)}
+                        />
+                      </div>
+                    </Card>
                   );
                 })}
               </div>
@@ -168,24 +218,43 @@ function AnimalsPage() {
           );
         })
       )}
+
+      {editing && (
+        <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
+          <AnimalForm
+            initial={editing}
+            animals={animals ?? []}
+            species={species}
+            speciesByName={speciesByName}
+            breeds={breeds}
+            onSubmit={(p) => save.mutate({ ...p, id: editing.id })}
+            submitting={save.isPending}
+          />
+        </Dialog>
+      )}
     </div>
   );
 }
 
-// ---------- Add Animal Form ----------
+// ---------- Add/Edit Animal Form ----------
 
 function AnimalForm({
-  animals, species, breeds, onSubmit, submitting,
+  initial, animals, species, speciesByName, breeds, onSubmit, submitting,
 }: {
-  animals: Animal[]; species: SpeciesRow[]; breeds: BreedRow[];
+  initial?: Animal;
+  animals: Animal[]; species: SpeciesRow[]; speciesByName: Record<string, SpeciesRow>;
+  breeds: BreedRow[];
   onSubmit: (p: Partial<Animal>) => void; submitting: boolean;
 }) {
-  const [form, setForm] = useState<Partial<Animal>>({
-    name: "", species: "", sex: "unknown", status: "active",
-    breed_type: "purebred", is_intact_male: "unknown", male_reproductive_status: "unknown",
-    ownership: "owned", temperament_tags: [], additional_photo_urls: [],
-  });
-  const [tagsText, setTagsText] = useState("");
+  const [form, setForm] = useState<Partial<Animal>>(
+    initial ?? {
+      name: "", species: "", sex: "unknown", status: "active",
+      breed_type: "purebred", is_intact_male: "unknown", male_reproductive_status: "unknown",
+      ownership: "owned", temperament_tags: [], additional_photo_urls: [],
+      expected_sale_price_cents: 0,
+    },
+  );
+  const [tagsText, setTagsText] = useState((initial?.temperament_tags ?? []).join(", "));
   const [uploading, setUploading] = useState<null | "front" | "side">(null);
 
   const set = <K extends keyof Animal>(k: K, v: Animal[K] | null) => setForm((f) => ({ ...f, [k]: v }));
@@ -194,8 +263,16 @@ function AnimalForm({
   const breedOptions = selectedSpecies ? breeds.filter((b) => b.species_id === selectedSpecies.id) : [];
   const showCross = form.breed_type === "cross";
 
-  const females = animals.filter((a) => a.sex === "female");
-  const males = animals.filter((a) => a.sex === "male");
+  // Only show breeding-age animals as candidate parents
+  const breedingParents = (sex: "male" | "female") => animals.filter((a) => {
+    if (a.id === initial?.id) return false; // can't be own parent
+    if (a.sex !== sex) return false;
+    const sp = speciesByName[a.species.toLowerCase()];
+    if (!a.date_of_birth) return true; // unknown age — allow
+    return isBreedingAge(sp, sex, a.date_of_birth);
+  });
+  const moms = breedingParents("female");
+  const dads = breedingParents("male");
 
   const upload = async (file: File, slot: "front" | "side") => {
     setUploading(slot);
@@ -210,14 +287,29 @@ function AnimalForm({
     } catch (e) { toast.error((e as Error).message); } finally { setUploading(null); }
   };
 
+  // Species list with friendly fallback for "Other"
+  const speciesList = useMemo(() => {
+    const names = species.map((s) => s.name);
+    return [...names, "Other"];
+  }, [species]);
+  const [otherSpecies, setOtherSpecies] = useState(
+    initial && !species.find((s) => s.name.toLowerCase() === initial.species.toLowerCase()) ? initial.species : "",
+  );
+  const speciesValue = otherSpecies ? "Other" : (form.species ?? "");
+
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto">
-      <DialogHeader><DialogTitle>Add animal</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{initial ? "Edit animal" : "Add animal"}</DialogTitle></DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!form.name || !form.species) { toast.error("Name and species required"); return; }
-          onSubmit({ ...form, temperament_tags: tagsText.split(",").map((t) => t.trim()).filter(Boolean) });
+          const finalSpecies = otherSpecies ? otherSpecies.trim() : form.species;
+          if (!form.name || !finalSpecies) { toast.error("Name and species required"); return; }
+          onSubmit({
+            ...form,
+            species: finalSpecies,
+            temperament_tags: tagsText.split(",").map((t) => t.trim()).filter(Boolean),
+          });
         }}
         className="space-y-3"
       >
@@ -231,12 +323,21 @@ function AnimalForm({
           <div><Label>Name *</Label><Input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} required maxLength={100} /></div>
           <div>
             <Label>Species *</Label>
-            <Select value={form.species ?? ""} onValueChange={(v) => { set("species", v); set("breed", null); set("secondary_breed", null); }}>
+            <Select
+              value={speciesValue}
+              onValueChange={(v) => {
+                if (v === "Other") { setOtherSpecies(otherSpecies || "Other"); set("species", ""); }
+                else { setOtherSpecies(""); set("species", v); set("breed", null); set("secondary_breed", null); }
+              }}
+            >
               <SelectTrigger><SelectValue placeholder="Pick species" /></SelectTrigger>
               <SelectContent>
-                {species.map((s) => <SelectItem key={s.id} value={s.name}>{s.name}</SelectItem>)}
+                {speciesList.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
             </Select>
+            {otherSpecies !== "" && (
+              <Input className="mt-1" placeholder="Type species name" value={otherSpecies} onChange={(e) => setOtherSpecies(e.target.value)} />
+            )}
           </div>
 
           <div>
@@ -258,7 +359,7 @@ function AnimalForm({
                 </SelectContent>
               </Select>
             ) : (
-              <Input value={form.breed ?? ""} onChange={(e) => set("breed", e.target.value || null)} placeholder="Pick species first" />
+              <Input value={form.breed ?? ""} onChange={(e) => set("breed", e.target.value || null)} placeholder="Pick species first or type custom" />
             )}
             <Input className="mt-1" placeholder="…or type a custom breed" value={form.breed ?? ""} onChange={(e) => set("breed", e.target.value || null)} />
           </div>
@@ -329,28 +430,57 @@ function AnimalForm({
               </SelectContent>
             </Select>
           </div>
+
+          {form.status === "pending_sale" && (
+            <div className="col-span-2">
+              <Label>Expected sale price ($)</Label>
+              <Input
+                type="number" step="0.01" min="0"
+                value={form.expected_sale_price_cents ? (form.expected_sale_price_cents / 100).toString() : ""}
+                onChange={(e) => set("expected_sale_price_cents", e.target.value ? Math.round(Number(e.target.value) * 100) : 0)}
+                placeholder="0.00"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Adds to projected income on Bills &amp; Income.</p>
+            </div>
+          )}
+
+          {form.status === "sold" && (
+            <>
+              <div>
+                <Label>Final sale price ($)</Label>
+                <Input
+                  type="number" step="0.01" min="0"
+                  value={form.sale_price_cents ? (form.sale_price_cents / 100).toString() : ""}
+                  onChange={(e) => set("sale_price_cents", e.target.value ? Math.round(Number(e.target.value) * 100) : 0)}
+                />
+              </div>
+              <div><Label>Sale date</Label><Input type="date" value={form.sale_date ?? ""} onChange={(e) => set("sale_date", e.target.value || null)} /></div>
+            </>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label>Mother</Label>
+            <Label>Mom</Label>
             <Select value={form.mother_id ?? "none"} onValueChange={(v) => set("mother_id", v === "none" ? null : v)}>
               <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">—</SelectItem>
-                {females.map((f) => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                {moms.map((f) => <SelectItem key={f.id} value={f.id}>{f.name} ({f.species})</SelectItem>)}
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground mt-1">Only breeding-age females shown.</p>
           </div>
           <div>
-            <Label>Father</Label>
+            <Label>Dad</Label>
             <Select value={form.father_id ?? "none"} onValueChange={(v) => set("father_id", v === "none" ? null : v)}>
               <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">—</SelectItem>
-                {males.map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
+                {dads.map((m) => <SelectItem key={m.id} value={m.id}>{m.name} ({m.species})</SelectItem>)}
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground mt-1">Only breeding-age males shown.</p>
           </div>
         </div>
 
@@ -392,9 +522,19 @@ function PhotoSlot({ label, url, uploading, onPick }: { label: string; url: stri
 
 // ---------- Quick Add Litter ----------
 
-function QuickLitterForm({ animals, onDone }: { animals: Animal[]; onDone: () => void }) {
-  const females = animals.filter((a) => a.sex === "female");
-  const males = animals.filter((a) => a.sex === "male");
+function QuickLitterForm({ animals, speciesByName, onDone }: { animals: Animal[]; speciesByName: Record<string, SpeciesRow>; onDone: () => void }) {
+  const moms = animals.filter((a) => {
+    if (a.sex !== "female") return false;
+    const sp = speciesByName[a.species.toLowerCase()];
+    if (!a.date_of_birth) return true;
+    return isBreedingAge(sp, "female", a.date_of_birth);
+  });
+  const dads = animals.filter((a) => {
+    if (a.sex !== "male") return false;
+    const sp = speciesByName[a.species.toLowerCase()];
+    if (!a.date_of_birth) return true;
+    return isBreedingAge(sp, "male", a.date_of_birth);
+  });
   const [motherId, setMotherId] = useState<string>("");
   const [fatherId, setFatherId] = useState<string>("");
   const [birthDate, setBirthDate] = useState<string>(new Date().toISOString().slice(0, 10));
@@ -406,7 +546,7 @@ function QuickLitterForm({ animals, onDone }: { animals: Animal[]; onDone: () =>
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!motherId) { toast.error("Pick a mother"); return; }
+    if (!motherId) { toast.error("Pick a mom"); return; }
     const mother = animals.find((a) => a.id === motherId);
     if (!mother) return;
     setBusy(true);
@@ -422,7 +562,7 @@ function QuickLitterForm({ animals, onDone }: { animals: Animal[]; onDone: () =>
 
       const inserts: Array<Record<string, unknown>> = [];
       const make = (sex: "male" | "female" | "unknown", label: string, idx: number) => ({
-        name: `${label} ${idx}`,
+        name: `${mother.name}'s ${label} ${idx}`,
         species: mother.species,
         breed: mother.breed,
         breed_type: mother.breed_type,
@@ -435,8 +575,8 @@ function QuickLitterForm({ animals, onDone }: { animals: Animal[]; onDone: () =>
         litter_id: (litter as { id: string }).id,
         created_by: userId,
       });
-      for (let i = 1; i <= maleCount; i++) inserts.push(make("male", "Male Baby", i));
-      for (let i = 1; i <= femaleCount; i++) inserts.push(make("female", "Female Baby", i));
+      for (let i = 1; i <= maleCount; i++) inserts.push(make("male", "Boy", i));
+      for (let i = 1; i <= femaleCount; i++) inserts.push(make("female", "Girl", i));
       for (let i = 1; i <= unknownCount; i++) inserts.push(make("unknown", "Baby", i));
 
       if (inserts.length > 0) {
@@ -457,28 +597,28 @@ function QuickLitterForm({ animals, onDone }: { animals: Animal[]; onDone: () =>
       <DialogHeader><DialogTitle>Quick add litter</DialogTitle></DialogHeader>
       <form onSubmit={submit} className="space-y-3">
         <div>
-          <Label>Mother *</Label>
+          <Label>Mom *</Label>
           <Select value={motherId} onValueChange={setMotherId}>
-            <SelectTrigger><SelectValue placeholder="Pick mother" /></SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Pick mom" /></SelectTrigger>
             <SelectContent>
-              {females.map((f) => <SelectItem key={f.id} value={f.id}>{f.name} ({f.species})</SelectItem>)}
+              {moms.map((f) => <SelectItem key={f.id} value={f.id}>{f.name} ({f.species})</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label>Father</Label>
+          <Label>Dad</Label>
           <Select value={fatherId || "none"} onValueChange={(v) => setFatherId(v === "none" ? "" : v)}>
             <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="none">—</SelectItem>
-              {males.map((m) => <SelectItem key={m.id} value={m.id}>{m.name} ({m.species})</SelectItem>)}
+              {dads.map((m) => <SelectItem key={m.id} value={m.id}>{m.name} ({m.species})</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
         <div><Label>Birth date</Label><Input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} /></div>
         <div className="grid grid-cols-3 gap-2">
-          <div><Label>Male</Label><Input type="number" min={0} value={maleCount} onChange={(e) => setMaleCount(Number(e.target.value) || 0)} /></div>
-          <div><Label>Female</Label><Input type="number" min={0} value={femaleCount} onChange={(e) => setFemaleCount(Number(e.target.value) || 0)} /></div>
+          <div><Label>Boys</Label><Input type="number" min={0} value={maleCount} onChange={(e) => setMaleCount(Number(e.target.value) || 0)} /></div>
+          <div><Label>Girls</Label><Input type="number" min={0} value={femaleCount} onChange={(e) => setFemaleCount(Number(e.target.value) || 0)} /></div>
           <div><Label>Unknown</Label><Input type="number" min={0} value={unknownCount} onChange={(e) => setUnknownCount(Number(e.target.value) || 0)} /></div>
         </div>
         <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} /></div>

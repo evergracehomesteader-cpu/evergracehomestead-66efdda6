@@ -64,19 +64,18 @@ export function isBreedingAge(
 
 export const ANIMAL_STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: "active", label: "Active" },
+  { value: "pending_sale", label: "Pending Sale" },
+  { value: "sold", label: "Sold" },
+  { value: "retired", label: "Retired" },
+  { value: "deceased", label: "Deceased" },
   { value: "breeding", label: "Breeding" },
   { value: "pregnant", label: "Pregnant" },
   { value: "grow_out", label: "Grow Out" },
-  { value: "retained", label: "Retained" },
-  { value: "pending_sale", label: "Pending Sale" },
-  { value: "sold", label: "Sold" },
-  { value: "pending_trade", label: "Pending Trade" },
   { value: "butcher_planned", label: "Butcher Planned" },
   { value: "butchered", label: "Butchered" },
   { value: "medical_hold", label: "Medical Hold" },
   { value: "quarantine", label: "Quarantine" },
   { value: "pet", label: "Pet" },
-  { value: "deceased", label: "Deceased" },
   { value: "missing", label: "Missing" },
   { value: "archived", label: "Archived" },
 ];
