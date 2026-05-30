@@ -23,9 +23,11 @@ import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/f
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContactsRouteImport } from './routes/_authenticated/contacts'
 import { Route as AuthenticatedCompostRouteImport } from './routes/_authenticated/compost'
+import { Route as AuthenticatedChangelogRouteImport } from './routes/_authenticated/changelog'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
 import { Route as AuthenticatedBarterRouteImport } from './routes/_authenticated/barter'
+import { Route as AuthenticatedAppUpdatesRouteImport } from './routes/_authenticated/app-updates'
 import { Route as AuthenticatedAnimalsRouteImport } from './routes/_authenticated/animals'
 import { Route as AuthenticatedAnimalsAnimalIdRouteImport } from './routes/_authenticated/animals.$animalId'
 
@@ -98,6 +100,11 @@ const AuthenticatedCompostRoute = AuthenticatedCompostRouteImport.update({
   path: '/compost',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedChangelogRoute = AuthenticatedChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
@@ -111,6 +118,11 @@ const AuthenticatedBillsRoute = AuthenticatedBillsRouteImport.update({
 const AuthenticatedBarterRoute = AuthenticatedBarterRouteImport.update({
   id: '/barter',
   path: '/barter',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAppUpdatesRoute = AuthenticatedAppUpdatesRouteImport.update({
+  id: '/app-updates',
+  path: '/app-updates',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAnimalsRoute = AuthenticatedAnimalsRouteImport.update({
@@ -129,9 +141,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
+  '/changelog': typeof AuthenticatedChangelogRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -149,9 +163,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
+  '/changelog': typeof AuthenticatedChangelogRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -171,9 +187,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/_authenticated/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/_authenticated/barter': typeof AuthenticatedBarterRoute
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
+  '/_authenticated/changelog': typeof AuthenticatedChangelogRoute
   '/_authenticated/compost': typeof AuthenticatedCompostRoute
   '/_authenticated/contacts': typeof AuthenticatedContactsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -193,9 +211,11 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/animals'
+    | '/app-updates'
     | '/barter'
     | '/bills'
     | '/calendar'
+    | '/changelog'
     | '/compost'
     | '/contacts'
     | '/dashboard'
@@ -213,9 +233,11 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/animals'
+    | '/app-updates'
     | '/barter'
     | '/bills'
     | '/calendar'
+    | '/changelog'
     | '/compost'
     | '/contacts'
     | '/dashboard'
@@ -234,9 +256,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/_authenticated/animals'
+    | '/_authenticated/app-updates'
     | '/_authenticated/barter'
     | '/_authenticated/bills'
     | '/_authenticated/calendar'
+    | '/_authenticated/changelog'
     | '/_authenticated/compost'
     | '/_authenticated/contacts'
     | '/_authenticated/dashboard'
@@ -357,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompostRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/changelog': {
+      id: '/_authenticated/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof AuthenticatedChangelogRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/calendar': {
       id: '/_authenticated/calendar'
       path: '/calendar'
@@ -376,6 +407,13 @@ declare module '@tanstack/react-router' {
       path: '/barter'
       fullPath: '/barter'
       preLoaderRoute: typeof AuthenticatedBarterRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/app-updates': {
+      id: '/_authenticated/app-updates'
+      path: '/app-updates'
+      fullPath: '/app-updates'
+      preLoaderRoute: typeof AuthenticatedAppUpdatesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/animals': {
@@ -408,9 +446,11 @@ const AuthenticatedAnimalsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAnimalsRoute: typeof AuthenticatedAnimalsRouteWithChildren
+  AuthenticatedAppUpdatesRoute: typeof AuthenticatedAppUpdatesRoute
   AuthenticatedBarterRoute: typeof AuthenticatedBarterRoute
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
+  AuthenticatedChangelogRoute: typeof AuthenticatedChangelogRoute
   AuthenticatedCompostRoute: typeof AuthenticatedCompostRoute
   AuthenticatedContactsRoute: typeof AuthenticatedContactsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -426,9 +466,11 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnimalsRoute: AuthenticatedAnimalsRouteWithChildren,
+  AuthenticatedAppUpdatesRoute: AuthenticatedAppUpdatesRoute,
   AuthenticatedBarterRoute: AuthenticatedBarterRoute,
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
+  AuthenticatedChangelogRoute: AuthenticatedChangelogRoute,
   AuthenticatedCompostRoute: AuthenticatedCompostRoute,
   AuthenticatedContactsRoute: AuthenticatedContactsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,

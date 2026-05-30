@@ -1,11 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings } from "lucide-react";
+import * as React from "react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
+import { APP_VERSION } from "@/lib/app-version";
 
 const manage = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
@@ -25,18 +27,29 @@ const plan = [
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
   { title: "Reminders", url: "/reminders", icon: Bell },
   { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "App Updates", url: "/app-updates", icon: Wrench },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { user, signOut } = useAuth();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  // Close mobile menu on route change
+  React.useEffect(() => {
+    if (isMobile) setOpenMobile(false);
+  }, [path, isMobile, setOpenMobile]);
+
+  const handleNav = () => {
+    if (isMobile) setOpenMobile(false);
+  };
 
   const renderItems = (items: { title: string; url: string; icon: typeof Home }[]) =>
     items.map((item) => (
       <SidebarMenuItem key={item.url}>
         <SidebarMenuButton asChild isActive={path === item.url || path.startsWith(item.url + "/")}>
-          <Link to={item.url}>
+          <Link to={item.url} onClick={handleNav}>
             <item.icon className="h-4 w-4" />
             <span>{item.title}</span>
           </Link>
@@ -73,6 +86,7 @@ export function AppSidebar() {
         <Button variant="ghost" size="sm" onClick={() => signOut()} className="justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
           <LogOut className="h-4 w-4" /> Sign out
         </Button>
+        <div className="text-[10px] text-sidebar-foreground/50 px-2 pt-1">v{APP_VERSION}</div>
       </SidebarFooter>
     </Sidebar>
   );
