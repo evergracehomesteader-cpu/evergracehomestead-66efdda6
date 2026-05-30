@@ -1,7 +1,8 @@
-import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Navigate, Link } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/lib/auth-context";
+import { APP_VERSION } from "@/lib/app-version";
 
 export const Route = createFileRoute("/_authenticated")({ component: AuthLayout });
 
@@ -24,6 +25,13 @@ function AuthLayout() {
           <main className="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto">
             <Outlet />
           </main>
+          <footer className="border-t bg-card/30 px-4 py-3 text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
+            <span>EverGrace Homestead · v{APP_VERSION}</span>
+            <div className="flex gap-3">
+              <Link to="/changelog" className="hover:underline">Changelog</Link>
+              <Link to="/app-updates" className="hover:underline">App Updates</Link>
+            </div>
+          </footer>
         </div>
       </div>
     </SidebarProvider>
