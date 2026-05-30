@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, PawPrint, ImagePlus, Baby, Pencil } from "lucide-react";
+import { Plus, PawPrint, ImagePlus, Baby, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { statusBadgeClass } from "@/lib/homestead";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
