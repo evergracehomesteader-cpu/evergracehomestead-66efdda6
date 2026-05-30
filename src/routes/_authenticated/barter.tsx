@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Handshake, Trash2, Pencil, Check, X, ImagePlus, MapPin, Link2, PawPrint, Wheat, Sprout, Wrench, Briefcase, Package } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { validateImageFile } from "@/lib/photo-storage";
+import { SignedImg } from "@/components/SignedImg";
 
 export const Route = createFileRoute("/_authenticated/barter")({ component: BarterPage });
 
