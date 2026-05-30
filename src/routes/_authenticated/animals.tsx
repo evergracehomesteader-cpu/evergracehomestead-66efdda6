@@ -204,6 +204,7 @@ function AnimalsPage() {
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
                         <ConfirmDelete
+                          trigger={<Button size="icon" variant="ghost" className="h-7 w-7"><Trash2 className="h-3.5 w-3.5" /></Button>}
                           title={`Delete ${a.name}?`}
                           description="This permanently removes the animal record. Linked litters keep their reference, but heat/pregnancy/weight/health entries on this animal will be orphaned."
                           onConfirm={() => del.mutate(a.id)}
