@@ -23,6 +23,7 @@ import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/f
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContactsRouteImport } from './routes/_authenticated/contacts'
 import { Route as AuthenticatedCompostRouteImport } from './routes/_authenticated/compost'
+import { Route as AuthenticatedChangelogRouteImport } from './routes/_authenticated/changelog'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
 import { Route as AuthenticatedBarterRouteImport } from './routes/_authenticated/barter'
@@ -98,6 +99,11 @@ const AuthenticatedCompostRoute = AuthenticatedCompostRouteImport.update({
   path: '/compost',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedChangelogRoute = AuthenticatedChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
+  '/changelog': typeof AuthenticatedChangelogRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
+  '/changelog': typeof AuthenticatedChangelogRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/_authenticated/barter': typeof AuthenticatedBarterRoute
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
+  '/_authenticated/changelog': typeof AuthenticatedChangelogRoute
   '/_authenticated/compost': typeof AuthenticatedCompostRoute
   '/_authenticated/contacts': typeof AuthenticatedContactsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/barter'
     | '/bills'
     | '/calendar'
+    | '/changelog'
     | '/compost'
     | '/contacts'
     | '/dashboard'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/barter'
     | '/bills'
     | '/calendar'
+    | '/changelog'
     | '/compost'
     | '/contacts'
     | '/dashboard'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/_authenticated/barter'
     | '/_authenticated/bills'
     | '/_authenticated/calendar'
+    | '/_authenticated/changelog'
     | '/_authenticated/compost'
     | '/_authenticated/contacts'
     | '/_authenticated/dashboard'
@@ -357,6 +369,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompostRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/changelog': {
+      id: '/_authenticated/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof AuthenticatedChangelogRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/calendar': {
       id: '/_authenticated/calendar'
       path: '/calendar'
@@ -411,6 +430,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedBarterRoute: typeof AuthenticatedBarterRoute
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
+  AuthenticatedChangelogRoute: typeof AuthenticatedChangelogRoute
   AuthenticatedCompostRoute: typeof AuthenticatedCompostRoute
   AuthenticatedContactsRoute: typeof AuthenticatedContactsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -429,6 +449,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedBarterRoute: AuthenticatedBarterRoute,
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
+  AuthenticatedChangelogRoute: AuthenticatedChangelogRoute,
   AuthenticatedCompostRoute: AuthenticatedCompostRoute,
   AuthenticatedContactsRoute: AuthenticatedContactsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
@@ -454,3 +475,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
