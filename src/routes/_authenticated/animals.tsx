@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { statusBadgeClass } from "@/lib/homestead";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { cn } from "@/lib/utils";
+import { validateImageFile } from "@/lib/photo-storage";
+import { SignedImg } from "@/components/SignedImg";
 import {
   ANIMAL_STATUS_OPTIONS,
   BREED_TYPE_OPTIONS,
