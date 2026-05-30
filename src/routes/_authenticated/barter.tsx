@@ -265,7 +265,7 @@ function BarterPage() {
                 {d.photo_urls.length > 0 && (
                   <div className="flex gap-1 overflow-x-auto">
                     {d.photo_urls.slice(0, 3).map((u) => (
-                      <img key={u} src={u} alt="" className="h-16 w-16 object-cover rounded-md flex-shrink-0" />
+                      <SignedImg key={u} src={u} bucket="barter-photos" alt="" className="h-16 w-16 object-cover rounded-md flex-shrink-0" />
                     ))}
                   </div>
                 )}
