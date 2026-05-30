@@ -27,6 +27,7 @@ import { Route as AuthenticatedChangelogRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
 import { Route as AuthenticatedBarterRouteImport } from './routes/_authenticated/barter'
+import { Route as AuthenticatedAppUpdatesRouteImport } from './routes/_authenticated/app-updates'
 import { Route as AuthenticatedAnimalsRouteImport } from './routes/_authenticated/animals'
 import { Route as AuthenticatedAnimalsAnimalIdRouteImport } from './routes/_authenticated/animals.$animalId'
 
@@ -119,6 +120,11 @@ const AuthenticatedBarterRoute = AuthenticatedBarterRouteImport.update({
   path: '/barter',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAppUpdatesRoute = AuthenticatedAppUpdatesRouteImport.update({
+  id: '/app-updates',
+  path: '/app-updates',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAnimalsRoute = AuthenticatedAnimalsRouteImport.update({
   id: '/animals',
   path: '/animals',
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/animals': typeof AuthenticatedAnimalsRouteWithChildren
+  '/_authenticated/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/_authenticated/barter': typeof AuthenticatedBarterRoute
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
@@ -202,6 +211,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/animals'
+    | '/app-updates'
     | '/barter'
     | '/bills'
     | '/calendar'
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/animals'
+    | '/app-updates'
     | '/barter'
     | '/bills'
     | '/calendar'
@@ -245,6 +256,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/_authenticated/animals'
+    | '/_authenticated/app-updates'
     | '/_authenticated/barter'
     | '/_authenticated/bills'
     | '/_authenticated/calendar'
@@ -397,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBarterRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/app-updates': {
+      id: '/_authenticated/app-updates'
+      path: '/app-updates'
+      fullPath: '/app-updates'
+      preLoaderRoute: typeof AuthenticatedAppUpdatesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/animals': {
       id: '/_authenticated/animals'
       path: '/animals'
@@ -427,6 +446,7 @@ const AuthenticatedAnimalsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAnimalsRoute: typeof AuthenticatedAnimalsRouteWithChildren
+  AuthenticatedAppUpdatesRoute: typeof AuthenticatedAppUpdatesRoute
   AuthenticatedBarterRoute: typeof AuthenticatedBarterRoute
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
@@ -446,6 +466,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnimalsRoute: AuthenticatedAnimalsRouteWithChildren,
+  AuthenticatedAppUpdatesRoute: AuthenticatedAppUpdatesRoute,
   AuthenticatedBarterRoute: AuthenticatedBarterRoute,
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
