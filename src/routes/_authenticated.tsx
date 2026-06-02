@@ -20,13 +20,13 @@ function AuthLayout() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center border-b bg-card/50 backdrop-blur px-4 gap-2 sticky top-0 z-10">
             <SidebarTrigger />
-            <div className="font-display font-semibold">EverGrace Homestead</div>
+            <div className="font-display font-semibold">Smileys app</div>
           </header>
           <main className="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto">
             <Outlet />
           </main>
           <footer className="border-t bg-card/30 px-4 py-3 text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
-            <span>EverGrace Homestead · v{APP_VERSION}</span>
+            <span>Smileys app · v{APP_VERSION}</span>
             <div className="flex gap-3">
               <Link to="/changelog" className="hover:underline">Changelog</Link>
               <Link to="/app-updates" className="hover:underline">App Updates</Link>
