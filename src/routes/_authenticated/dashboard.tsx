@@ -98,6 +98,10 @@ function Dashboard() {
         <p className="text-muted-foreground">Today's snapshot of your homestead.</p>
       </div>
 
+      <QuickActions />
+
+
+
       {urgent.length > 0 && (
         <Card className="p-4 border-warning/50 bg-warning/5">
           <div className="flex items-center gap-2 mb-3">
