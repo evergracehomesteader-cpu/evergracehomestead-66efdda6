@@ -14,7 +14,7 @@ function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-display font-semibold">Settings</h1>
-        <p className="text-muted-foreground">Your EverGrace Homestead account.</p>
+        <p className="text-muted-foreground">Your Smileys app account.</p>
       </div>
 
       <Card className="p-5 space-y-3">
