@@ -17,22 +17,36 @@ const schema = z.object({
   password: z.string().min(6).max(72),
 });
 
+const PREVIEW_EMAIL = "preview@evergrace.local";
+const PREVIEW_PASSWORD = "Preview123!";
+
+function isPreviewEnv(): boolean {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  // Only show in Lovable Preview sandboxes and local dev — never on the published custom domain.
+  return (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host.includes("id-preview--") ||
+    host.endsWith(".lovableproject.com") ||
+    host.endsWith(".lovable.dev")
+  );
+}
+
 function LoginPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const previewEnabled = isPreviewEnv();
 
   if (!loading && user) return <Navigate to="/dashboard" />;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = schema.safeParse({ email, password });
-    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+  const signIn = async (creds: { email: string; password: string }) => {
     setBusy(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword(parsed.data);
+      const { error } = await supabase.auth.signInWithPassword(creds);
       if (error) throw error;
       navigate({ to: "/dashboard" });
     } catch (err) {
@@ -40,6 +54,18 @@ function LoginPage() {
     } finally {
       setBusy(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = schema.safeParse({ email, password });
+    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+    await signIn(parsed.data);
+  };
+
+  const handlePreviewLogin = () => {
+    if (!previewEnabled) return;
+    void signIn({ email: PREVIEW_EMAIL, password: PREVIEW_PASSWORD });
   };
 
   return (
@@ -66,6 +92,26 @@ function LoginPage() {
               {busy ? "Please wait…" : "Sign in"}
             </Button>
           </form>
+
+          {previewEnabled && (
+            <div className="mt-6 pt-6 border-t">
+              <div className="text-[11px] uppercase tracking-wide text-muted-foreground mb-2 font-medium">
+                Preview / dev only
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                disabled={busy}
+                onClick={handlePreviewLogin}
+              >
+                Sign in as preview tester
+              </Button>
+              <p className="text-[11px] text-muted-foreground mt-2">
+                Test account — not visible on the published site.
+              </p>
+            </div>
+          )}
         </Card>
         <p className="text-xs text-muted-foreground text-center mt-6">
           Family-only access. New accounts are added by an admin.
@@ -74,3 +120,4 @@ function LoginPage() {
     </div>
   );
 }
+
