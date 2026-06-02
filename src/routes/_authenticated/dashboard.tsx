@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg } from "lucide-react";
 import { format, addDays, isBefore, startOfMonth, endOfMonth, parseISO, isWithinInterval } from "date-fns";
 import { computeReminders, severityClass } from "@/lib/reminders";
+import { QuickActions } from "@/components/QuickActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
