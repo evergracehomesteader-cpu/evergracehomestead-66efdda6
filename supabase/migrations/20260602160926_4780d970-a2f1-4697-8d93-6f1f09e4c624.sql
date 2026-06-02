@@ -1,0 +1,1 @@
+ALTER TABLE public.income_entries ADD COLUMN IF NOT EXISTS recurring boolean NOT NULL DEFAULT false;

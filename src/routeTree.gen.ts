@@ -18,6 +18,7 @@ import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
+import { Route as AuthenticatedIncomeRouteImport } from './routes/_authenticated/income'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -73,6 +74,11 @@ const AuthenticatedProductionRoute = AuthenticatedProductionRouteImport.update({
 const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
   id: '/litters',
   path: '/litters',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedIncomeRoute = AuthenticatedIncomeRouteImport.update({
+  id: '/income',
+  path: '/income',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/production': typeof AuthenticatedProductionRoute
   '/reminders': typeof AuthenticatedRemindersRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/production': typeof AuthenticatedProductionRoute
   '/reminders': typeof AuthenticatedRemindersRoute
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
+  '/_authenticated/income': typeof AuthenticatedIncomeRoute
   '/_authenticated/litters': typeof AuthenticatedLittersRoute
   '/_authenticated/production': typeof AuthenticatedProductionRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/income'
     | '/litters'
     | '/production'
     | '/reminders'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/income'
     | '/litters'
     | '/production'
     | '/reminders'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
     | '/_authenticated/garden'
+    | '/_authenticated/income'
     | '/_authenticated/litters'
     | '/_authenticated/production'
     | '/_authenticated/reminders'
@@ -344,6 +356,13 @@ declare module '@tanstack/react-router' {
       path: '/litters'
       fullPath: '/litters'
       preLoaderRoute: typeof AuthenticatedLittersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/income': {
+      id: '/_authenticated/income'
+      path: '/income'
+      fullPath: '/income'
+      preLoaderRoute: typeof AuthenticatedIncomeRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/garden': {
@@ -456,6 +475,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
+  AuthenticatedIncomeRoute: typeof AuthenticatedIncomeRoute
   AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
   AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
   AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
@@ -476,6 +496,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
+  AuthenticatedIncomeRoute: AuthenticatedIncomeRoute,
   AuthenticatedLittersRoute: AuthenticatedLittersRoute,
   AuthenticatedProductionRoute: AuthenticatedProductionRoute,
   AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
