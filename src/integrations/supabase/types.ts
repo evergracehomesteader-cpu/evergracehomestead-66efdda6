@@ -827,6 +827,7 @@ export type Database = {
           link_id: string | null
           link_type: string | null
           notes: string | null
+          recurring: boolean
           source: string
         }
         Insert: {
@@ -839,6 +840,7 @@ export type Database = {
           link_id?: string | null
           link_type?: string | null
           notes?: string | null
+          recurring?: boolean
           source: string
         }
         Update: {
@@ -851,6 +853,7 @@ export type Database = {
           link_id?: string | null
           link_type?: string | null
           notes?: string | null
+          recurring?: boolean
           source?: string
         }
         Relationships: []
