@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg } from "lucide-react";
 import { format, addDays, isBefore, startOfMonth, endOfMonth, parseISO, isWithinInterval } from "date-fns";
 import { computeReminders, severityClass } from "@/lib/reminders";
+import { QuickActions } from "@/components/QuickActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
@@ -96,6 +97,10 @@ function Dashboard() {
         <h1 className="text-3xl font-display font-semibold">Welcome home</h1>
         <p className="text-muted-foreground">Today's snapshot of your homestead.</p>
       </div>
+
+      <QuickActions />
+
+
 
       {urgent.length > 0 && (
         <Card className="p-4 border-warning/50 bg-warning/5">
