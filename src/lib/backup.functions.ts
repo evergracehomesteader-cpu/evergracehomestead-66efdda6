@@ -38,13 +38,20 @@ export const createBackup = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const admin = supabaseAdmin as unknown as {
+      from: (table: string) => {
+        select: (cols: string, opts?: { count?: string; head?: boolean }) => Promise<{ data: unknown[] | null; error: { message: string } | null; count?: number | null }>;
+        insert: (rows: unknown) => Promise<{ error: { message: string } | null }> & { select: (cols: string) => { single: () => Promise<{ data: { id: string } | null; error: { message: string } | null }> } };
+        delete: () => { eq: (col: string, val: unknown) => Promise<{ error: { message: string } | null }> };
+      };
+    };
 
     const dump: Record<string, unknown[]> = {};
     const counts: Record<string, number> = {};
     for (const t of BACKUP_TABLES) {
-      const { data: rows, error } = await supabaseAdmin.from(t).select("*");
+      const { data: rows, error } = await admin.from(t).select("*");
       if (error) throw new Error(`Failed to read ${t}: ${error.message}`);
-      dump[t] = rows ?? [];
+      dump[t] = (rows ?? []) as unknown[];
       counts[t] = (rows ?? []).length;
     }
 
