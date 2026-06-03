@@ -19,6 +19,7 @@ export function PWAUpdatePrompt() {
       handleRef.current = handle;
 
       dispose = handle.onUpdateAvailable(() => {
+        setLastUpdateDetected(Date.now());
         toast("A new version is available", {
           description: "Reload to get the latest changes.",
           duration: Infinity,
