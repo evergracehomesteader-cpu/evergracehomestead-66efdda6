@@ -54,8 +54,11 @@ export const createBackup = createServerFn({ method: "POST" })
 
     const dump: Record<string, unknown[]> = {};
     const counts: Record<string, number> = {};
+    const adminAny = supabaseAdmin as unknown as {
+      from: (t: string) => { select: (s: string) => Promise<{ data: unknown[] | null; error: { message: string } | null }> };
+    };
     for (const t of BACKUP_TABLES) {
-      const { data: rows, error } = await supabaseAdmin.from(t).select("*");
+      const { data: rows, error } = await adminAny.from(t).select("*");
       if (error) throw new Error(`${t}: ${error.message}`);
       dump[t] = rows ?? [];
       counts[t] = (rows ?? []).length;
