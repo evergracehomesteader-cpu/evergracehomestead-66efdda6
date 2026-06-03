@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import type { AppRole } from "@/lib/permissions";
@@ -12,16 +13,30 @@ interface PermissionsData {
 export function usePermissions() {
   const { user } = useAuth();
   const userId = user?.id;
+  const qc = useQueryClient();
+
+  // Refetch permissions whenever auth state changes (sign in/out/refresh).
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      qc.invalidateQueries({ queryKey: ["my-permissions"] });
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [qc]);
 
   const query = useQuery<PermissionsData>({
     queryKey: ["my-permissions", userId],
     enabled: !!userId,
+    staleTime: 30_000,
+    refetchOnMount: "always",
     queryFn: async () => {
       const { data: roleRows, error: rErr } = await supabase
         .from("user_roles" as never)
         .select("role")
         .eq("user_id", userId!);
-      if (rErr) throw rErr;
+      if (rErr) {
+        console.error("[usePermissions] user_roles query failed", rErr);
+        throw rErr;
+      }
       const roles = ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role);
 
       if (roles.length === 0) {
@@ -32,7 +47,10 @@ export function usePermissions() {
         .from("role_permissions" as never)
         .select("permission, role")
         .in("role", roles);
-      if (pErr) throw pErr;
+      if (pErr) {
+        console.error("[usePermissions] role_permissions query failed", pErr);
+        throw pErr;
+      }
 
       const perms = new Set<string>();
       let wildcard = false;
