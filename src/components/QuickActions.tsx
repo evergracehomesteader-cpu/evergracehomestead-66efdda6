@@ -137,67 +137,56 @@ function invalidateDashboard(qc: ReturnType<typeof useQueryClient>) {
   qc.invalidateQueries();
 }
 
-/* ---------- Feed ---------- */
-function FeedForm({ onDone }: { onDone: () => void }) {
+/* ---------- Feed (new dialog) ---------- */
+function FeedQuickDialog({ onClose }: { onClose: () => void }) {
   const qc = useQueryClient();
-  const animals = useAnimals();
-  const items = useFeedItems();
-  const [feedItemId, setFeedItemId] = useState("");
-  const [qty, setQty] = useState("");
-  const [animalId, setAnimalId] = useState<string>("none");
-  const [notes, setNotes] = useState("");
-  const [saving, setSaving] = useState(false);
+  const { data: items = [] } = useQuery({
+    queryKey: ["qa-feed-items-full"],
+    queryFn: async () => (await supabase.from("feed_items").select("id,name,store,price_cents").order("name")).data ?? [] as FeedItemLite[],
+  });
+  const { data: containers = [] } = useQuery({
+    queryKey: ["feed-containers"],
+    queryFn: async () => ((await supabase.from("feed_containers" as never).select("id,name").order("name")).data ?? []) as unknown as ContainerLite[],
+  });
+  const { data: units = [] } = useQuery({
+    queryKey: ["feed-units"],
+    queryFn: async () => ((await supabase.from("feed_units" as never).select("id,name,lbs_per_unit").order("name")).data ?? []) as unknown as UnitLite[],
+  });
+  const { data: stock = [] } = useQuery({
+    queryKey: ["feed-container-stock"],
+    queryFn: async () => ((await supabase.from("feed_container_stock" as never).select("container_id,feed_item_id,stock_lbs")).data ?? []) as unknown as { container_id: string; feed_item_id: string; stock_lbs: number }[],
+  });
+  const { data: animals = [] } = useQuery({
+    queryKey: ["animals-for-feeding"],
+    queryFn: async () => ((await supabase.from("animals").select("id,name,species,breed,current_pen").eq("status", "active").order("name")).data ?? []) as AnimalLite[],
+  });
 
-  const save = async () => {
-    if (!feedItemId) return toast.error("Pick a feed item");
-    const n = Number(qty);
-    if (!n || n <= 0) return toast.error("Enter a quantity");
-    setSaving(true);
-    const { error } = await supabase.from("feed_logs").insert({
-      feed_item_id: feedItemId,
-      quantity: n,
-      fed_on: today(),
-      animal_id: animalId === "none" ? null : animalId,
-      notes: notes || null,
-    });
-    setSaving(false);
-    if (error) return toast.error("Could not save feeding", { description: error.message });
-    toast.success("Feeding logged");
-    invalidateDashboard(qc);
-    onDone();
-  };
+  const addFeeding = useMutation({
+    mutationFn: async (p: FeedingPayload) => {
+      const { data: u } = await supabase.auth.getUser();
+      const { error } = await supabase.from("feed_logs").insert({ ...p, created_by: u.user?.id } as never);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries();
+      toast.success("Feeding logged");
+      onClose();
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
 
   return (
-    <div className="space-y-3">
-      <Field label="Feed item">
-        <Select value={feedItemId} onValueChange={setFeedItemId}>
-          <SelectTrigger className="h-11"><SelectValue placeholder="Choose feed" /></SelectTrigger>
-          <SelectContent>
-            {(items.data ?? []).map((f) => (
-              <SelectItem key={f.id} value={f.id}>{f.name} ({f.stock_qty} {f.unit})</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-      <Field label="Quantity">
-        <Input className="h-11" type="number" inputMode="decimal" value={qty} onChange={(e) => setQty(e.target.value)} placeholder="e.g. 5" />
-      </Field>
-      <Field label="Animal (optional)">
-        <Select value={animalId} onValueChange={setAnimalId}>
-          <SelectTrigger className="h-11"><SelectValue placeholder="All / unassigned" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="none">All / unassigned</SelectItem>
-            {(animals.data ?? []).map((a) => (
-              <SelectItem key={a.id} value={a.id}>{a.name} · {a.species}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-      <Field label="Notes (optional)">
-        <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
-      </Field>
-      <SubmitRow saving={saving} onSave={save} saveLabel="Log feeding" />
-    </div>
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <FeedingDialog
+        items={items as FeedItemLite[]}
+        containers={containers}
+        units={units}
+        stock={stock}
+        animals={animals}
+        onSubmit={(p) => addFeeding.mutate(p)}
+        submitting={addFeeding.isPending}
+      />
+    </Dialog>
   );
 }
 
