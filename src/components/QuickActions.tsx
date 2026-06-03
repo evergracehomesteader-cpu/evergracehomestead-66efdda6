@@ -52,7 +52,11 @@ export function QuickActions() {
         ))}
       </div>
 
-      <QuickDrawer actionKey={open} onClose={() => setOpen(null)} />
+      {open === "feed" ? (
+        <FeedQuickDialog onClose={() => setOpen(null)} />
+      ) : (
+        <QuickDrawer actionKey={open} onClose={() => setOpen(null)} />
+      )}
     </Card>
   );
 }
