@@ -124,20 +124,26 @@ export const restoreBackup = createServerFn({ method: "POST" })
     const parsed = JSON.parse(text) as { tables: Record<string, unknown[]> };
 
     const results: Record<string, { restored: number }> = {};
+    const admin = supabaseAdmin as unknown as {
+      from: (t: string) => {
+        delete: () => { not: (c: string, op: string, v: unknown) => Promise<{ error: { message: string } | null }> };
+        insert: (rows: unknown[]) => Promise<{ error: { message: string } | null }>;
+        upsert: (rows: unknown[], opts: { onConflict: string }) => Promise<{ error: { message: string } | null }>;
+      };
+    };
     for (const t of tables) {
       const rows = (parsed.tables?.[t] ?? []) as Record<string, unknown>[];
       if (data.mode === "replace") {
-        const { error: delErr } = await supabaseAdmin.from(t).delete().not("id", "is", null);
+        const { error: delErr } = await admin.from(t).delete().not("id", "is", null);
         if (delErr) throw new Error(`${t} delete: ${delErr.message}`);
       }
       if (rows.length > 0) {
-        // Chunk inserts to avoid payload size limits.
         const chunkSize = 500;
         for (let i = 0; i < rows.length; i += chunkSize) {
           const chunk = rows.slice(i, i + chunkSize);
           const { error: insErr } = data.mode === "merge"
-            ? await supabaseAdmin.from(t).upsert(chunk, { onConflict: "id" })
-            : await supabaseAdmin.from(t).insert(chunk);
+            ? await admin.from(t).upsert(chunk, { onConflict: "id" })
+            : await admin.from(t).insert(chunk);
           if (insErr) throw new Error(`${t} insert: ${insErr.message}`);
         }
       }
