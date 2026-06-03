@@ -93,19 +93,25 @@ function LoginPage() {
           <p className="text-muted-foreground text-sm mt-1">Livestock · Feed · Garden · Finances</p>
         </div>
         <Card className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          {previewBusy ? (
+            <div className="text-center text-sm text-muted-foreground py-6">
+              Signing you in as Preview User…
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </div>
-            <Button type="submit" disabled={busy} className="w-full">
-              {busy ? "Please wait…" : "Sign in"}
-            </Button>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+              <Button type="submit" disabled={busy} className="w-full">
+                {busy ? "Please wait…" : "Sign in"}
+              </Button>
+            </form>
+          )}
         </Card>
         <p className="text-xs text-muted-foreground text-center mt-6">
           Family-only access. New accounts are added by an admin.
