@@ -102,12 +102,6 @@ function useAnimals() {
   });
 }
 
-function useFeedItems() {
-  return useQuery({
-    queryKey: ["qa-feed-items"],
-    queryFn: async () => (await supabase.from("feed_items").select("id,name,unit,stock_qty").order("name")).data ?? [],
-  });
-}
 
 function useGardenPlots() {
   return useQuery({
