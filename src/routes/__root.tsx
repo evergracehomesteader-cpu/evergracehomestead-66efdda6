@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet, createRootRouteWithContext, useRouter, HeadContent, Scripts, Link,
 } from "@tanstack/react-router";
-import { useEffect } from "react";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
-import { registerServiceWorker } from "@/lib/pwa";
+import { PWAUpdatePrompt } from "@/components/PWAUpdatePrompt";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 function NotFoundComponent() {
   return (
