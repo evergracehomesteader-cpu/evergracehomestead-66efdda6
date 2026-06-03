@@ -1,50 +1,84 @@
-# Phase B build plan
+# Feed Inventory & Feeding Logs Overhaul
 
-Four independent pieces; shipping them in one pass. Permissions are already role-based and admin-configurable from Phase A — no changes needed there beyond gating the new UI.
+## Data model (new + changed tables)
 
-## 1. Full PWA with service worker
+**New: `feed_containers`** — physical storage locations
+- `name` (e.g., "Blue Barrel", "Feed Bin", "Bag Storage")
+- `capacity_lbs` (optional), `location` (optional notes), `active`
 
-- Add `vite-plugin-pwa` and wire it via the Lovable Vite config's extension point.
-- `registerType: "autoUpdate"`, `devOptions.enabled: false`, `NetworkFirst` for HTML navigations, `navigateFallbackDenylist` for `/~oauth` and `/api/*`.
-- Registration guard in `src/main.tsx` / entry: skip when in iframe or on `id-preview--*` / `lovableproject.com` hosts; auto-unregister any existing SW there.
-- Keep existing `public/manifest.webmanifest` (already standalone, themed).
-- Warn: PWA install/offline only works on the published `evergracehomestead.lovable.app`, not in the editor preview.
+**New: `feed_container_stock`** — current pounds of each feed item inside each container
+- `container_id`, `feed_item_id`, `stock_lbs` (running total)
+- Unique on (container_id, feed_item_id)
+- Updated by triggers on purchases (+) and feed logs (−)
 
-## 2. Chores feature (separate from Tasks)
+**New: `feed_units`** — admin-configurable measurement units
+- `name` (e.g., "Full bucket", "Half bucket", "Quarter bucket", "Scoop")
+- `lbs_per_unit` (numeric)
+- `is_system` flag for built-ins; "pounds" is always available implicitly
+- Seeded with reasonable defaults; admins/managers can edit
 
-DB already has `chores`, `chore_assignments`, `chore_completions` with the right RLS. No migration needed.
+**Changed: `feed_purchases`** — add
+- `container_id` (where it was stored)
+- `unit_type` ('bag' | 'lbs' | 'custom_unit')
+- `bag_size_lbs` (when unit_type='bag')
+- `bag_count` (when unit_type='bag')
+- `custom_unit_id`, `custom_unit_qty`
+- `total_lbs` (computed/derived, stored for reporting)
+- `cost_per_bag_cents` (derived for display)
 
-New page `src/routes/_authenticated/chores.tsx`:
-- **Today view** (default): every active chore whose recurrence matches today, grouped by assignee (or "Unassigned"). Tap to mark complete → inserts a `chore_completions` row for today.
-- **All chores** tab: list of chore definitions with category, recurrence summary, assignee avatars.
-- **New / edit chore dialog** (admin/manager only, via `usePermissions().can("chores.create" / "chores.edit")`):
-  - title, notes, category
-  - recurrence: `daily` | `weekly` (pick days_of_week) | `monthly` (day_of_month) — Simple, as requested
-  - optional due_time, start_date, end_date, active toggle
-  - **multiple assignees**: multi-select of profiles, written to `chore_assignments` (one row per user)
-- Sidebar entry: "Chores" (calendar-check icon), gated on `chores.view`.
+**Changed: `feed_logs`** — add
+- `container_id` (which container it came from)
+- `unit_id` (nullable — null means "pounds" directly)
+- `unit_qty` (how many of that unit)
+- `total_lbs` (auto-computed: unit_qty × unit.lbs_per_unit, or `quantity` when pounds)
+- `target_type` ('animal' | 'breed' | 'species' | 'pen' | 'group')
+- `target_value` (text — breed name / species / pen / group label)
+- Keep existing `animal_id` for individual feedings
 
-Permission keys already exist in `src/lib/permissions.ts` (`chores.view`, `chores.create`, `chores.edit`, `chores.complete`, `chores.view.assigned`). Helpers role default perms get seeded for the new role if missing.
+**Triggers**
+- After insert on `feed_purchases`: increment `feed_container_stock.stock_lbs` and `feed_items.stock_qty`
+- After insert on `feed_logs`: decrement `feed_container_stock.stock_lbs` and `feed_items.stock_qty`
+- After delete: reverse both
 
-## 3. Per-table selective restore
+RLS: authenticated read all; admin/manager write for containers & units; all authenticated can log purchases/feedings.
 
-New admin page `src/routes/_authenticated/admin.backups.tsx` (admin-only).
+## UI
 
-- Lists rows from `backups` table with label, created_at, size, table counts (already stored as jsonb).
-- **Create backup** button → server fn `createBackup` (admin-only, uses `supabaseAdmin`): dumps a configurable set of tables to JSON, uploads to existing `backups` storage bucket, inserts a `backups` row with per-table row counts.
-- **Restore dialog** per backup: checklist of tables present in the backup → server fn `restoreBackup({ backupId, tables: string[], mode: "replace" | "merge" })`:
-  - `replace`: `DELETE FROM <table>` then bulk insert from JSON.
-  - `merge`: upsert by `id`.
-  - Runs only the tables the admin ticked → that's the "per-table selective restore".
-- Whitelist of restorable tables on the server (no `auth.*`, no `storage.*`, no `user_roles` / `role_permissions` unless explicitly opted in — those are dangerous).
+**Feed page (`/feed`)**
+- Tabs: **Inventory** | **Containers** | **Units** | **Reports**
+- Inventory tab: existing item cards, now showing per-container breakdown
+- Purchase dialog (rewritten):
+  - Pick feed item + container
+  - Mode: Bags / Pounds / Custom unit
+  - Bags: bag size (lbs) × bag count → auto-calc total lbs; cost per bag → total cost
+  - Pounds: direct lbs + total cost
+  - Custom unit: pick unit + qty + total cost
+- Feeding log dialog (rewritten):
+  - Pick feed item + container (filtered to containers holding that feed)
+  - Target: Animal / Breed / Species / Pen / Group
+  - Unit: Full/Half/Quarter bucket, Scoop, Pounds, or any custom unit
+  - Qty → auto-shows computed total lbs before submit
+- Containers tab (admin/manager): CRUD list with current stock per feed item
+- Units tab (admin/manager): edit lbs/unit values
 
-## 4. Wiring
+**Reports tab**
+- Daily feed used (last 30 days, by feed item, line chart)
+- Usage per animal / breed / species / pen (table)
+- Days of feed remaining per container (current stock ÷ avg daily use)
 
-- Add sidebar links for Chores (everyone with `chores.view`) and Backups (admin only).
-- No changes to existing Tasks page — it stays for one-time / project work as requested.
+## Files
 
-## Technical notes
+- Migration: new tables, columns, triggers, seed units & containers
+- `src/routes/_authenticated/feed.tsx` — rewrite with tabs
+- `src/components/feed/PurchaseDialog.tsx` — new
+- `src/components/feed/FeedingDialog.tsx` — new
+- `src/components/feed/ContainersTab.tsx` — new
+- `src/components/feed/UnitsTab.tsx` — new
+- `src/components/feed/FeedReportsTab.tsx` — new
 
-- Server fns live in `src/lib/chores.functions.ts` (none strictly needed for chores — RLS covers it) and `src/lib/backups.functions.ts` (needs `supabaseAdmin` for cross-table writes).
-- All new tables? None. All four pieces use existing schema.
-- PWA SW kill-switch already irrelevant (no prior SW shipped).
+## Notes
+- All weights stored in pounds (lbs) internally for consistency, even if a feed item's display `unit` is something else.
+- Existing feed items/purchases/logs preserved; new columns nullable with sane defaults so old data still shows.
+- Permissions: managing containers/units requires `admin` or `manager` role.
+
+Ready to build on approval.

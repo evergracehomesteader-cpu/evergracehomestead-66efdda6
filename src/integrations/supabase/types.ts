@@ -684,6 +684,66 @@ export type Database = {
         }
         Relationships: []
       }
+      feed_container_stock: {
+        Row: {
+          container_id: string
+          feed_item_id: string
+          id: string
+          stock_lbs: number
+          updated_at: string
+        }
+        Insert: {
+          container_id: string
+          feed_item_id: string
+          id?: string
+          stock_lbs?: number
+          updated_at?: string
+        }
+        Update: {
+          container_id?: string
+          feed_item_id?: string
+          id?: string
+          stock_lbs?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      feed_containers: {
+        Row: {
+          active: boolean
+          capacity_lbs: number | null
+          created_at: string
+          created_by: string | null
+          id: string
+          location: string | null
+          name: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          capacity_lbs?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          capacity_lbs?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       feed_items: {
         Row: {
           created_at: string
@@ -735,6 +795,7 @@ export type Database = {
       feed_logs: {
         Row: {
           animal_id: string | null
+          container_id: string | null
           created_at: string
           created_by: string | null
           fed_on: string
@@ -742,9 +803,15 @@ export type Database = {
           id: string
           notes: string | null
           quantity: number
+          target_type: string
+          target_value: string | null
+          total_lbs: number
+          unit_id: string | null
+          unit_qty: number | null
         }
         Insert: {
           animal_id?: string | null
+          container_id?: string | null
           created_at?: string
           created_by?: string | null
           fed_on?: string
@@ -752,9 +819,15 @@ export type Database = {
           id?: string
           notes?: string | null
           quantity: number
+          target_type?: string
+          target_value?: string | null
+          total_lbs?: number
+          unit_id?: string | null
+          unit_qty?: number | null
         }
         Update: {
           animal_id?: string | null
+          container_id?: string | null
           created_at?: string
           created_by?: string | null
           fed_on?: string
@@ -762,6 +835,11 @@ export type Database = {
           id?: string
           notes?: string | null
           quantity?: number
+          target_type?: string
+          target_value?: string | null
+          total_lbs?: number
+          unit_id?: string | null
+          unit_qty?: number | null
         }
         Relationships: [
           {
@@ -782,8 +860,14 @@ export type Database = {
       }
       feed_purchases: {
         Row: {
+          bag_count: number | null
+          bag_size_lbs: number | null
+          container_id: string | null
+          cost_per_bag_cents: number | null
           created_at: string
           created_by: string | null
+          custom_unit_id: string | null
+          custom_unit_qty: number | null
           feed_item_id: string
           id: string
           notes: string | null
@@ -791,10 +875,18 @@ export type Database = {
           purchased_on: string
           quantity: number
           store: string | null
+          total_lbs: number
+          unit_type: string
         }
         Insert: {
+          bag_count?: number | null
+          bag_size_lbs?: number | null
+          container_id?: string | null
+          cost_per_bag_cents?: number | null
           created_at?: string
           created_by?: string | null
+          custom_unit_id?: string | null
+          custom_unit_qty?: number | null
           feed_item_id: string
           id?: string
           notes?: string | null
@@ -802,10 +894,18 @@ export type Database = {
           purchased_on?: string
           quantity: number
           store?: string | null
+          total_lbs?: number
+          unit_type?: string
         }
         Update: {
+          bag_count?: number | null
+          bag_size_lbs?: number | null
+          container_id?: string | null
+          cost_per_bag_cents?: number | null
           created_at?: string
           created_by?: string | null
+          custom_unit_id?: string | null
+          custom_unit_qty?: number | null
           feed_item_id?: string
           id?: string
           notes?: string | null
@@ -813,6 +913,8 @@ export type Database = {
           purchased_on?: string
           quantity?: number
           store?: string | null
+          total_lbs?: number
+          unit_type?: string
         }
         Relationships: [
           {
@@ -823,6 +925,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      feed_units: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_system: boolean
+          lbs_per_unit: number
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_system?: boolean
+          lbs_per_unit?: number
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_system?: boolean
+          lbs_per_unit?: number
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       garden_plots: {
         Row: {
