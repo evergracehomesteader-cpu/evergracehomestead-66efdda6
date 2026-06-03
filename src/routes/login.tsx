@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Navigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -39,9 +39,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  // Avoid SSR/CSR hydration mismatch: only compute preview state on the client.
-  const [previewEnabled, setPreviewEnabled] = useState(false);
-  useEffect(() => { setPreviewEnabled(isPreviewEnv()); }, []);
+  const previewEnabled = isPreviewEnv();
 
   if (!loading && user) return <Navigate to="/dashboard" />;
 
