@@ -1,78 +1,100 @@
-# Implementation Plan
 
-Three big features. I'll ship them in this order so each is testable on its own.
+# EverGrace Homestead — Master Codex Implementation Plan
+
+This codex is large enough that doing it in one pass would produce broken, half-wired modules. I'll deliver it in **6 phases**, each shippable on its own. Approve phase by phase. Existing data is preserved at every step.
+
+## Guiding rules (apply to every phase)
+
+- **No data loss.** Every migration is additive (new columns/tables) or backfills before dropping anything.
+- **Beginner-friendly labels everywhere**: "Boy Pig (Boar)" style, with technical term in parentheses. Centralized in `src/lib/terminology.ts`.
+- **Mobile-first**: every new screen designed at 389px width first.
+- **Search + filter** standard on every list (reuse `SearchFilter.tsx`).
+- **Edit + delete** on every record (reuse the `save` mutation pattern + `ConfirmDelete`).
+- **Roles**: a separate `user_roles` table (admin / member / viewer) with `has_role()` security-definer function — never on profiles.
 
 ---
 
-## 1. Full PWA with service worker
+## Phase 1 — Animals & Breeding foundation (schema + UI)
 
-**Heads up:** Service workers don't work in the Lovable editor preview (iframe) and can cause stale-cache issues there. The setup below disables the SW in dev/preview/iframe contexts and only activates it on the published site (`evergracehomestead.lovable.app`). You'll need to publish to test offline behavior.
+The biggest single piece. Everything else references animals.
 
-What I'll add:
-- `vite-plugin-pwa` with `registerType: "autoUpdate"`, `devOptions.enabled: false`
-- App-shell precaching (HTML, JS, CSS, icons)
-- Runtime caching: `NetworkFirst` for HTML navigations (3s timeout), `StaleWhileRevalidate` for Supabase GET reads, `CacheFirst` for images/fonts
-- Offline fallback route at `/offline` shown when navigation fails
-- Update prompt: small toast "New version available — Reload" when a new SW is ready
-- Guarded registration in `src/main.tsx` (skips iframes + preview hosts, unregisters any existing SWs there)
-- Online/offline status banner (top of layout) so weak-signal users get feedback
+**Schema migration** (additive to existing `animals`):
+- `breed_type` (purebred / cross / unknown), `secondary_breed`, `breed_percentage`, `breed_notes`
+- `front_photo_url`, `side_photo_url`, `additional_photo_urls[]` (existing `photo_url` becomes `front_photo_url` via backfill)
+- `auto_marking_description`, `user_edited_description`
+- `life_stage`, `manual_life_stage_override`
+- `is_intact_male`, `male_reproductive_status`, `castration_date`, `testicle_status_notes`
+- `ownership`, `id_tag` (rename of existing `tag` via view), `temporary_record`
+- New enum values for `animal_status`: `breeding, pregnant, grow_out, retained, pending_sale, pending_trade, butcher_planned, medical_hold, quarantine, pet`
 
-## 2. Chores section (separate from Tasks)
+**New tables**:
+- `species_catalog` (name, common_breeds[], breeding_age_male/female_months, gestation_days) — seeded with Pigs/Goats/Chickens/Ducks/Dogs/Cats and the breed lists you provided
+- `breeds_catalog` (species_id, breed_name, is_custom)
+- `life_stage_rules` (per-species age thresholds + display terms)
+- `litters` (mother_id, father_id, birth_date, male/female/unknown counts)
 
-New tables:
-- `chores` — title, notes, category, recurrence (`daily`/`weekly`/`monthly`/`once`), `days_of_week int[]` (for weekly), `due_time` (time of day), `created_by`, timestamps
-- `chore_assignments` — `chore_id`, `user_id` (multi-assignee join)
-- `chore_completions` — `chore_id`, `instance_date`, `completed_by`, `completed_at`, `notes` (one row per occurrence completed)
+**UI**:
+- Animals list: dual-line card (`Name • Sex` / `Species • Breed • Life Stage`), status badge, front+side photo thumbs
+- Add/Edit form: species → breed dropdown cascade, breed-type toggle reveals secondary breed, "Does he have testicles?" plain-language intact field
+- Auto life stage from birthdate + species rules, manual override
+- `quickAddLitter` action that creates litter + N baby animal records linked to mother/father
+- Breeding selector filter: hides babies/juveniles and castrated males
 
-Recurrence model:
-- "Today's chores" view computes which chores are due today from recurrence + days_of_week
-- A chore is "done today" when a `chore_completions` row exists for `(chore_id, today)`
-- Anyone assigned (or admin/manager) can mark it done
+## Phase 2 — Inventories (Feed, Food, Groceries, Medications, Supplies)
 
-New routes:
-- `/chores` — Today / Upcoming / All tabs, filter by assignee + category
-- `/chores/manage` — admin/manager: create/edit/delete chores, assign users
-- Sidebar entry between Tasks and Calendar
+Five new/upgraded list modules — same CRUD pattern, different fields.
 
-Permissions (uses existing `role_permissions`):
-- `chores.view` — admin, manager, helper, viewer
-- `chores.complete` — admin, manager, helper (assigned only for helper)
-- `chores.manage` — admin, manager
-- New permission rows seeded in a migration
+- `feed_items` upgrade: add `brand`, `bag_weight`, `bags_purchased`, `cost_per_bag`, `estimated_days_remaining` (computed), `low_inventory_alert` flag
+- New `food_inventory`, `groceries`, `human_medications`, `animal_medications`, `needed_supplies` tables
+- Each gets a route under `_authenticated/`, search/filter, edit/delete, low-stock + expiration warnings
+- Animal medications link to `animals.id` and write a `health_records` row when administered (withdrawal periods auto-set)
 
-## 3. Backup & Restore (admin-only)
+## Phase 3 — Operations (Water, Generator, Solar, Market Sales, Honey-Do)
 
-New table `backups`:
-- `id`, `created_at`, `created_by`, `label`, `size_bytes`, `table_counts jsonb`, `storage_path`
+Smaller log-style modules:
+- `water_systems` + daily usage logs, freeze/low alerts (computed from latest readings)
+- `generator_logs`, `solar_logs` with daily cost rollups
+- `market_sales` with itemized line items and profit calc
+- `honey_do_list` (separate from `tasks` — explicitly user-requested)
+- Tasks upgrade: `assigned_to_user_ids[]`, multi-assignee, member-can-only-complete-own-task rule via RLS
 
-Backup flow:
-- Admin clicks "Create backup" on `/admin/backups`
-- Server function `createBackup` (admin-only middleware) reads every public table, writes JSON to a private `backups` storage bucket, inserts a `backups` row
-- History list shows label, date, size, row counts; each row has Download + Restore + Delete
+## Phase 4 — Roles, multi-user, admin approval
 
-Restore flow (per-table selective):
-- Admin clicks Restore on a backup → modal lists every table in the backup with a checkbox + current row count vs backup row count
-- Big red warning: "This will DELETE all rows in selected tables and replace them with backup data. Type RESTORE to confirm."
-- Server function `restoreBackup` (admin-only) takes `backup_id` + `tables[]`, runs in a transaction per table: `DELETE FROM <t>; INSERT ...`
-- Restricted to a safe allow-list of tables (excludes `user_roles`, `role_permissions`, `profiles`, `backups` itself to prevent self-lockout)
+- `user_roles` table + `has_role()` SECURITY DEFINER function
+- `app_role` enum: `admin`, `member`, `viewer`, `pending`
+- New users land as `pending`; admin approval screen promotes them
+- All RLS policies migrate from "any authenticated" → role-checked
+- User management screen (admin only): invite, approve, change role, deactivate
+- **Important**: this is a breaking change to existing RLS. I'll write a backfill that promotes existing users to `admin` so nothing locks them out.
 
-New files:
-- `src/lib/backup.functions.ts`, `src/lib/restore.functions.ts`
-- `src/routes/_authenticated/admin.backups.tsx`
-- Sidebar entry under Admin
+## Phase 5 — Offline-first sync
 
-## Technical Notes
+The big infrastructure piece. Implementation:
 
-- All server functions use `requireSupabaseAuth` + an `isAdmin` check inside the handler (same pattern as `admin-users.functions.ts`)
-- Migration adds `chores`, `chore_assignments`, `chore_completions`, `backups` tables with proper GRANTs and RLS (admin/manager write, assignees read their chores)
-- Storage bucket `backups` is private; downloads use signed URLs
-- PWA work touches `vite.config.ts`, `src/main.tsx` (or equivalent client entry), adds `public/offline.html` + `src/routes/offline.tsx`
-- Won't change auth, existing tables, or unrelated routes
+- **Dexie (IndexedDB)** mirror of all writeable tables
+- Mutation queue: every create/update/delete writes to Dexie first, then enqueues a sync job
+- Service worker (Workbox) for app-shell + read caching → app installable + works offline
+- Background sync replays the queue when `navigator.onLine` flips true
+- Conflict resolution: last-write-wins by `updated_at`, but the loser is kept in a `sync_conflicts` table with a banner UI for review
+- "Pending sync" indicator in the header; per-record "synced/pending/conflict" badge
 
-## Out of scope
+This phase touches every existing mutation. I'll abstract them through a single `useSyncedMutation()` hook to keep the diff manageable.
 
-- Push notifications for chore reminders (separate request)
-- Automatic scheduled backups (manual only for now)
-- Restoring `user_roles` / `profiles` (locked out to prevent admin self-lockout — can revisit)
+## Phase 6 — Dashboard rebuild + AI marking descriptions + cache/version
 
-Total: ~1 migration, ~12 new files, ~4 edited files. Will ship as one large change.
+- Dashboard widgets per spec: Upcoming Births, Feed Warnings, Food Alerts, Medication Alerts, Needed Supplies, Generator Costs, Solar Reserve, Active Chores, Honey-Do, Pending Sales, Market Sales
+- AI marking description: edge function `describe-animal` that calls `google/gemini-2.5-flash` with the front+side photo URLs, returns suggested text, user reviews/edits before save
+- Version checking: build hash exposed at `/api/version`; client polls and shows "New version available — reload" toast
+- Service worker `skipWaiting` + cache versioning so deployments don't strand users on stale UI
+
+---
+
+## What I'm explicitly NOT doing without confirmation
+
+- Weather alerts (no weather provider chosen — needs an API key; recommend OpenWeatherMap)
+- Push notifications for alerts (needs a separate setup)
+- Native mobile app (this is a PWA — installable but not in app stores)
+
+## How to proceed
+
+Reply with **"Start Phase 1"** (or any phase number) and I'll write the migration first, wait for your approval, then ship the code. If you want to reorder phases or drop one, say so now.
