@@ -194,6 +194,39 @@ export type Database = {
           },
         ]
       }
+      backups: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          label: string
+          notes: string | null
+          size_bytes: number
+          storage_path: string
+          table_counts: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label: string
+          notes?: string | null
+          size_bytes?: number
+          storage_path: string
+          table_counts?: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label?: string
+          notes?: string | null
+          size_bytes?: number
+          storage_path?: string
+          table_counts?: Json
+        }
+        Relationships: []
+      }
       barter_contacts: {
         Row: {
           created_at: string
@@ -463,6 +496,121 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      chore_assignments: {
+        Row: {
+          chore_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          chore_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          chore_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chore_assignments_chore_id_fkey"
+            columns: ["chore_id"]
+            isOneToOne: false
+            referencedRelation: "chores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chore_completions: {
+        Row: {
+          chore_id: string
+          completed_at: string
+          completed_by: string | null
+          id: string
+          instance_date: string
+          notes: string | null
+        }
+        Insert: {
+          chore_id: string
+          completed_at?: string
+          completed_by?: string | null
+          id?: string
+          instance_date: string
+          notes?: string | null
+        }
+        Update: {
+          chore_id?: string
+          completed_at?: string
+          completed_by?: string | null
+          id?: string
+          instance_date?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chore_completions_chore_id_fkey"
+            columns: ["chore_id"]
+            isOneToOne: false
+            referencedRelation: "chores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chores: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          created_by: string | null
+          day_of_month: number | null
+          days_of_week: number[]
+          due_time: string | null
+          end_date: string | null
+          id: string
+          notes: string | null
+          recurrence: string
+          start_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          day_of_month?: number | null
+          days_of_week?: number[]
+          due_time?: string | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          recurrence?: string
+          start_date?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          day_of_month?: number | null
+          days_of_week?: number[]
+          due_time?: string | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          recurrence?: string
+          start_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       compost_entries: {
         Row: {
