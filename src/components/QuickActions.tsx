@@ -78,7 +78,7 @@ function QuickDrawer({ actionKey, onClose }: { actionKey: ActionKey | null; onCl
           <DrawerDescription>Today · {format(new Date(), "EEE MMM d, h:mm a")}</DrawerDescription>
         </DrawerHeader>
         <div className="px-4 pb-2 max-h-[65vh] overflow-y-auto">
-          {actionKey === "feed" && <FeedForm onDone={onClose} />}
+          {/* feed handled by FeedQuickDialog */}
           {actionKey === "eggs" && <EggsForm onDone={onClose} />}
           {actionKey === "water" && <WaterForm onDone={onClose} />}
           {actionKey === "expense" && <ExpenseForm onDone={onClose} />}
