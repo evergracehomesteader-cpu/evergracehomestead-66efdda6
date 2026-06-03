@@ -1010,19 +1010,46 @@ export type Database = {
       }
       profiles: {
         Row: {
+          active: boolean
           created_at: string
           display_name: string | null
           id: string
+          notes: string | null
         }
         Insert: {
+          active?: boolean
           created_at?: string
           display_name?: string | null
           id: string
+          notes?: string | null
         }
         Update: {
+          active?: boolean
           created_at?: string
           display_name?: string | null
           id?: string
+          notes?: string | null
+        }
+        Relationships: []
+      }
+      role_permissions: {
+        Row: {
+          created_at: string
+          id: string
+          permission: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          permission: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          permission?: string
+          role?: Database["public"]["Enums"]["app_role"]
         }
         Relationships: []
       }
@@ -1122,6 +1149,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       weight_logs: {
         Row: {
           animal_id: string
@@ -1168,7 +1216,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       animal_sex: "female" | "male" | "unknown"
@@ -1190,6 +1244,15 @@ export type Database = {
         | "quarantine"
         | "pet"
         | "retired"
+      app_role:
+        | "admin"
+        | "manager"
+        | "helper"
+        | "viewer"
+        | "bookkeeper"
+        | "animal_care"
+        | "volunteer"
+        | "pending"
       barter_category:
         | "livestock"
         | "feed"
@@ -1361,6 +1424,16 @@ export const Constants = {
         "quarantine",
         "pet",
         "retired",
+      ],
+      app_role: [
+        "admin",
+        "manager",
+        "helper",
+        "viewer",
+        "bookkeeper",
+        "animal_care",
+        "volunteer",
+        "pending",
       ],
       barter_category: [
         "livestock",

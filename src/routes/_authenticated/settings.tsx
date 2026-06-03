@@ -2,13 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
-import { Settings as SettingsIcon, LogOut, Info, ExternalLink } from "lucide-react";
+import { usePermissions } from "@/hooks/usePermissions";
+import { Settings as SettingsIcon, LogOut, Info, ExternalLink, Users, Shield } from "lucide-react";
 import { APP_VERSION, APP_LAST_UPDATED, APP_PUBLISHED_URL } from "@/lib/app-version";
 
 export const Route = createFileRoute("/_authenticated/settings")({ component: SettingsPage });
 
 function SettingsPage() {
   const { user, signOut } = useAuth();
+  const { isAdmin } = usePermissions();
   const lastUpdated = new Date(APP_LAST_UPDATED).toLocaleString();
   return (
     <div className="space-y-6">
@@ -28,6 +30,20 @@ function SettingsPage() {
         </div>
         <Button variant="outline" onClick={() => signOut()}><LogOut className="h-4 w-4" /> Sign out</Button>
       </Card>
+
+      {isAdmin && (
+        <Card className="p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <Shield className="h-5 w-5 text-muted-foreground" />
+            <h2 className="font-semibold">Administration</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">Manage who can sign in and what they can do.</p>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline"><Link to="/admin/users"><Users className="h-4 w-4" /> Users</Link></Button>
+            <Button asChild variant="outline"><Link to="/admin/roles"><Shield className="h-4 w-4" /> Roles & permissions</Link></Button>
+          </div>
+        </Card>
+      )}
 
       <Card className="p-5 space-y-3">
         <div className="flex items-center gap-2">
