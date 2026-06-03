@@ -59,7 +59,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerHandle | nul
   // First-install: the SW took control of the page for the first time.
   // No reload needed — content is just primed for offline use.
   wb.addEventListener("waiting", () => fireUpdate());
-  wb.addEventListener("externalwaiting", () => fireUpdate());
+  wb.addEventListener("externalinstalled", () => fireUpdate());
 
   // The new worker has taken control — reload so the page runs the new build.
   let reloading = false;
