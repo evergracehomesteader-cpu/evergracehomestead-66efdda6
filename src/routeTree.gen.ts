@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OfflineRouteImport } from './routes/offline'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,6 +25,7 @@ import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/f
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContactsRouteImport } from './routes/_authenticated/contacts'
 import { Route as AuthenticatedCompostRouteImport } from './routes/_authenticated/compost'
+import { Route as AuthenticatedChoresRouteImport } from './routes/_authenticated/chores'
 import { Route as AuthenticatedChangelogRouteImport } from './routes/_authenticated/changelog'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
@@ -33,7 +35,13 @@ import { Route as AuthenticatedAnimalsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAnimalsAnimalIdRouteImport } from './routes/_authenticated/animals.$animalId'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin.roles'
+import { Route as AuthenticatedAdminBackupsRouteImport } from './routes/_authenticated/admin.backups'
 
+const OfflineRoute = OfflineRouteImport.update({
+  id: '/offline',
+  path: '/offline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -108,6 +116,11 @@ const AuthenticatedCompostRoute = AuthenticatedCompostRouteImport.update({
   path: '/compost',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedChoresRoute = AuthenticatedChoresRouteImport.update({
+  id: '/chores',
+  path: '/chores',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedChangelogRoute = AuthenticatedChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
@@ -154,16 +167,24 @@ const AuthenticatedAdminRolesRoute = AuthenticatedAdminRolesRouteImport.update({
   path: '/admin/roles',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminBackupsRoute =
+  AuthenticatedAdminBackupsRouteImport.update({
+    id: '/admin/backups',
+    path: '/admin/backups',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/offline': typeof OfflineRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
   '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/changelog': typeof AuthenticatedChangelogRoute
+  '/chores': typeof AuthenticatedChoresRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -176,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
+  '/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
@@ -183,12 +205,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/offline': typeof OfflineRoute
   '/animals': typeof AuthenticatedAnimalsRouteWithChildren
   '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/changelog': typeof AuthenticatedChangelogRoute
+  '/chores': typeof AuthenticatedChoresRoute
   '/compost': typeof AuthenticatedCompostRoute
   '/contacts': typeof AuthenticatedContactsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -201,6 +225,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
+  '/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
@@ -210,12 +235,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/offline': typeof OfflineRoute
   '/_authenticated/animals': typeof AuthenticatedAnimalsRouteWithChildren
   '/_authenticated/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/_authenticated/barter': typeof AuthenticatedBarterRoute
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/changelog': typeof AuthenticatedChangelogRoute
+  '/_authenticated/chores': typeof AuthenticatedChoresRoute
   '/_authenticated/compost': typeof AuthenticatedCompostRoute
   '/_authenticated/contacts': typeof AuthenticatedContactsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -228,6 +255,7 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
+  '/_authenticated/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/_authenticated/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
@@ -237,12 +265,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/offline'
     | '/animals'
     | '/app-updates'
     | '/barter'
     | '/bills'
     | '/calendar'
     | '/changelog'
+    | '/chores'
     | '/compost'
     | '/contacts'
     | '/dashboard'
@@ -255,6 +285,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/tasks'
+    | '/admin/backups'
     | '/admin/roles'
     | '/admin/users'
     | '/animals/$animalId'
@@ -262,12 +293,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/offline'
     | '/animals'
     | '/app-updates'
     | '/barter'
     | '/bills'
     | '/calendar'
     | '/changelog'
+    | '/chores'
     | '/compost'
     | '/contacts'
     | '/dashboard'
@@ -280,6 +313,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/tasks'
+    | '/admin/backups'
     | '/admin/roles'
     | '/admin/users'
     | '/animals/$animalId'
@@ -288,12 +322,14 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/offline'
     | '/_authenticated/animals'
     | '/_authenticated/app-updates'
     | '/_authenticated/barter'
     | '/_authenticated/bills'
     | '/_authenticated/calendar'
     | '/_authenticated/changelog'
+    | '/_authenticated/chores'
     | '/_authenticated/compost'
     | '/_authenticated/contacts'
     | '/_authenticated/dashboard'
@@ -306,6 +342,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
+    | '/_authenticated/admin/backups'
     | '/_authenticated/admin/roles'
     | '/_authenticated/admin/users'
     | '/_authenticated/animals/$animalId'
@@ -315,10 +352,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  OfflineRoute: typeof OfflineRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/offline': {
+      id: '/offline'
+      path: '/offline'
+      fullPath: '/offline'
+      preLoaderRoute: typeof OfflineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -424,6 +469,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompostRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/chores': {
+      id: '/_authenticated/chores'
+      path: '/chores'
+      fullPath: '/chores'
+      preLoaderRoute: typeof AuthenticatedChoresRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/changelog': {
       id: '/_authenticated/changelog'
       path: '/changelog'
@@ -487,6 +539,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRolesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/backups': {
+      id: '/_authenticated/admin/backups'
+      path: '/admin/backups'
+      fullPath: '/admin/backups'
+      preLoaderRoute: typeof AuthenticatedAdminBackupsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -508,6 +567,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedChangelogRoute: typeof AuthenticatedChangelogRoute
+  AuthenticatedChoresRoute: typeof AuthenticatedChoresRoute
   AuthenticatedCompostRoute: typeof AuthenticatedCompostRoute
   AuthenticatedContactsRoute: typeof AuthenticatedContactsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -520,6 +580,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
+  AuthenticatedAdminBackupsRoute: typeof AuthenticatedAdminBackupsRoute
   AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
 }
@@ -531,6 +592,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedChangelogRoute: AuthenticatedChangelogRoute,
+  AuthenticatedChoresRoute: AuthenticatedChoresRoute,
   AuthenticatedCompostRoute: AuthenticatedCompostRoute,
   AuthenticatedContactsRoute: AuthenticatedContactsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
@@ -543,6 +605,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
+  AuthenticatedAdminBackupsRoute: AuthenticatedAdminBackupsRoute,
   AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
 }
@@ -555,17 +618,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  OfflineRoute: OfflineRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

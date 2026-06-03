@@ -5,6 +5,7 @@ import {
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
+import { PWAUpdater } from "@/components/PWAUpdater";
 
 function NotFoundComponent() {
   return (
@@ -88,6 +89,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Outlet />
+        <PWAUpdater />
         <Toaster richColors position="top-right" />
       </AuthProvider>
     </QueryClientProvider>
