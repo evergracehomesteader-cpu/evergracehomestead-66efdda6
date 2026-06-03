@@ -162,6 +162,12 @@ export const restoreBackup = createServerFn({ method: "POST" })
     try { payload = JSON.parse(text); } catch { throw new Error("Backup file is corrupted"); }
 
     const results: Record<string, { restored: number; error?: string }> = {};
+    const admin = supabaseAdmin as unknown as {
+      from: (table: string) => {
+        delete: () => { not: (col: string, op: string, val: unknown) => Promise<{ error: { message: string } | null }> };
+        insert: (rows: unknown[]) => Promise<{ error: { message: string } | null }>;
+      };
+    };
     for (const t of requested) {
       const rows = payload.tables[t];
       if (!Array.isArray(rows)) {
@@ -169,7 +175,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
         continue;
       }
       // Delete all then bulk insert. Foreign keys with ON DELETE CASCADE will fire.
-      const { error: delErr } = await supabaseAdmin.from(t).delete().not("id", "is", null);
+      const { error: delErr } = await admin.from(t).delete().not("id", "is", null);
       if (delErr) { results[t] = { restored: 0, error: delErr.message }; continue; }
       if (rows.length > 0) {
         // Chunk to avoid request limits
@@ -178,7 +184,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
         let err: string | undefined;
         for (let i = 0; i < rows.length; i += chunkSize) {
           const chunk = rows.slice(i, i + chunkSize);
-          const { error: insErr } = await supabaseAdmin.from(t).insert(chunk);
+          const { error: insErr } = await admin.from(t).insert(chunk);
           if (insErr) { err = insErr.message; break; }
           restored += chunk.length;
         }

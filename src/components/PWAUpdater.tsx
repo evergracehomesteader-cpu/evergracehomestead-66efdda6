@@ -76,7 +76,7 @@ export function PWAUpdater() {
           onOfflineReady() {
             toast.success("App ready to work offline");
           },
-          onRegisterError(err) {
+          onRegisterError(err: unknown) {
             console.error("[PWA] SW registration failed", err);
           },
         });
