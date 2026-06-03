@@ -54,8 +54,8 @@ export const adminListUsers = createServerFn({ method: "GET" })
         display_name: p.display_name ?? null,
         notes: p.notes ?? null,
         active: p.active ?? true,
-        roles: rolesMap.get(u.id) ?? [],
-      };
+        roles: (rolesMap.get(u.id) ?? []) as AppRole[],
+      } satisfies AdminUserRow;
     });
   });
 

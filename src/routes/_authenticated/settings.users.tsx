@@ -139,15 +139,12 @@ function UserCard({ user, onChanged }: { user: AdminUserRow; onChanged: () => vo
         <Button size="sm" variant="outline" onClick={() => setEditOpen(true)}><Pencil className="h-3.5 w-3.5" /> Edit</Button>
         <Button size="sm" variant="outline" onClick={() => setRolesOpen(true)}><Shield className="h-3.5 w-3.5" /> Roles</Button>
         <Button size="sm" variant="outline" onClick={() => setPwdOpen(true)}><KeyRound className="h-3.5 w-3.5" /> Reset password</Button>
-        <ConfirmDelete
-          onConfirm={() => deleteM.mutate()}
-          disabled={isSelf}
-          trigger={
-            <Button size="sm" variant="destructive" disabled={isSelf}>
-              <Trash2 className="h-3.5 w-3.5" /> Delete
-            </Button>
-          }
-        />
+        {!isSelf && (
+          <ConfirmDelete
+            onConfirm={() => deleteM.mutate()}
+            trigger={<Button size="sm" variant="destructive"><Trash2 className="h-3.5 w-3.5" /> Delete</Button>}
+          />
+        )}
       </div>
 
       <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} user={user} onSaved={onChanged} />
