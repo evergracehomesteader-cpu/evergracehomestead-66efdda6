@@ -1,11 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as React from "react";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth-context";
+import { usePermissions } from "@/hooks/usePermissions";
 import { Button } from "@/components/ui/button";
 import { APP_VERSION } from "@/lib/app-version";
 
@@ -32,9 +33,15 @@ const plan = [
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
+const adminItems = [
+  { title: "Users", url: "/admin/users", icon: Users },
+  { title: "Roles", url: "/admin/roles", icon: Shield },
+];
+
 export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { user, signOut } = useAuth();
+  const { isAdmin } = usePermissions();
   const { isMobile, setOpenMobile } = useSidebar();
 
   // Close mobile menu on route change
@@ -81,6 +88,14 @@ export function AppSidebar() {
             <SidebarMenu>{renderItems(plan)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>{renderItems(adminItems)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter className="p-3">
         <div className="text-xs text-sidebar-foreground/70 truncate px-2">{user?.email}</div>
