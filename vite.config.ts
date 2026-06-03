@@ -15,27 +15,18 @@ export default defineConfig({
   },
   plugins: [
     VitePWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       registerType: "autoUpdate",
       injectRegister: null, // we register manually with iframe/preview guards
       devOptions: { enabled: false },
       manifest: false, // we ship public/manifest.webmanifest ourselves
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp}"],
-        navigateFallback: null,
-        navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//],
-        runtimeCaching: [
-          {
-            urlPattern: ({ request }) => request.mode === "navigate",
-            handler: "NetworkFirst",
-            options: { cacheName: "html", networkTimeoutSeconds: 3 },
-          },
-          {
-            urlPattern: ({ request }) =>
-              ["image", "style", "script", "font"].includes(request.destination),
-            handler: "StaleWhileRevalidate",
-            options: { cacheName: "assets" },
-          },
-        ],
+      includeAssets: ["offline.html", "icon-192.png", "icon-512.png", "apple-touch-icon.png"],
+      injectManifest: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff,woff2}"],
+        // Cloudflare Workers + TanStack Start can produce large prerendered chunks.
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       },
     }),
   ],
