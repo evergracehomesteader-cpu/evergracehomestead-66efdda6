@@ -69,6 +69,7 @@ function SettingsPage() {
         <div className="flex gap-2 pt-2">
           <Button size="sm" variant="outline" asChild><Link to="/changelog">Changelog</Link></Button>
           <Button size="sm" variant="outline" asChild><Link to="/app-updates">App Updates</Link></Button>
+          <Button size="sm" variant="outline" asChild><Link to="/pwa-diagnostics"><Wifi className="h-4 w-4 mr-1" /> PWA Diagnostics</Link></Button>
         </div>
       </Card>
     </div>
