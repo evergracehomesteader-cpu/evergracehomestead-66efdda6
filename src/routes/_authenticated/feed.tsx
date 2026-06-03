@@ -1,20 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Wheat, ShoppingCart, Trash2, Pencil, Calculator } from "lucide-react";
-import { format, differenceInDays, parseISO } from "date-fns";
+import { Plus, Wheat, ShoppingCart, Trash2, Pencil, Utensils } from "lucide-react";
+import { format } from "date-fns";
 import { toast } from "sonner";
-import { useMemo } from "react";
 import { SearchBar } from "@/components/SearchFilter";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
+import { PurchaseDialog, type PurchasePayload } from "@/components/feed/PurchaseDialog";
+import { FeedingDialog, type FeedingPayload, type AnimalLite } from "@/components/feed/FeedingDialog";
+import { ContainersTab } from "@/components/feed/ContainersTab";
+import { UnitsTab } from "@/components/feed/UnitsTab";
+import { FeedReportsTab } from "@/components/feed/FeedReportsTab";
 
 export const Route = createFileRoute("/_authenticated/feed")({ component: FeedPage });
 
@@ -23,7 +28,10 @@ type FeedItem = {
   unit: string; stock_qty: number; low_stock_threshold: number; notes: string | null;
   species_for: string | null; package_size: number | null;
 };
-type Purchase = { id: string; feed_item_id: string; store: string | null; price_cents: number; quantity: number; purchased_on: string; notes: string | null };
+type Purchase = { id: string; feed_item_id: string; store: string | null; price_cents: number; quantity: number; purchased_on: string; total_lbs: number | null; container_id: string | null };
+type Container = { id: string; name: string };
+type Unit = { id: string; name: string; lbs_per_unit: number };
+type Stock = { container_id: string; feed_item_id: string; stock_lbs: number };
 
 const fmt = (cents: number | null) => cents == null ? "—" : `$${(cents / 100).toFixed(2)}`;
 
@@ -32,9 +40,10 @@ function FeedPage() {
   const [editItem, setEditItem] = useState<FeedItem | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [purchaseFor, setPurchaseFor] = useState<FeedItem | null>(null);
+  const [feedingOpen, setFeedingOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const { data: items } = useQuery({
+  const { data: items = [] } = useQuery({
     queryKey: ["feed"],
     queryFn: async () => {
       const { data, error } = await supabase.from("feed_items").select("*").order("name");
@@ -42,53 +51,47 @@ function FeedPage() {
       return data as FeedItem[];
     },
   });
-
-  const { data: purchases } = useQuery({
+  const { data: containers = [] } = useQuery({
+    queryKey: ["feed-containers"],
+    queryFn: async () => {
+      const { data } = await supabase.from("feed_containers" as never).select("id,name").order("name");
+      return (data ?? []) as unknown as Container[];
+    },
+  });
+  const { data: units = [] } = useQuery({
+    queryKey: ["feed-units"],
+    queryFn: async () => {
+      const { data } = await supabase.from("feed_units" as never).select("id,name,lbs_per_unit").order("name");
+      return (data ?? []) as unknown as Unit[];
+    },
+  });
+  const { data: stock = [] } = useQuery({
+    queryKey: ["feed-container-stock"],
+    queryFn: async () => {
+      const { data } = await supabase.from("feed_container_stock" as never).select("container_id,feed_item_id,stock_lbs");
+      return (data ?? []) as unknown as Stock[];
+    },
+  });
+  const { data: animals = [] } = useQuery({
+    queryKey: ["animals-for-feeding"],
+    queryFn: async () => {
+      const { data } = await supabase.from("animals").select("id,name,species,breed,current_pen").eq("status", "active").order("name");
+      return (data ?? []) as AnimalLite[];
+    },
+  });
+  const { data: purchases = [] } = useQuery({
     queryKey: ["purchases"],
     queryFn: async () => {
       const { data } = await supabase.from("feed_purchases").select("*").order("purchased_on", { ascending: false }).limit(20);
-      return (data ?? []) as Purchase[];
+      return (data ?? []) as unknown as Purchase[];
     },
   });
-
-  const { data: logs } = useQuery({
-    queryKey: ["feed-logs"],
-    queryFn: async () => {
-      const { data } = await supabase.from("feed_logs").select("feed_item_id,quantity,fed_on").order("fed_on", { ascending: false }).limit(500);
-      return (data ?? []) as { feed_item_id: string; quantity: number; fed_on: string }[];
-    },
-  });
-
-  // Daily usage rate per item from last 30 days of logs
-  const usageByItem = useMemo(() => {
-    const m = new Map<string, number>(); // qty/day
-    const now = new Date();
-    const grouped = new Map<string, { qty: number; firstDay: string }>();
-    (logs ?? []).forEach((l) => {
-      const days = differenceInDays(now, parseISO(l.fed_on));
-      if (days > 30) return;
-      const cur = grouped.get(l.feed_item_id) ?? { qty: 0, firstDay: l.fed_on };
-      cur.qty += Number(l.quantity);
-      if (l.fed_on < cur.firstDay) cur.firstDay = l.fed_on;
-      grouped.set(l.feed_item_id, cur);
-    });
-    grouped.forEach((v, k) => {
-      const span = Math.max(1, differenceInDays(now, parseISO(v.firstDay)) || 1);
-      m.set(k, v.qty / span);
-    });
-    return m;
-  }, [logs]);
 
   const filteredItems = useMemo(() => {
-    if (!search) return items ?? [];
+    if (!search) return items;
     const q = search.toLowerCase();
-    return (items ?? []).filter((f) =>
-      f.name.toLowerCase().includes(q) ||
-      (f.store ?? "").toLowerCase().includes(q) ||
-      (f.species_for ?? "").toLowerCase().includes(q)
-    );
+    return items.filter((f) => f.name.toLowerCase().includes(q) || (f.store ?? "").toLowerCase().includes(q) || (f.species_for ?? "").toLowerCase().includes(q));
   }, [items, search]);
-
 
   const save = useMutation({
     mutationFn: async (p: Partial<FeedItem> & { id?: string }) => {
@@ -111,136 +114,166 @@ function FeedPage() {
   });
 
   const addPurchase = useMutation({
-    mutationFn: async (p: { feed_item_id: string; store: string | null; price_cents: number; quantity: number; purchased_on: string; notes: string | null; addToStock: boolean }) => {
+    mutationFn: async (p: PurchasePayload) => {
       const { data: u } = await supabase.auth.getUser();
-      const { addToStock, ...insert } = p;
-      const { error } = await supabase.from("feed_purchases").insert({ ...insert, created_by: u.user?.id });
+      const { error } = await supabase.from("feed_purchases").insert({ ...p, created_by: u.user?.id } as never);
       if (error) throw error;
-      if (addToStock && purchaseFor) {
-        await supabase.from("feed_items").update({
-          stock_qty: Number(purchaseFor.stock_qty) + Number(p.quantity),
-          price_cents: p.price_cents,
-          store: p.store,
-        }).eq("id", purchaseFor.id);
-      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["feed"] });
       qc.invalidateQueries({ queryKey: ["purchases"] });
+      qc.invalidateQueries({ queryKey: ["feed-container-stock"] });
       toast.success("Purchase logged");
       setPurchaseFor(null);
     },
     onError: (e) => toast.error((e as Error).message),
   });
 
+  const addFeeding = useMutation({
+    mutationFn: async (p: FeedingPayload) => {
+      const { data: u } = await supabase.auth.getUser();
+      const { error } = await supabase.from("feed_logs").insert({ ...p, created_by: u.user?.id } as never);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["feed"] });
+      qc.invalidateQueries({ queryKey: ["feed-container-stock"] });
+      qc.invalidateQueries({ queryKey: ["feed-logs-all"] });
+      toast.success("Feeding logged");
+      setFeedingOpen(false);
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
   return (
     <div className="space-y-4 pb-20">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <h1 className="text-3xl font-display font-semibold">Feed</h1>
-          <p className="text-muted-foreground">Stock, prices, and where you bought it.</p>
+          <p className="text-muted-foreground">Inventory, containers, and feeding logs.</p>
         </div>
-        <Dialog open={newOpen} onOpenChange={setNewOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Add feed item</Button></DialogTrigger>
-          <FeedItemForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
-        </Dialog>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setFeedingOpen(true)} disabled={items.length === 0 || containers.length === 0}>
+            <Utensils className="h-4 w-4" /> Log feeding
+          </Button>
+          <Dialog open={newOpen} onOpenChange={setNewOpen}>
+            <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> Add feed</Button></DialogTrigger>
+            <FeedItemForm onSubmit={(p) => save.mutate(p)} submitting={save.isPending} />
+          </Dialog>
+        </div>
       </div>
 
-      <SearchBar value={search} onChange={setSearch} placeholder="Search feed by name, store, species…" />
+      <Tabs defaultValue="inventory">
+        <TabsList>
+          <TabsTrigger value="inventory">Inventory</TabsTrigger>
+          <TabsTrigger value="containers">Containers</TabsTrigger>
+          <TabsTrigger value="units">Units</TabsTrigger>
+          <TabsTrigger value="reports">Reports</TabsTrigger>
+        </TabsList>
 
-      {(items ?? []).length === 0 ? (
-        <Card className="p-12 text-center">
-          <Wheat className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">No feed items yet. Add a feed product to track stock.</p>
-        </Card>
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredItems.map((f) => {
-            const low = Number(f.low_stock_threshold) > 0 && Number(f.stock_qty) <= Number(f.low_stock_threshold);
-            const dailyUse = usageByItem.get(f.id) ?? 0;
-            const daysLeft = dailyUse > 0 ? Math.floor(Number(f.stock_qty) / dailyUse) : null;
-            const monthlyCost = dailyUse > 0 && f.price_cents != null ? (dailyUse * 30 * (f.price_cents / 100)) : null;
-            return (
-              <Card key={f.id} className="p-4 flex flex-col gap-2">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="font-semibold truncate">{f.name}</div>
-                    <div className="text-xs text-muted-foreground truncate">
-                      {f.store ? f.store : "—"}{f.species_for ? ` · for ${f.species_for}` : ""}
-                    </div>
-                  </div>
-                  {low && <Badge variant="outline" className="border-warning text-warning">low</Badge>}
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-display font-semibold">{f.stock_qty}</span>
-                  <span className="text-xs text-muted-foreground">{f.unit}</span>
-                </div>
-                <div className="text-sm text-muted-foreground">{fmt(f.price_cents)} per {f.unit}</div>
-
-                {(dailyUse > 0 || daysLeft != null) && (
-                  <div className="rounded-md bg-muted/40 p-2 text-xs space-y-0.5">
-                    <div className="flex items-center gap-1 font-medium text-foreground">
-                      <Calculator className="h-3 w-3" /> Usage
-                    </div>
-                    <div>~{dailyUse.toFixed(2)} {f.unit}/day</div>
-                    {daysLeft != null && (
-                      <div className={daysLeft < 7 ? "text-warning font-medium" : "text-muted-foreground"}>
-                        ~{daysLeft} day{daysLeft === 1 ? "" : "s"} of stock left
-                      </div>
-                    )}
-                    {monthlyCost != null && <div>~${monthlyCost.toFixed(2)}/mo at this rate</div>}
-                  </div>
-                )}
-
-                <div className="flex gap-1 mt-auto pt-2">
-                  <Button size="sm" variant="outline" onClick={() => setPurchaseFor(f)}><ShoppingCart className="h-3 w-3" /> Buy</Button>
-                  <Button size="sm" variant="ghost" onClick={() => setEditItem(f)}><Pencil className="h-3 w-3" /></Button>
-                  <ConfirmDelete
-                    trigger={<Button size="sm" variant="ghost"><Trash2 className="h-3 w-3" /></Button>}
-                    title={`Delete ${f.name}?`}
-                    onConfirm={() => del.mutate(f.id)}
-                  />
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-
-      {purchases && purchases.length > 0 && (
-        <div>
-          <h2 className="font-display text-xl font-semibold mb-3">Recent purchases</h2>
-          <Card>
-            <ul className="divide-y">
-              {purchases.map((p) => {
-                const item = items?.find((i) => i.id === p.feed_item_id);
+        <TabsContent value="inventory" className="space-y-4">
+          <SearchBar value={search} onChange={setSearch} placeholder="Search feed by name, store, species…" />
+          {containers.length === 0 && (
+            <Card className="p-4 border-warning/40 bg-warning/5 text-sm">
+              No storage containers yet. Add one in the <b>Containers</b> tab before logging purchases.
+            </Card>
+          )}
+          {items.length === 0 ? (
+            <Card className="p-12 text-center">
+              <Wheat className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+              <p className="text-muted-foreground">No feed items yet.</p>
+            </Card>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredItems.map((f) => {
+                const low = Number(f.low_stock_threshold) > 0 && Number(f.stock_qty) <= Number(f.low_stock_threshold);
+                const perContainer = stock.filter((s) => s.feed_item_id === f.id && s.stock_lbs > 0);
                 return (
-                  <li key={p.id} className="px-4 py-3 flex items-center justify-between text-sm flex-wrap gap-2">
-                    <div>
-                      <div className="font-medium">{item?.name ?? "—"}</div>
-                      <div className="text-xs text-muted-foreground">{format(new Date(p.purchased_on), "MMM d, yyyy")} · {p.store ?? "—"}</div>
+                  <Card key={f.id} className="p-4 flex flex-col gap-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="font-semibold truncate">{f.name}</div>
+                        <div className="text-xs text-muted-foreground truncate">{f.store ?? "—"}{f.species_for ? ` · for ${f.species_for}` : ""}</div>
+                      </div>
+                      {low && <Badge variant="outline" className="border-warning text-warning">low</Badge>}
                     </div>
-                    <div className="text-right">
-                      <div>{fmt(p.price_cents)}</div>
-                      <div className="text-xs text-muted-foreground">qty {p.quantity}</div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl font-display font-semibold">{Number(f.stock_qty).toFixed(1)}</span>
+                      <span className="text-xs text-muted-foreground">{f.unit}</span>
                     </div>
-                  </li>
+                    <div className="text-sm text-muted-foreground">{fmt(f.price_cents)} per {f.unit}</div>
+                    {perContainer.length > 0 && (
+                      <ul className="text-xs space-y-0.5 rounded-md bg-muted/40 p-2">
+                        {perContainer.map((s) => (
+                          <li key={s.container_id} className="flex justify-between">
+                            <span>{containers.find((c) => c.id === s.container_id)?.name ?? "—"}</span>
+                            <span>{Number(s.stock_lbs).toFixed(1)} lb</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="flex gap-1 mt-auto pt-2">
+                      <Button size="sm" variant="outline" onClick={() => setPurchaseFor(f)} disabled={containers.length === 0}>
+                        <ShoppingCart className="h-3 w-3" /> Buy
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => setEditItem(f)}><Pencil className="h-3 w-3" /></Button>
+                      <ConfirmDelete trigger={<Button size="sm" variant="ghost"><Trash2 className="h-3 w-3" /></Button>}
+                        title={`Delete ${f.name}?`} onConfirm={() => del.mutate(f.id)} />
+                    </div>
+                  </Card>
                 );
               })}
-            </ul>
-          </Card>
-        </div>
-      )}
+            </div>
+          )}
+
+          {purchases.length > 0 && (
+            <div>
+              <h2 className="font-display text-xl font-semibold mb-3">Recent purchases</h2>
+              <Card>
+                <ul className="divide-y">
+                  {purchases.map((p) => {
+                    const item = items.find((i) => i.id === p.feed_item_id);
+                    const container = containers.find((c) => c.id === p.container_id);
+                    return (
+                      <li key={p.id} className="px-4 py-3 flex items-center justify-between text-sm flex-wrap gap-2">
+                        <div>
+                          <div className="font-medium">{item?.name ?? "—"}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {format(new Date(p.purchased_on), "MMM d, yyyy")} · {p.store ?? "—"}
+                            {container ? ` · → ${container.name}` : ""}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div>{fmt(p.price_cents)}</div>
+                          <div className="text-xs text-muted-foreground">{Number(p.total_lbs ?? p.quantity ?? 0).toFixed(1)} lb</div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </Card>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="containers"><ContainersTab /></TabsContent>
+        <TabsContent value="units"><UnitsTab /></TabsContent>
+        <TabsContent value="reports"><FeedReportsTab /></TabsContent>
+      </Tabs>
 
       {editItem && (
         <Dialog open onOpenChange={(o) => !o && setEditItem(null)}>
           <FeedItemForm initial={editItem} onSubmit={(p) => save.mutate({ ...p, id: editItem.id })} submitting={save.isPending} />
         </Dialog>
       )}
-
       {purchaseFor && (
         <Dialog open onOpenChange={(o) => !o && setPurchaseFor(null)}>
-          <PurchaseForm item={purchaseFor} onSubmit={(p) => addPurchase.mutate(p)} submitting={addPurchase.isPending} />
+          <PurchaseDialog item={purchaseFor} containers={containers} units={units} onSubmit={(p) => addPurchase.mutate(p)} submitting={addPurchase.isPending} />
+        </Dialog>
+      )}
+      {feedingOpen && (
+        <Dialog open onOpenChange={setFeedingOpen}>
+          <FeedingDialog items={items} containers={containers} units={units} stock={stock} animals={animals} onSubmit={(p) => addFeeding.mutate(p)} submitting={addFeeding.isPending} />
         </Dialog>
       )}
     </div>
@@ -256,44 +289,15 @@ function FeedItemForm({ initial, onSubmit, submitting }: { initial?: FeedItem; o
       <form onSubmit={(e) => { e.preventDefault(); if (!f.name) { toast.error("Name required"); return; } onSubmit({ ...f, price_cents: Math.round(Number(priceDollars || 0) * 100) }); }} className="space-y-3">
         <div><Label>Product name *</Label><Input value={f.name ?? ""} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="Layer Pellets 50lb" required maxLength={150} /></div>
         <div className="grid grid-cols-2 gap-3">
-          <div><Label>Store</Label><Input value={f.store ?? ""} onChange={(e) => setF({ ...f, store: e.target.value })} placeholder="Tractor Supply" maxLength={100} /></div>
-          <div><Label>Used for (species)</Label><Input value={f.species_for ?? ""} onChange={(e) => setF({ ...f, species_for: e.target.value })} placeholder="chickens, goats" maxLength={100} /></div>
-          <div><Label>Price ($)</Label><Input type="number" step="0.01" value={priceDollars} onChange={(e) => setPriceDollars(e.target.value)} /></div>
+          <div><Label>Store</Label><Input value={f.store ?? ""} onChange={(e) => setF({ ...f, store: e.target.value })} maxLength={100} /></div>
+          <div><Label>Used for (species)</Label><Input value={f.species_for ?? ""} onChange={(e) => setF({ ...f, species_for: e.target.value })} maxLength={100} /></div>
+          <div><Label>Reference price ($)</Label><Input type="number" step="0.01" value={priceDollars} onChange={(e) => setPriceDollars(e.target.value)} /></div>
           <div><Label>Unit</Label><Input value={f.unit ?? "lb"} onChange={(e) => setF({ ...f, unit: e.target.value })} maxLength={20} /></div>
-          <div><Label>Package size</Label><Input type="number" step="0.1" value={f.package_size ?? ""} onChange={(e) => setF({ ...f, package_size: e.target.value ? Number(e.target.value) : null })} placeholder="50" /></div>
-          <div><Label>Stock qty</Label><Input type="number" step="0.1" value={f.stock_qty ?? 0} onChange={(e) => setF({ ...f, stock_qty: Number(e.target.value) })} /></div>
-          <div className="col-span-2"><Label>Low stock alert at</Label><Input type="number" step="0.1" value={f.low_stock_threshold ?? 0} onChange={(e) => setF({ ...f, low_stock_threshold: Number(e.target.value) })} /></div>
+          <div><Label>Default bag size</Label><Input type="number" step="0.1" value={f.package_size ?? ""} onChange={(e) => setF({ ...f, package_size: e.target.value ? Number(e.target.value) : null })} placeholder="50" /></div>
+          <div><Label>Low stock alert at</Label><Input type="number" step="0.1" value={f.low_stock_threshold ?? 0} onChange={(e) => setF({ ...f, low_stock_threshold: Number(e.target.value) })} /></div>
         </div>
         <div><Label>Notes</Label><Textarea value={f.notes ?? ""} onChange={(e) => setF({ ...f, notes: e.target.value })} maxLength={1000} /></div>
         <DialogFooter><Button type="submit" disabled={submitting}>Save</Button></DialogFooter>
-      </form>
-    </DialogContent>
-  );
-}
-
-function PurchaseForm({ item, onSubmit, submitting }: { item: FeedItem; onSubmit: (p: { feed_item_id: string; store: string | null; price_cents: number; quantity: number; purchased_on: string; notes: string | null; addToStock: boolean }) => void; submitting: boolean }) {
-  const [store, setStore] = useState(item.store ?? "");
-  const [price, setPrice] = useState(((item.price_cents ?? 0) / 100).toFixed(2));
-  const [qty, setQty] = useState("1");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [notes, setNotes] = useState("");
-  const [addToStock, setAddToStock] = useState(true);
-  return (
-    <DialogContent>
-      <DialogHeader><DialogTitle>Log purchase: {item.name}</DialogTitle></DialogHeader>
-      <form onSubmit={(e) => { e.preventDefault(); onSubmit({ feed_item_id: item.id, store: store || null, price_cents: Math.round(Number(price) * 100), quantity: Number(qty), purchased_on: date, notes: notes || null, addToStock }); }} className="space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-          <div><Label>Store</Label><Input value={store} onChange={(e) => setStore(e.target.value)} maxLength={100} /></div>
-          <div><Label>Date</Label><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>
-          <div><Label>Price ($)</Label><Input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} required /></div>
-          <div><Label>Quantity</Label><Input type="number" step="0.1" value={qty} onChange={(e) => setQty(e.target.value)} required /></div>
-        </div>
-        <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} /></div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={addToStock} onChange={(e) => setAddToStock(e.target.checked)} />
-          Add quantity to stock and update price/store
-        </label>
-        <DialogFooter><Button type="submit" disabled={submitting}>Log purchase</Button></DialogFooter>
       </form>
     </DialogContent>
   );
