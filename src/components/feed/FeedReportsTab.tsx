@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { format, differenceInDays, parseISO, subDays } from "date-fns";
+import { format, parseISO, subDays } from "date-fns";
 
 type Log = {
   id: string; feed_item_id: string; container_id: string | null;
