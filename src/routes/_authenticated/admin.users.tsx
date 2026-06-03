@@ -24,7 +24,7 @@ import {
 } from "@/lib/admin-users.functions";
 import { UserPlus, Shield, KeyRound, Trash2, Pencil } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/settings/users")({ component: UsersPage });
+export const Route = createFileRoute("/_authenticated/admin/users")({ component: UsersPage });
 
 function UsersPage() {
   const { isAdmin, loading: permLoading } = usePermissions();

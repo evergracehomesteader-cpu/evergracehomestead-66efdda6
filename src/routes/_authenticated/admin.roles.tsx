@@ -12,7 +12,7 @@ import { ALL_ROLES, ROLE_LABEL, PERMISSION_GROUPS, type AppRole } from "@/lib/pe
 import { usePermissions } from "@/hooks/usePermissions";
 import { adminSetRolePermissions } from "@/lib/admin-users.functions";
 
-export const Route = createFileRoute("/_authenticated/settings/roles")({ component: RolesPage });
+export const Route = createFileRoute("/_authenticated/admin/roles")({ component: RolesPage });
 
 function RolesPage() {
   const { isAdmin, loading } = usePermissions();
