@@ -17,22 +17,6 @@ const schema = z.object({
   password: z.string().min(6).max(72),
 });
 
-const PREVIEW_EMAIL = "preview@evergrace.local";
-const PREVIEW_PASSWORD = "Preview123!";
-
-function isPreviewEnv(): boolean {
-  if (typeof window === "undefined") return false;
-  const host = window.location.hostname;
-  // Only show in Lovable Preview sandboxes and local dev — never on the published custom domain.
-  return (
-    host === "localhost" ||
-    host === "127.0.0.1" ||
-    host.includes("id-preview--") ||
-    host.endsWith(".lovableproject.com") ||
-    host.endsWith(".lovable.dev")
-  );
-}
-
 function LoginPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
