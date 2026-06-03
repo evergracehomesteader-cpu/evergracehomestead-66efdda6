@@ -16,6 +16,7 @@ import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
+import { Route as AuthenticatedPwaDiagnosticsRouteImport } from './routes/_authenticated/pwa-diagnostics'
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
 import { Route as AuthenticatedIncomeRouteImport } from './routes/_authenticated/income'
@@ -70,6 +71,12 @@ const AuthenticatedRemindersRoute = AuthenticatedRemindersRouteImport.update({
   path: '/reminders',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPwaDiagnosticsRoute =
+  AuthenticatedPwaDiagnosticsRouteImport.update({
+    id: '/pwa-diagnostics',
+    path: '/pwa-diagnostics',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedProductionRoute = AuthenticatedProductionRouteImport.update({
   id: '/production',
   path: '/production',
@@ -186,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/production': typeof AuthenticatedProductionRoute
+  '/pwa-diagnostics': typeof AuthenticatedPwaDiagnosticsRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -213,6 +221,7 @@ export interface FileRoutesByTo {
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/production': typeof AuthenticatedProductionRoute
+  '/pwa-diagnostics': typeof AuthenticatedPwaDiagnosticsRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -242,6 +251,7 @@ export interface FileRoutesById {
   '/_authenticated/income': typeof AuthenticatedIncomeRoute
   '/_authenticated/litters': typeof AuthenticatedLittersRoute
   '/_authenticated/production': typeof AuthenticatedProductionRoute
+  '/_authenticated/pwa-diagnostics': typeof AuthenticatedPwaDiagnosticsRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/income'
     | '/litters'
     | '/production'
+    | '/pwa-diagnostics'
     | '/reminders'
     | '/reports'
     | '/settings'
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/income'
     | '/litters'
     | '/production'
+    | '/pwa-diagnostics'
     | '/reminders'
     | '/reports'
     | '/settings'
@@ -326,6 +338,7 @@ export interface FileRouteTypes {
     | '/_authenticated/income'
     | '/_authenticated/litters'
     | '/_authenticated/production'
+    | '/_authenticated/pwa-diagnostics'
     | '/_authenticated/reminders'
     | '/_authenticated/reports'
     | '/_authenticated/settings'
@@ -391,6 +404,13 @@ declare module '@tanstack/react-router' {
       path: '/reminders'
       fullPath: '/reminders'
       preLoaderRoute: typeof AuthenticatedRemindersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pwa-diagnostics': {
+      id: '/_authenticated/pwa-diagnostics'
+      path: '/pwa-diagnostics'
+      fullPath: '/pwa-diagnostics'
+      preLoaderRoute: typeof AuthenticatedPwaDiagnosticsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/production': {
@@ -556,6 +576,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedIncomeRoute: typeof AuthenticatedIncomeRoute
   AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
   AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
+  AuthenticatedPwaDiagnosticsRoute: typeof AuthenticatedPwaDiagnosticsRoute
   AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -581,6 +602,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIncomeRoute: AuthenticatedIncomeRoute,
   AuthenticatedLittersRoute: AuthenticatedLittersRoute,
   AuthenticatedProductionRoute: AuthenticatedProductionRoute,
+  AuthenticatedPwaDiagnosticsRoute: AuthenticatedPwaDiagnosticsRoute,
   AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
@@ -602,3 +624,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

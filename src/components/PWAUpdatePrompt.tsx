@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { registerServiceWorker, type ServiceWorkerHandle } from "@/lib/pwa";
+import { setLastUpdateDetected } from "@/lib/pwa-diagnostics";
 
 /**
  * Mounts the service worker and shows a toast when a new version is ready.
@@ -18,6 +19,7 @@ export function PWAUpdatePrompt() {
       handleRef.current = handle;
 
       dispose = handle.onUpdateAvailable(() => {
+        setLastUpdateDetected(Date.now());
         toast("A new version is available", {
           description: "Reload to get the latest changes.",
           duration: Infinity,

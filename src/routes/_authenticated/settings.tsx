@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 import { usePermissions } from "@/hooks/usePermissions";
-import { Settings as SettingsIcon, LogOut, Info, ExternalLink, Users, Shield, Database } from "lucide-react";
+import { Settings as SettingsIcon, LogOut, Info, ExternalLink, Users, Shield, Database, Wifi } from "lucide-react";
 import { APP_VERSION, APP_LAST_UPDATED, APP_PUBLISHED_URL } from "@/lib/app-version";
 
 export const Route = createFileRoute("/_authenticated/settings")({ component: SettingsPage });
@@ -69,6 +69,7 @@ function SettingsPage() {
         <div className="flex gap-2 pt-2">
           <Button size="sm" variant="outline" asChild><Link to="/changelog">Changelog</Link></Button>
           <Button size="sm" variant="outline" asChild><Link to="/app-updates">App Updates</Link></Button>
+          <Button size="sm" variant="outline" asChild><Link to="/pwa-diagnostics"><Wifi className="h-4 w-4 mr-1" /> PWA Diagnostics</Link></Button>
         </div>
       </Card>
     </div>
