@@ -42,7 +42,7 @@ function LoginPage() {
     (async () => {
       setPreviewBusy(true);
       try {
-        const { access_token, refresh_token } = await callPreviewSignIn({});
+        const { access_token, refresh_token } = await callPreviewSignIn();
         if (cancelled) return;
         const { error } = await supabase.auth.setSession({ access_token, refresh_token });
         if (error) throw error;
