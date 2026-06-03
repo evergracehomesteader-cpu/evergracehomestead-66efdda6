@@ -128,14 +128,17 @@ export function FeedingDialog({
             <Label className="text-xs text-muted-foreground">Quick pick</Label>
             <div className="flex flex-wrap gap-2 mt-1">
               {([
-                { label: "¼ bucket", qty: "0.25", match: /^bucket$|^full bucket$/i },
-                { label: "½ bucket", qty: "0.5", match: /^bucket$|^full bucket$/i },
-                { label: "1 bucket", qty: "1", match: /^bucket$|^full bucket$/i },
-                { label: "2 buckets", qty: "2", match: /^bucket$|^full bucket$/i },
+                { label: "1 scoop", qty: "1", match: /^scoop$/i },
+                { label: "2 scoops", qty: "2", match: /^scoop$/i },
+                { label: "¼ bucket", qty: "1", match: /^quarter bucket$/i },
+                { label: "½ bucket", qty: "1", match: /^half bucket$/i },
+                { label: "¾ bucket", qty: "1", match: /^three[- ]quarter bucket$/i },
+                { label: "1 bucket", qty: "1", match: /^(full )?bucket$/i },
+                { label: "2 buckets", qty: "2", match: /^(full )?bucket$/i },
               ]).map((b) => (
                 <Button key={b.label} type="button" size="sm" variant="outline" onClick={() => {
                   const u = units.find((x) => b.match.test(x.name));
-                  if (!u) { toast.error('Add a "Bucket" unit in the Units tab first'); return; }
+                  if (!u) { toast.error(`Add a matching unit in the Units tab first`); return; }
                   setUnitMode("unit"); setUnitId(u.id); setQty(b.qty);
                 }}>{b.label}</Button>
               ))}
