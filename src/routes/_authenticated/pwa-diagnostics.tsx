@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_authenticated/pwa-diagnostics")({
 
 function StatusBadge({ state }: { state: SWStatus["state"] }) {
   if (state === "activated") return <Badge variant="default" className="bg-success text-success-foreground">Activated</Badge>;
-  if (state === "activated" || state === "installed") return <Badge variant="default" className="bg-success text-success-foreground">Installed</Badge>;
+  if (state === "installed") return <Badge variant="default" className="bg-success text-success-foreground">Installed</Badge>;
   if (state === "installing" || state === "activating") return <Badge variant="secondary">Activating…</Badge>;
   if (state === "none") return <Badge variant="outline">Not registered</Badge>;
   if (state === "redundant") return <Badge variant="destructive">Redundant</Badge>;
