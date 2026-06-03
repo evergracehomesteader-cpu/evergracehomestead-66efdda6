@@ -21,7 +21,7 @@ export async function getServiceWorkerStatus(): Promise<SWStatus> {
     supported: true,
     state: state as SWStatus["state"],
     scope: reg.scope ?? null,
-    scriptURL: reg.scriptURL ?? null,
+    scriptURL: sw?.scriptURL ?? null,
     controlled: navigator.serviceWorker.controller !== null,
   };
 }
