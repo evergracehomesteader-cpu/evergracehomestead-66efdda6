@@ -23,7 +23,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const previewEnabled = isPreviewEnv();
+
 
   if (!loading && user) return <Navigate to="/dashboard" />;
 
