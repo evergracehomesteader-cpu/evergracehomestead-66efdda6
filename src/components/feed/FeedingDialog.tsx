@@ -110,6 +110,7 @@ export function FeedingDialog({
             </Select>
             <p className="text-xs text-muted-foreground mt-1">In stock: {currentStock.toFixed(1)} lb</p>
           </div>
+          <div><Label>Amount</Label><Input type="number" step="0.1" value={qty} onChange={(e) => setQty(e.target.value)} /></div>
           <div>
             <Label>Unit</Label>
             <Select value={unitMode === "lbs" ? "__lbs__" : unitId} onValueChange={(v) => {
@@ -123,7 +124,23 @@ export function FeedingDialog({
               </SelectContent>
             </Select>
           </div>
-          <div><Label>Quantity</Label><Input type="number" step="0.1" value={qty} onChange={(e) => setQty(e.target.value)} /></div>
+          <div className="col-span-2">
+            <Label className="text-xs text-muted-foreground">Quick pick</Label>
+            <div className="flex flex-wrap gap-2 mt-1">
+              {([
+                { label: "¼ bucket", qty: "0.25", match: /^bucket$|^full bucket$/i },
+                { label: "½ bucket", qty: "0.5", match: /^bucket$|^full bucket$/i },
+                { label: "1 bucket", qty: "1", match: /^bucket$|^full bucket$/i },
+                { label: "2 buckets", qty: "2", match: /^bucket$|^full bucket$/i },
+              ]).map((b) => (
+                <Button key={b.label} type="button" size="sm" variant="outline" onClick={() => {
+                  const u = units.find((x) => b.match.test(x.name));
+                  if (!u) { toast.error('Add a "Bucket" unit in the Units tab first'); return; }
+                  setUnitMode("unit"); setUnitId(u.id); setQty(b.qty);
+                }}>{b.label}</Button>
+              ))}
+            </div>
+          </div>
           <div className="col-span-2"><Label>Date</Label><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>
         </div>
 
