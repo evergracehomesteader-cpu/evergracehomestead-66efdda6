@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as React from "react";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, ListChecks, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield, Database } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -26,6 +26,7 @@ const manage = [
 
 const plan = [
   { title: "Tasks", url: "/tasks", icon: ListTodo },
+  { title: "Chores", url: "/chores", icon: ListChecks },
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
   { title: "Reminders", url: "/reminders", icon: Bell },
   { title: "Reports", url: "/reports", icon: BarChart3 },
@@ -36,6 +37,7 @@ const plan = [
 const adminItems = [
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Roles", url: "/admin/roles", icon: Shield },
+  { title: "Backup & Restore", url: "/admin/backups", icon: Database },
 ];
 
 export function AppSidebar() {
