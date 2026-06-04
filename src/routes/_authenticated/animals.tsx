@@ -45,6 +45,7 @@ type Animal = {
   purchase_cost_cents?: number | null; purchase_date?: string | null;
   expected_sale_price_cents?: number | null;
   sale_price_cents?: number | null; sale_date?: string | null;
+  current_pen?: string | null;
 };
 
 function AnimalsPage() {
