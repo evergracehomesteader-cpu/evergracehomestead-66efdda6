@@ -173,9 +173,8 @@ function AnimalsPage() {
           </Select>
         </div>
       )}
-          </Dialog>
-        </div>
-      </div>
+
+
 
       {Object.keys(grouped).length === 0 ? (
         <Card className="p-12 text-center">
