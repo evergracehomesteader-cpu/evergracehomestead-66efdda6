@@ -45,6 +45,7 @@ type Animal = {
   purchase_cost_cents?: number | null; purchase_date?: string | null;
   expected_sale_price_cents?: number | null;
   sale_price_cents?: number | null; sale_date?: string | null;
+  current_pen?: string | null;
 };
 
 function AnimalsPage() {
@@ -56,6 +57,15 @@ function AnimalsPage() {
   const { data: species = [] } = useSpeciesCatalog();
   const { data: breeds = [] } = useBreedsCatalog();
   const speciesByName = useMemo(() => Object.fromEntries(species.map((s) => [s.name.toLowerCase(), s])), [species]);
+  const [breedFilter, setBreedFilter] = useState<string>("__all__");
+
+  const { data: pens = [] } = useQuery({
+    queryKey: ["pens-list"],
+    queryFn: async () => {
+      const { data } = await supabase.from("pens" as never).select("id,name,species").order("name");
+      return (data ?? []) as unknown as { id: string; name: string; species: string | null }[];
+    },
+  });
 
   const { data: animals } = useQuery({
     queryKey: ["animals"],
@@ -105,7 +115,14 @@ function AnimalsPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const grouped = (animals ?? []).reduce<Record<string, Animal[]>>((acc, a) => {
+  const allBreeds = useMemo(() => {
+    const s = new Set<string>();
+    (animals ?? []).forEach((a) => { if (a.breed) s.add(a.breed); });
+    return Array.from(s).sort();
+  }, [animals]);
+
+  const filtered = (animals ?? []).filter((a) => breedFilter === "__all__" || (a.breed ?? "") === breedFilter);
+  const grouped = filtered.reduce<Record<string, Animal[]>>((acc, a) => {
     (acc[a.species] ||= []).push(a); return acc;
   }, {});
 
@@ -136,12 +153,28 @@ function AnimalsPage() {
               species={species}
               speciesByName={speciesByName}
               breeds={breeds}
+              pens={pens}
               onSubmit={(p) => save.mutate(p)}
               submitting={save.isPending}
             />
           </Dialog>
         </div>
       </div>
+
+      {allBreeds.length > 0 && (
+        <div className="flex items-center gap-2">
+          <Label className="text-xs text-muted-foreground">Filter by breed:</Label>
+          <Select value={breedFilter} onValueChange={setBreedFilter}>
+            <SelectTrigger className="h-8 w-56"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">All breeds</SelectItem>
+              {allBreeds.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+
 
       {Object.keys(grouped).length === 0 ? (
         <Card className="p-12 text-center">
@@ -249,6 +282,7 @@ function AnimalsPage() {
             species={species}
             speciesByName={speciesByName}
             breeds={breeds}
+            pens={pens}
             onSubmit={(p) => save.mutate({ ...p, id: editing.id })}
             submitting={save.isPending}
           />
@@ -261,11 +295,12 @@ function AnimalsPage() {
 // ---------- Add/Edit Animal Form ----------
 
 function AnimalForm({
-  initial, animals, species, speciesByName, breeds, onSubmit, submitting,
+  initial, animals, species, speciesByName, breeds, pens, onSubmit, submitting,
 }: {
   initial?: Animal;
   animals: Animal[]; species: SpeciesRow[]; speciesByName: Record<string, SpeciesRow>;
   breeds: BreedRow[];
+  pens: { id: string; name: string; species: string | null }[];
   onSubmit: (p: Partial<Animal>) => void; submitting: boolean;
 }) {
   const [form, setForm] = useState<Partial<Animal>>(
@@ -453,6 +488,25 @@ function AnimalForm({
               </SelectContent>
             </Select>
           </div>
+
+          <div className="col-span-2">
+            <Label>Pen</Label>
+            {pens.length > 0 ? (
+              <Select value={form.current_pen ?? "__none__"} onValueChange={(v) => set("current_pen", v === "__none__" ? null : v)}>
+                <SelectTrigger><SelectValue placeholder="No pen assigned" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">— No pen —</SelectItem>
+                  {pens
+                    .filter((pn) => !pn.species || !form.species || pn.species.toLowerCase() === (form.species ?? "").toLowerCase())
+                    .map((pn) => <SelectItem key={pn.id} value={pn.name}>{pn.name}{pn.species ? ` (${pn.species})` : ""}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input value={form.current_pen ?? ""} onChange={(e) => set("current_pen", e.target.value || null)} placeholder="Create pens on the Pens page" maxLength={100} />
+            )}
+          </div>
+
+
 
           {form.status === "pending_sale" && (
             <div className="col-span-2">

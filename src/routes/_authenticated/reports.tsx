@@ -48,7 +48,7 @@ function ReportsPage() {
   });
   const { data: allAnimals } = useQuery({
     queryKey: ["rep-animals"],
-    queryFn: async () => (await supabase.from("animals").select("id,name")).data ?? [],
+    queryFn: async () => (await supabase.from("animals").select("id,name,breed,status")).data ?? [],
   });
 
   const inMonth = (d: string | null) => !!d && isWithinInterval(parseISO(d), { start, end });
@@ -148,6 +148,30 @@ function ReportsPage() {
                 <li key={r.id} className="flex justify-between">
                   <span>{r.name}</span>
                   <span className="font-medium text-success">{fmt(r.cents)}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
+      </Card>
+
+      <Card className="p-4">
+        <h3 className="font-semibold mb-3">Animals by breed</h3>
+        {(() => {
+          const counts = new Map<string, number>();
+          (allAnimals ?? []).forEach((a) => {
+            if ((a as { status?: string }).status !== "active") return;
+            const b = ((a as { breed?: string | null }).breed ?? "Unknown") || "Unknown";
+            counts.set(b, (counts.get(b) ?? 0) + 1);
+          });
+          const rows = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+          if (rows.length === 0) return <p className="text-sm text-muted-foreground">No active animals yet.</p>;
+          return (
+            <ul className="space-y-1 text-sm">
+              {rows.map(([breed, n]) => (
+                <li key={breed} className="flex justify-between">
+                  <span>{breed}</span>
+                  <span className="font-medium">{n}</span>
                 </li>
               ))}
             </ul>

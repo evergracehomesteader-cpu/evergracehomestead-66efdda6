@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as React from "react";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield, CalendarCheck, Database } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield, CalendarCheck, Database, Fence } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -13,6 +13,7 @@ import { APP_VERSION } from "@/lib/app-version";
 const manage = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Animals", url: "/animals", icon: PawPrint },
+  { title: "Pens", url: "/pens", icon: Fence },
   { title: "Breeding & Litters", url: "/litters", icon: Baby },
   { title: "Feed", url: "/feed", icon: Wheat },
   { title: "Garden", url: "/garden", icon: Sprout },

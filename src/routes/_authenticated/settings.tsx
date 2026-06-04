@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Settings as SettingsIcon, LogOut, Info, ExternalLink, Users, Shield, Database, Wifi } from "lucide-react";
 import { APP_VERSION, APP_LAST_UPDATED, APP_PUBLISHED_URL } from "@/lib/app-version";
+import { BreedsManager } from "@/components/breeds/BreedsManager";
 
 export const Route = createFileRoute("/_authenticated/settings")({ component: SettingsPage });
 
@@ -30,6 +31,8 @@ function SettingsPage() {
         </div>
         <Button variant="outline" onClick={() => signOut()}><LogOut className="h-4 w-4" /> Sign out</Button>
       </Card>
+
+      <BreedsManager />
 
       {isAdmin && (
         <Card className="p-5 space-y-3">

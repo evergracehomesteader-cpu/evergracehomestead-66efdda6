@@ -1180,6 +1180,45 @@ export type Database = {
         }
         Relationships: []
       }
+      pens: {
+        Row: {
+          active: boolean
+          capacity: number | null
+          created_at: string
+          created_by: string | null
+          id: string
+          location: string | null
+          name: string
+          notes: string | null
+          species: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          notes?: string | null
+          species?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          notes?: string | null
+          species?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pregnancies: {
         Row: {
           actual_birth: string | null
