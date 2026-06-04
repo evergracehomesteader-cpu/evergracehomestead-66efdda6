@@ -48,7 +48,7 @@ function ReportsPage() {
   });
   const { data: allAnimals } = useQuery({
     queryKey: ["rep-animals"],
-    queryFn: async () => (await supabase.from("animals").select("id,name")).data ?? [],
+    queryFn: async () => (await supabase.from("animals").select("id,name,breed,status")).data ?? [],
   });
 
   const inMonth = (d: string | null) => !!d && isWithinInterval(parseISO(d), { start, end });
