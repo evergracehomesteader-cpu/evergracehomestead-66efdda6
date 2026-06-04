@@ -295,11 +295,12 @@ function AnimalsPage() {
 // ---------- Add/Edit Animal Form ----------
 
 function AnimalForm({
-  initial, animals, species, speciesByName, breeds, onSubmit, submitting,
+  initial, animals, species, speciesByName, breeds, pens, onSubmit, submitting,
 }: {
   initial?: Animal;
   animals: Animal[]; species: SpeciesRow[]; speciesByName: Record<string, SpeciesRow>;
   breeds: BreedRow[];
+  pens: { id: string; name: string; species: string | null }[];
   onSubmit: (p: Partial<Animal>) => void; submitting: boolean;
 }) {
   const [form, setForm] = useState<Partial<Animal>>(
