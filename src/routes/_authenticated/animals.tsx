@@ -115,7 +115,14 @@ function AnimalsPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const grouped = (animals ?? []).reduce<Record<string, Animal[]>>((acc, a) => {
+  const allBreeds = useMemo(() => {
+    const s = new Set<string>();
+    (animals ?? []).forEach((a) => { if (a.breed) s.add(a.breed); });
+    return Array.from(s).sort();
+  }, [animals]);
+
+  const filtered = (animals ?? []).filter((a) => breedFilter === "__all__" || (a.breed ?? "") === breedFilter);
+  const grouped = filtered.reduce<Record<string, Animal[]>>((acc, a) => {
     (acc[a.species] ||= []).push(a); return acc;
   }, {});
 
