@@ -489,6 +489,22 @@ function AnimalForm({
             </Select>
           </div>
 
+          <div className="col-span-2">
+            <Label>Pen</Label>
+            {pens.length > 0 ? (
+              <Select value={form.current_pen ?? "__none__"} onValueChange={(v) => set("current_pen", v === "__none__" ? null : v)}>
+                <SelectTrigger><SelectValue placeholder="No pen assigned" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">— No pen —</SelectItem>
+                  {pens
+                    .filter((pn) => !pn.species || !form.species || pn.species.toLowerCase() === (form.species ?? "").toLowerCase())
+                    .map((pn) => <SelectItem key={pn.id} value={pn.name}>{pn.name}{pn.species ? ` (${pn.species})` : ""}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input value={form.current_pen ?? ""} onChange={(e) => set("current_pen", e.target.value || null)} placeholder="Create pens on the Pens page" maxLength={100} />
+            )}
+
           {form.status === "pending_sale" && (
             <div className="col-span-2">
               <Label>Expected sale price ($)</Label>
