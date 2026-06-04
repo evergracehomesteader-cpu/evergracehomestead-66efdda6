@@ -32,6 +32,8 @@ function SettingsPage() {
         <Button variant="outline" onClick={() => signOut()}><LogOut className="h-4 w-4" /> Sign out</Button>
       </Card>
 
+      <BreedsManager />
+
       {isAdmin && (
         <Card className="p-5 space-y-3">
           <div className="flex items-center gap-2">
