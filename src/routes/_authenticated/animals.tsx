@@ -504,6 +504,9 @@ function AnimalForm({
             ) : (
               <Input value={form.current_pen ?? ""} onChange={(e) => set("current_pen", e.target.value || null)} placeholder="Create pens on the Pens page" maxLength={100} />
             )}
+          </div>
+
+
 
           {form.status === "pending_sale" && (
             <div className="col-span-2">
