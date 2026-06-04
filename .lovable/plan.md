@@ -1,84 +1,43 @@
-# Feed Inventory & Feeding Logs Overhaul
+# Pens & Breeds
 
-## Data model (new + changed tables)
+## Pens (new)
 
-**New: `feed_containers`** — physical storage locations
-- `name` (e.g., "Blue Barrel", "Feed Bin", "Bag Storage")
-- `capacity_lbs` (optional), `location` (optional notes), `active`
+**Database** — new `public.pens` table:
+- `name` (text, required), `species` (text), `capacity` (int), `location` (text), `notes` (text), `active` (bool default true), `created_by`, timestamps
+- RLS: select for `authenticated`, write for admin/manager (same pattern as `feed_containers`)
+- Keep existing `animals.current_pen` as text for now; the new pens UI populates the dropdown options. (Avoids a destructive migration to FK and keeps existing logs working.)
 
-**New: `feed_container_stock`** — current pounds of each feed item inside each container
-- `container_id`, `feed_item_id`, `stock_lbs` (running total)
-- Unique on (container_id, feed_item_id)
-- Updated by triggers on purchases (+) and feed logs (−)
+**UI**
+- New route `src/routes/_authenticated/pens.tsx` with list + Add/Edit/Delete dialog (same shape as ContainersTab).
+- Sidebar: add **Pens** entry under Manage (PawPrint-adjacent icon, e.g. `Fence` or `Square`).
+- Animals form: change `current_pen` free-text input into a Select populated from `pens.name` (with "— none —" option).
+- Feeding by Pen: already works in `FeedingDialog` via `animals.current_pen`. Its pen dropdown will automatically pick up the new pen names.
 
-**New: `feed_units`** — admin-configurable measurement units
-- `name` (e.g., "Full bucket", "Half bucket", "Quarter bucket", "Scoop")
-- `lbs_per_unit` (numeric)
-- `is_system` flag for built-ins; "pounds" is always available implicitly
-- Seeded with reasonable defaults; admins/managers can edit
+## Breeds
 
-**Changed: `feed_purchases`** — add
-- `container_id` (where it was stored)
-- `unit_type` ('bag' | 'lbs' | 'custom_unit')
-- `bag_size_lbs` (when unit_type='bag')
-- `bag_count` (when unit_type='bag')
-- `custom_unit_id`, `custom_unit_qty`
-- `total_lbs` (computed/derived, stored for reporting)
-- `cost_per_bag_cents` (derived for display)
+**Status check** — `breeds_catalog` table and `animals.breed` field already exist. Feeding by breed already works in `FeedingDialog`.
 
-**Changed: `feed_logs`** — add
-- `container_id` (which container it came from)
-- `unit_id` (nullable — null means "pounds" directly)
-- `unit_qty` (how many of that unit)
-- `total_lbs` (auto-computed: unit_qty × unit.lbs_per_unit, or `quantity` when pounds)
-- `target_type` ('animal' | 'breed' | 'species' | 'pen' | 'group')
-- `target_value` (text — breed name / species / pen / group label)
-- Keep existing `animal_id` for individual feedings
+**What's actually missing**
+- A **Breeds management** UI to add/edit/delete entries in `breeds_catalog` (per species). Add as a tab inside Settings (or a small section on the Animals page). I'll put it under **Settings → Breeds**.
+- Animals form: replace the free-text **Breed** input with a Select sourced from `breeds_catalog` filtered by the chosen species, with an inline "+ Add new breed" option that writes to `breeds_catalog`.
+- Animals list: add a **Breed** filter dropdown.
+- Reports: add a "By breed" summary section (animal counts and feed usage by breed).
 
-**Triggers**
-- After insert on `feed_purchases`: increment `feed_container_stock.stock_lbs` and `feed_items.stock_qty`
-- After insert on `feed_logs`: decrement `feed_container_stock.stock_lbs` and `feed_items.stock_qty`
-- After delete: reverse both
+**Seed the example breeds** — Kunekune, Berkshire, IPP (pigs); Nigerian Dwarf (goat); Rouen (duck); Golden Laced Wyandotte (chicken); Calhoun × Pit Mix (dog). Seeded via insert tool against `breeds_catalog` (matched to existing species rows; created if missing).
 
-RLS: authenticated read all; admin/manager write for containers & units; all authenticated can log purchases/feedings.
+## Files touched
 
-## UI
-
-**Feed page (`/feed`)**
-- Tabs: **Inventory** | **Containers** | **Units** | **Reports**
-- Inventory tab: existing item cards, now showing per-container breakdown
-- Purchase dialog (rewritten):
-  - Pick feed item + container
-  - Mode: Bags / Pounds / Custom unit
-  - Bags: bag size (lbs) × bag count → auto-calc total lbs; cost per bag → total cost
-  - Pounds: direct lbs + total cost
-  - Custom unit: pick unit + qty + total cost
-- Feeding log dialog (rewritten):
-  - Pick feed item + container (filtered to containers holding that feed)
-  - Target: Animal / Breed / Species / Pen / Group
-  - Unit: Full/Half/Quarter bucket, Scoop, Pounds, or any custom unit
-  - Qty → auto-shows computed total lbs before submit
-- Containers tab (admin/manager): CRUD list with current stock per feed item
-- Units tab (admin/manager): edit lbs/unit values
-
-**Reports tab**
-- Daily feed used (last 30 days, by feed item, line chart)
-- Usage per animal / breed / species / pen (table)
-- Days of feed remaining per container (current stock ÷ avg daily use)
-
-## Files
-
-- Migration: new tables, columns, triggers, seed units & containers
-- `src/routes/_authenticated/feed.tsx` — rewrite with tabs
-- `src/components/feed/PurchaseDialog.tsx` — new
-- `src/components/feed/FeedingDialog.tsx` — new
-- `src/components/feed/ContainersTab.tsx` — new
-- `src/components/feed/UnitsTab.tsx` — new
-- `src/components/feed/FeedReportsTab.tsx` — new
+- **Migration:** create `pens` table + RLS + grants
+- **New:** `src/routes/_authenticated/pens.tsx`, `src/components/breeds/BreedsManager.tsx`
+- **Edit:** `src/components/AppSidebar.tsx` (add Pens link)
+- **Edit:** animal create/edit form (pen dropdown + breed dropdown — I'll locate it in `src/routes/_authenticated/animals.tsx` / `animals.$animalId.tsx`)
+- **Edit:** animals list (add Breed filter)
+- **Edit:** `src/routes/_authenticated/settings.tsx` (mount BreedsManager)
+- **Edit:** `src/routes/_authenticated/reports.tsx` (add by-breed section)
 
 ## Notes
-- All weights stored in pounds (lbs) internally for consistency, even if a feed item's display `unit` is something else.
-- Existing feed items/purchases/logs preserved; new columns nullable with sane defaults so old data still shows.
-- Permissions: managing containers/units requires `admin` or `manager` role.
 
-Ready to build on approval.
+- No breaking changes to existing data — `current_pen` and `breed` stay as text columns.
+- Feed-by-pen and feed-by-breed already function; this PR just makes the data they read from manageable in the UI.
+
+Confirm and I'll implement.
