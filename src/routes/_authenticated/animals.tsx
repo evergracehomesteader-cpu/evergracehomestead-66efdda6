@@ -153,9 +153,26 @@ function AnimalsPage() {
               species={species}
               speciesByName={speciesByName}
               breeds={breeds}
+              pens={pens}
               onSubmit={(p) => save.mutate(p)}
               submitting={save.isPending}
             />
+          </Dialog>
+        </div>
+      </div>
+
+      {allBreeds.length > 0 && (
+        <div className="flex items-center gap-2">
+          <Label className="text-xs text-muted-foreground">Filter by breed:</Label>
+          <Select value={breedFilter} onValueChange={setBreedFilter}>
+            <SelectTrigger className="h-8 w-56"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">All breeds</SelectItem>
+              {allBreeds.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
           </Dialog>
         </div>
       </div>
