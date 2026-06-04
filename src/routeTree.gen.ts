@@ -18,6 +18,7 @@ import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
 import { Route as AuthenticatedPwaDiagnosticsRouteImport } from './routes/_authenticated/pwa-diagnostics'
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
+import { Route as AuthenticatedPensRouteImport } from './routes/_authenticated/pens'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
 import { Route as AuthenticatedIncomeRouteImport } from './routes/_authenticated/income'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
@@ -80,6 +81,11 @@ const AuthenticatedPwaDiagnosticsRoute =
 const AuthenticatedProductionRoute = AuthenticatedProductionRouteImport.update({
   id: '/production',
   path: '/production',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPensRoute = AuthenticatedPensRouteImport.update({
+  id: '/pens',
+  path: '/pens',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
@@ -192,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/garden': typeof AuthenticatedGardenRoute
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
+  '/pens': typeof AuthenticatedPensRoute
   '/production': typeof AuthenticatedProductionRoute
   '/pwa-diagnostics': typeof AuthenticatedPwaDiagnosticsRoute
   '/reminders': typeof AuthenticatedRemindersRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/garden': typeof AuthenticatedGardenRoute
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
+  '/pens': typeof AuthenticatedPensRoute
   '/production': typeof AuthenticatedProductionRoute
   '/pwa-diagnostics': typeof AuthenticatedPwaDiagnosticsRoute
   '/reminders': typeof AuthenticatedRemindersRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
   '/_authenticated/income': typeof AuthenticatedIncomeRoute
   '/_authenticated/litters': typeof AuthenticatedLittersRoute
+  '/_authenticated/pens': typeof AuthenticatedPensRoute
   '/_authenticated/production': typeof AuthenticatedProductionRoute
   '/_authenticated/pwa-diagnostics': typeof AuthenticatedPwaDiagnosticsRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/garden'
     | '/income'
     | '/litters'
+    | '/pens'
     | '/production'
     | '/pwa-diagnostics'
     | '/reminders'
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/garden'
     | '/income'
     | '/litters'
+    | '/pens'
     | '/production'
     | '/pwa-diagnostics'
     | '/reminders'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/_authenticated/garden'
     | '/_authenticated/income'
     | '/_authenticated/litters'
+    | '/_authenticated/pens'
     | '/_authenticated/production'
     | '/_authenticated/pwa-diagnostics'
     | '/_authenticated/reminders'
@@ -418,6 +430,13 @@ declare module '@tanstack/react-router' {
       path: '/production'
       fullPath: '/production'
       preLoaderRoute: typeof AuthenticatedProductionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pens': {
+      id: '/_authenticated/pens'
+      path: '/pens'
+      fullPath: '/pens'
+      preLoaderRoute: typeof AuthenticatedPensRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/litters': {
@@ -575,6 +594,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
   AuthenticatedIncomeRoute: typeof AuthenticatedIncomeRoute
   AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
+  AuthenticatedPensRoute: typeof AuthenticatedPensRoute
   AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
   AuthenticatedPwaDiagnosticsRoute: typeof AuthenticatedPwaDiagnosticsRoute
   AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
@@ -601,6 +621,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
   AuthenticatedIncomeRoute: AuthenticatedIncomeRoute,
   AuthenticatedLittersRoute: AuthenticatedLittersRoute,
+  AuthenticatedPensRoute: AuthenticatedPensRoute,
   AuthenticatedProductionRoute: AuthenticatedProductionRoute,
   AuthenticatedPwaDiagnosticsRoute: AuthenticatedPwaDiagnosticsRoute,
   AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
