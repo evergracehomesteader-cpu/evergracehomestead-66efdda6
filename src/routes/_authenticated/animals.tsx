@@ -57,6 +57,15 @@ function AnimalsPage() {
   const { data: species = [] } = useSpeciesCatalog();
   const { data: breeds = [] } = useBreedsCatalog();
   const speciesByName = useMemo(() => Object.fromEntries(species.map((s) => [s.name.toLowerCase(), s])), [species]);
+  const [breedFilter, setBreedFilter] = useState<string>("__all__");
+
+  const { data: pens = [] } = useQuery({
+    queryKey: ["pens-list"],
+    queryFn: async () => {
+      const { data } = await supabase.from("pens" as never).select("id,name,species").order("name");
+      return (data ?? []) as unknown as { id: string; name: string; species: string | null }[];
+    },
+  });
 
   const { data: animals } = useQuery({
     queryKey: ["animals"],
