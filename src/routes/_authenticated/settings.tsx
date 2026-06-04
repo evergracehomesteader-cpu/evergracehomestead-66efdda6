@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Settings as SettingsIcon, LogOut, Info, ExternalLink, Users, Shield, Database, Wifi } from "lucide-react";
 import { APP_VERSION, APP_LAST_UPDATED, APP_PUBLISHED_URL } from "@/lib/app-version";
+import { BreedsManager } from "@/components/breeds/BreedsManager";
 
 export const Route = createFileRoute("/_authenticated/settings")({ component: SettingsPage });
 
