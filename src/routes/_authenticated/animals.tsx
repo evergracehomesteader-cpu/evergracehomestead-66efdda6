@@ -282,6 +282,7 @@ function AnimalsPage() {
             species={species}
             speciesByName={speciesByName}
             breeds={breeds}
+            pens={pens}
             onSubmit={(p) => save.mutate({ ...p, id: editing.id })}
             submitting={save.isPending}
           />
