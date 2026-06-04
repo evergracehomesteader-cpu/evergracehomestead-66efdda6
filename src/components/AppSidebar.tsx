@@ -13,6 +13,7 @@ import { APP_VERSION } from "@/lib/app-version";
 const manage = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Animals", url: "/animals", icon: PawPrint },
+  { title: "Pens", url: "/pens", icon: Fence },
   { title: "Breeding & Litters", url: "/litters", icon: Baby },
   { title: "Feed", url: "/feed", icon: Wheat },
   { title: "Garden", url: "/garden", icon: Sprout },
