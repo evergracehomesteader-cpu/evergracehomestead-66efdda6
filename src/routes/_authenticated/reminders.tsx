@@ -24,10 +24,17 @@ function RemindersPage() {
   const garden = useQuery({ queryKey: ["rem-garden"], queryFn: async () => (await supabase.from("garden_plots").select("*")).data ?? [] });
   const compost = useQuery({ queryKey: ["rem-compost"], queryFn: async () => (await supabase.from("compost_entries").select("id,entry_type,entry_date")).data ?? [] });
   const barter = useQuery({ queryKey: ["rem-barter"], queryFn: async () => (await supabase.from("barter_deals").select("id,title,status,due_date").eq("status", "pending")).data ?? [] });
+  const incubations = useQuery({
+    queryKey: ["rem-incubations"],
+    queryFn: async () => {
+      const c = supabase as never as { from: (t: string) => { select: (s: string) => { is: (col: string, v: null) => Promise<{ data: { id: string; animal_id: string | null; species: string; expected_hatch: string | null; actual_hatch: string | null }[] }> } } };
+      return (await c.from("incubations").select("id,animal_id,species,expected_hatch,actual_hatch").is("actual_hatch", null)).data ?? [];
+    },
+  });
 
   const reminders = computeReminders({
     animals: animals.data, heats: heats.data, pregnancies: pregs.data, feed: feed.data,
-    bills: bills.data, tasks: tasks.data, garden: garden.data, compost: compost.data, barter: barter.data,
+    bills: bills.data, tasks: tasks.data, garden: garden.data, compost: compost.data, barter: barter.data, incubations: incubations.data,
   });
 
   return (
