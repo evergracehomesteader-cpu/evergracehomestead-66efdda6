@@ -79,7 +79,7 @@ export function ReproductionTab({ animal }: { animal: Animal }) {
     mutationFn: async (status: string) => {
       const { error } = await supabase
         .from("animals")
-        .update({ breeding_status: status || null })
+        .update({ breeding_status: status || null } as never)
         .eq("id", animalId);
       if (error) throw error;
     },
