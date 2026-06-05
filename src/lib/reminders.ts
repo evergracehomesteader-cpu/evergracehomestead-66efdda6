@@ -3,7 +3,7 @@ import { addDays, differenceInDays, isBefore, parseISO } from "date-fns";
 export type Severity = "info" | "warning" | "urgent";
 export type Reminder = {
   id: string;
-  kind: "heat" | "breeding" | "pregnancy" | "due" | "feed" | "task" | "compost" | "garden" | "bill" | "barter";
+  kind: "heat" | "breeding" | "pregnancy" | "due" | "feed" | "task" | "compost" | "garden" | "bill" | "barter" | "hatch";
   severity: Severity;
   title: string;
   subtitle: string;
@@ -20,6 +20,7 @@ type TaskRow = { id: string; title: string; due_date: string | null; completed: 
 type GardenRow = { id: string; name: string; crop: string | null; status: string; last_watered_on: string | null; watering_interval_days: number | null; expected_harvest: string | null };
 type CompostRow = { id: string; entry_type: string; entry_date: string };
 type BarterRow = { id: string; title: string; status: string; due_date: string | null };
+type IncubationRow = { id: string; animal_id: string | null; species: string; expected_hatch: string | null; actual_hatch: string | null };
 
 const HEAT_CYCLE_DAYS: Record<string, number> = { goat: 21, sheep: 17, cow: 21, pig: 21, dog: 180, cat: 14, rabbit: 16 };
 
