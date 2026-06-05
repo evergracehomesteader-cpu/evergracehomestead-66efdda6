@@ -116,6 +116,8 @@ export function computeReminders(input: {
         link: i.animal_id ? { to: "/animals/$animalId", params: { animalId: i.animal_id } } : { to: "/animals" },
       });
     }
+  });
+
 
   // Feed restock
   (input.feed ?? []).forEach((f) => {
