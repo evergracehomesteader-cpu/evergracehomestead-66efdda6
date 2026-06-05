@@ -43,6 +43,13 @@ function Dashboard() {
   const garden = useQuery({ queryKey: ["dash-garden"], queryFn: async () => (await supabase.from("garden_plots").select("*").neq("status", "harvested")).data ?? [] });
   const compost = useQuery({ queryKey: ["dash-compost"], queryFn: async () => (await supabase.from("compost_entries").select("id,entry_type,entry_date")).data ?? [] });
   const barter = useQuery({ queryKey: ["dash-barter"], queryFn: async () => (await supabase.from("barter_deals").select("id, title, person_name, status, due_date, trade_date, estimated_value_cents, created_at").order("created_at", { ascending: false })).data ?? [] });
+  const incubations = useQuery({
+    queryKey: ["dash-incubations"],
+    queryFn: async () => {
+      const c = supabase as never as { from: (t: string) => { select: (s: string) => { is: (col: string, v: null) => Promise<{ data: { id: string; animal_id: string | null; species: string; expected_hatch: string | null; actual_hatch: string | null }[] }> } } };
+      return (await c.from("incubations").select("id,animal_id,species,expected_hatch,actual_hatch").is("actual_hatch", null)).data ?? [];
+    },
+  });
   const tasks = useQuery({
     queryKey: ["dash-tasks"],
     queryFn: async () => {
