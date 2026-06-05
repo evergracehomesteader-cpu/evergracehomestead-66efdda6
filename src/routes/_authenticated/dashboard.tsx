@@ -76,7 +76,7 @@ function Dashboard() {
   const reminders = computeReminders({
     animals: animals.data, heats: heats.data,
     pregnancies: pregs.data?.map((p) => ({ id: p.id, animal_id: p.animal_id, status: p.status, expected_due: p.expected_due, bred_date: p.bred_date })),
-    feed: feed.data, bills: bills.data, tasks: tasks.data, garden: garden.data, compost: compost.data, barter: barter.data,
+    feed: feed.data, bills: bills.data, tasks: tasks.data, garden: garden.data, compost: compost.data, barter: barter.data, incubations: incubations.data,
   });
   const urgent = reminders.filter((r) => r.severity === "urgent" || r.severity === "warning").slice(0, 5);
 
