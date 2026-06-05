@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History, GitBranch, DollarSign, Target } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History, GitBranch, DollarSign, Target, Sparkles } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { toast } from "sonner";
 import { gestationFor, statusBadgeClass } from "@/lib/homestead";
@@ -20,6 +20,7 @@ import { WithdrawalBanner } from "@/components/WithdrawalBanner";
 import { loadAnimalFinance } from "@/lib/animal-finance";
 import { SignedImg } from "@/components/SignedImg";
 import { findCommonAncestors } from "@/lib/lineage";
+import { ReproductionTab } from "@/components/animals/ReproductionTab";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 type SbAny = {
