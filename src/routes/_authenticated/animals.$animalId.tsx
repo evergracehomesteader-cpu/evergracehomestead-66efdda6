@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History, GitBranch, DollarSign, Target } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History, GitBranch, DollarSign, Target, Sparkles } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { toast } from "sonner";
 import { gestationFor, statusBadgeClass } from "@/lib/homestead";
@@ -20,6 +20,7 @@ import { WithdrawalBanner } from "@/components/WithdrawalBanner";
 import { loadAnimalFinance } from "@/lib/animal-finance";
 import { SignedImg } from "@/components/SignedImg";
 import { findCommonAncestors } from "@/lib/lineage";
+import { ReproductionTab } from "@/components/animals/ReproductionTab";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 type SbAny = {
@@ -254,8 +255,8 @@ function AnimalDetail() {
       <Tabs defaultValue="timeline">
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="timeline"><History className="h-4 w-4 mr-1" />Timeline</TabsTrigger>
+          <TabsTrigger value="reproduction"><Sparkles className="h-4 w-4 mr-1" />Reproduction</TabsTrigger>
           {animal.sex === "female" && <TabsTrigger value="heats">Heats</TabsTrigger>}
-          {animal.sex === "female" && <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>}
           <TabsTrigger value="weight"><Scale className="h-4 w-4 mr-1" />Weight</TabsTrigger>
           <TabsTrigger value="health"><Stethoscope className="h-4 w-4 mr-1" />Health</TabsTrigger>
           <TabsTrigger value="lineage"><GitBranch className="h-4 w-4 mr-1" />Lineage</TabsTrigger>
@@ -295,44 +296,10 @@ function AnimalDetail() {
           )}
         </TabsContent>
 
-        <TabsContent value="pregnancies" className="space-y-3">
-          <PregAdd damId={animalId} species={animal.species} males={males ?? []} onAdd={(p) => addPreg.mutate(p)} />
-          {(pregs ?? []).length === 0 ? <p className="text-muted-foreground text-sm">No pregnancies tracked.</p> : (
-            <div className="space-y-2">
-              {pregs?.map((p) => (
-                <Card key={p.id} className="p-4">
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div>
-                      <div className="font-medium">Bred {format(new Date(p.bred_date), "MMM d, yyyy")}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {p.expected_due && `Due ${format(new Date(p.expected_due), "MMM d")}`}
-                        {p.actual_birth && ` · Born ${format(new Date(p.actual_birth), "MMM d")}`}
-                        {p.offspring_count != null && ` · ${p.offspring_count} born`}
-                        {p.survived_count != null && `, ${p.survived_count} survived`}
-                      </div>
-                    </div>
-                    <Badge className={statusBadgeClass(p.status)}>{p.status}</Badge>
-                  </div>
-                  {!["delivered", "born", "lost"].includes(p.status) && (
-                    <div className="mt-3 flex gap-2 flex-wrap">
-                      {p.status === "suspected" && (
-                        <Button size="sm" variant="outline" onClick={() => updatePreg.mutate({ id: p.id, status: "confirmed" })}>Confirm</Button>
-                      )}
-                      <Button size="sm" variant="outline" onClick={() => {
-                        const date = prompt("Birth date (YYYY-MM-DD)?", new Date().toISOString().slice(0,10));
-                        if (!date) return;
-                        const count = prompt("Number born?");
-                        const survived = prompt("Number survived?", count ?? "");
-                        updatePreg.mutate({ id: p.id, status: "delivered", actual_birth: date, offspring_count: count ? Number(count) : 0, survived_count: survived ? Number(survived) : null });
-                      }}><Baby className="h-4 w-4" /> Mark delivered</Button>
-                      <Button size="sm" variant="ghost" onClick={() => updatePreg.mutate({ id: p.id, status: "lost" })}>Mark lost</Button>
-                    </div>
-                  )}
-                </Card>
-              ))}
-            </div>
-          )}
+        <TabsContent value="reproduction">
+          <ReproductionTab animal={animal as never} />
         </TabsContent>
+
 
         <TabsContent value="weight" className="space-y-3">
           <WeightAdd onAdd={(p) => addWeight.mutate(p)} />

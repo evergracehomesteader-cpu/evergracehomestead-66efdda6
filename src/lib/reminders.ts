@@ -3,7 +3,7 @@ import { addDays, differenceInDays, isBefore, parseISO } from "date-fns";
 export type Severity = "info" | "warning" | "urgent";
 export type Reminder = {
   id: string;
-  kind: "heat" | "breeding" | "pregnancy" | "due" | "feed" | "task" | "compost" | "garden" | "bill" | "barter";
+  kind: "heat" | "breeding" | "pregnancy" | "due" | "feed" | "task" | "compost" | "garden" | "bill" | "barter" | "hatch";
   severity: Severity;
   title: string;
   subtitle: string;
@@ -20,6 +20,7 @@ type TaskRow = { id: string; title: string; due_date: string | null; completed: 
 type GardenRow = { id: string; name: string; crop: string | null; status: string; last_watered_on: string | null; watering_interval_days: number | null; expected_harvest: string | null };
 type CompostRow = { id: string; entry_type: string; entry_date: string };
 type BarterRow = { id: string; title: string; status: string; due_date: string | null };
+type IncubationRow = { id: string; animal_id: string | null; species: string; expected_hatch: string | null; actual_hatch: string | null };
 
 const HEAT_CYCLE_DAYS: Record<string, number> = { goat: 21, sheep: 17, cow: 21, pig: 21, dog: 180, cat: 14, rabbit: 16 };
 
@@ -33,6 +34,7 @@ export function computeReminders(input: {
   garden?: GardenRow[];
   compost?: CompostRow[];
   barter?: BarterRow[];
+  incubations?: IncubationRow[];
 }): Reminder[] {
   const today = new Date();
   const out: Reminder[] = [];
@@ -83,12 +85,12 @@ export function computeReminders(input: {
     if ((p.status === "active" || p.status === "confirmed") && p.expected_due) {
       const due = parseISO(p.expected_due);
       const days = differenceInDays(due, today);
-      if (days <= 14 && days >= -3) {
+      if (days <= 30 && days >= -7) {
         out.push({
           id: `due-${p.id}`,
           kind: "pregnancy",
-          severity: days <= 3 ? "urgent" : days <= 7 ? "warning" : "info",
-          title: `${a.name} due soon`,
+          severity: days <= 0 ? "urgent" : days <= 7 ? "urgent" : days <= 14 ? "warning" : "info",
+          title: `${a.name} due ${days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "this week" : days <= 14 ? "in 2 weeks" : "in 30d"}`,
           subtitle: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Today" : `In ${days}d`,
           date: due.toISOString(),
           link: { to: "/animals/$animalId", params: { animalId: a.id } },
@@ -96,6 +98,26 @@ export function computeReminders(input: {
       }
     }
   });
+
+  // Bird incubations — hatch alerts
+  (input.incubations ?? []).forEach((i) => {
+    if (i.actual_hatch || !i.expected_hatch) return;
+    const due = parseISO(i.expected_hatch);
+    const days = differenceInDays(due, today);
+    if (days <= 7 && days >= -3) {
+      const target = (input.animals ?? []).find((x) => x.id === i.animal_id);
+      out.push({
+        id: `hatch-${i.id}`,
+        kind: "hatch",
+        severity: days <= 0 ? "urgent" : days <= 3 ? "warning" : "info",
+        title: `${target?.name ?? i.species} eggs hatching`,
+        subtitle: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Today" : `In ${days}d`,
+        date: due.toISOString(),
+        link: i.animal_id ? { to: "/animals/$animalId", params: { animalId: i.animal_id } } : { to: "/animals" },
+      });
+    }
+  });
+
 
   // Feed restock
   (input.feed ?? []).forEach((f) => {
