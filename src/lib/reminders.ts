@@ -99,6 +99,24 @@ export function computeReminders(input: {
     }
   });
 
+  // Bird incubations — hatch alerts
+  (input.incubations ?? []).forEach((i) => {
+    if (i.actual_hatch || !i.expected_hatch) return;
+    const due = parseISO(i.expected_hatch);
+    const days = differenceInDays(due, today);
+    if (days <= 7 && days >= -3) {
+      const target = (input.animals ?? []).find((x) => x.id === i.animal_id);
+      out.push({
+        id: `hatch-${i.id}`,
+        kind: "hatch",
+        severity: days <= 0 ? "urgent" : days <= 3 ? "warning" : "info",
+        title: `${target?.name ?? i.species} eggs hatching`,
+        subtitle: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Today" : `In ${days}d`,
+        date: due.toISOString(),
+        link: i.animal_id ? { to: "/animals/$animalId", params: { animalId: i.animal_id } } : { to: "/animals" },
+      });
+    }
+
   // Feed restock
   (input.feed ?? []).forEach((f) => {
     if (Number(f.low_stock_threshold) > 0 && Number(f.stock_qty) <= Number(f.low_stock_threshold)) {
