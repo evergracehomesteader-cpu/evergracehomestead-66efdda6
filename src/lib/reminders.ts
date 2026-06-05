@@ -85,12 +85,12 @@ export function computeReminders(input: {
     if ((p.status === "active" || p.status === "confirmed") && p.expected_due) {
       const due = parseISO(p.expected_due);
       const days = differenceInDays(due, today);
-      if (days <= 14 && days >= -3) {
+      if (days <= 30 && days >= -7) {
         out.push({
           id: `due-${p.id}`,
           kind: "pregnancy",
-          severity: days <= 3 ? "urgent" : days <= 7 ? "warning" : "info",
-          title: `${a.name} due soon`,
+          severity: days <= 0 ? "urgent" : days <= 7 ? "urgent" : days <= 14 ? "warning" : "info",
+          title: `${a.name} due ${days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "this week" : days <= 14 ? "in 2 weeks" : "in 30d"}`,
           subtitle: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Today" : `In ${days}d`,
           date: due.toISOString(),
           link: { to: "/animals/$animalId", params: { animalId: a.id } },
