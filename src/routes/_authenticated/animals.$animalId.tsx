@@ -255,8 +255,8 @@ function AnimalDetail() {
       <Tabs defaultValue="timeline">
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="timeline"><History className="h-4 w-4 mr-1" />Timeline</TabsTrigger>
+          <TabsTrigger value="reproduction"><Sparkles className="h-4 w-4 mr-1" />Reproduction</TabsTrigger>
           {animal.sex === "female" && <TabsTrigger value="heats">Heats</TabsTrigger>}
-          {animal.sex === "female" && <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>}
           <TabsTrigger value="weight"><Scale className="h-4 w-4 mr-1" />Weight</TabsTrigger>
           <TabsTrigger value="health"><Stethoscope className="h-4 w-4 mr-1" />Health</TabsTrigger>
           <TabsTrigger value="lineage"><GitBranch className="h-4 w-4 mr-1" />Lineage</TabsTrigger>
