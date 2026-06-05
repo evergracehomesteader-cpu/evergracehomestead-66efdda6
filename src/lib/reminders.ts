@@ -34,6 +34,7 @@ export function computeReminders(input: {
   garden?: GardenRow[];
   compost?: CompostRow[];
   barter?: BarterRow[];
+  incubations?: IncubationRow[];
 }): Reminder[] {
   const today = new Date();
   const out: Reminder[] = [];
