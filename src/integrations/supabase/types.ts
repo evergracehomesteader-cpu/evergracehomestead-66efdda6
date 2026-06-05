@@ -55,6 +55,7 @@ export type Database = {
           breed_notes: string | null
           breed_percentage: string | null
           breed_type: string
+          breeding_status: string | null
           castration_date: string | null
           created_at: string
           created_by: string | null
@@ -98,6 +99,7 @@ export type Database = {
           breed_notes?: string | null
           breed_percentage?: string | null
           breed_type?: string
+          breeding_status?: string | null
           castration_date?: string | null
           created_at?: string
           created_by?: string | null
@@ -141,6 +143,7 @@ export type Database = {
           breed_notes?: string | null
           breed_percentage?: string | null
           breed_type?: string
+          breeding_status?: string | null
           castration_date?: string | null
           created_at?: string
           created_by?: string | null
@@ -1138,6 +1141,54 @@ export type Database = {
         }
         Relationships: []
       }
+      incubations: {
+        Row: {
+          actual_hatch: string | null
+          animal_id: string | null
+          created_at: string
+          created_by: string | null
+          egg_count: number
+          expected_hatch: string | null
+          fertile: boolean | null
+          hatched_count: number | null
+          id: string
+          notes: string | null
+          set_date: string
+          species: string
+          updated_at: string
+        }
+        Insert: {
+          actual_hatch?: string | null
+          animal_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          egg_count?: number
+          expected_hatch?: string | null
+          fertile?: boolean | null
+          hatched_count?: number | null
+          id?: string
+          notes?: string | null
+          set_date?: string
+          species: string
+          updated_at?: string
+        }
+        Update: {
+          actual_hatch?: string | null
+          animal_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          egg_count?: number
+          expected_hatch?: string | null
+          fertile?: boolean | null
+          hatched_count?: number | null
+          id?: string
+          notes?: string | null
+          set_date?: string
+          species?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       litters: {
         Row: {
           birth_date: string
@@ -1225,14 +1276,19 @@ export type Database = {
           animal_id: string
           bred_date: string
           breeding_cost_cents: number
+          breeding_method: string
           created_at: string
           created_by: string | null
+          evidence: string | null
           expected_due: string | null
+          female_born: number | null
           id: string
+          male_born: number | null
           notes: string | null
           offspring_count: number | null
           sire_id: string | null
           status: Database["public"]["Enums"]["pregnancy_status"]
+          stillborn_count: number | null
           survived_count: number | null
           updated_at: string
         }
@@ -1241,14 +1297,19 @@ export type Database = {
           animal_id: string
           bred_date: string
           breeding_cost_cents?: number
+          breeding_method?: string
           created_at?: string
           created_by?: string | null
+          evidence?: string | null
           expected_due?: string | null
+          female_born?: number | null
           id?: string
+          male_born?: number | null
           notes?: string | null
           offspring_count?: number | null
           sire_id?: string | null
           status?: Database["public"]["Enums"]["pregnancy_status"]
+          stillborn_count?: number | null
           survived_count?: number | null
           updated_at?: string
         }
@@ -1257,14 +1318,19 @@ export type Database = {
           animal_id?: string
           bred_date?: string
           breeding_cost_cents?: number
+          breeding_method?: string
           created_at?: string
           created_by?: string | null
+          evidence?: string | null
           expected_due?: string | null
+          female_born?: number | null
           id?: string
+          male_born?: number | null
           notes?: string | null
           offspring_count?: number | null
           sire_id?: string | null
           status?: Database["public"]["Enums"]["pregnancy_status"]
+          stillborn_count?: number | null
           survived_count?: number | null
           updated_at?: string
         }
