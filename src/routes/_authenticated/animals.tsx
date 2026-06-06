@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, PawPrint, ImagePlus, Baby, Pencil, Trash2 } from "lucide-react";
+import { Plus, PawPrint, ImagePlus, Baby, Pencil, Trash2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { statusBadgeClass } from "@/lib/homestead";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
@@ -199,7 +199,7 @@ function AnimalsPage() {
                   const front = a.front_photo_url ?? a.photo_url;
                   return (
                     <Card key={a.id} className="p-3 sm:p-4 hover:shadow-md transition-shadow h-full flex flex-col sm:flex-row gap-3 items-start">
-                      <Link to="/animals/$animalId" params={{ animalId: a.id }} className="flex gap-3 items-start flex-1 min-w-0">
+                      <Link to="/animals/$animalId" params={{ animalId: a.id }} className="flex gap-3 items-start flex-1 min-w-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer">
                         <div className="flex flex-col gap-1 flex-shrink-0">
                           {front ? (
                             <SignedImg src={front} bucket="animal-photos" alt={a.name} className="h-16 w-16 rounded-md object-cover" fallback={<div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>} />
@@ -239,6 +239,11 @@ function AnimalsPage() {
                       <div className="hidden sm:flex flex-col items-end gap-1 flex-shrink-0">
                         <Badge className={statusBadgeClass(a.status)}>{a.status.replace(/_/g, " ")}</Badge>
                         <div className="flex gap-1">
+                          <Button asChild size="icon" variant="ghost" className="h-7 w-7">
+                            <Link to="/animals/$animalId" params={{ animalId: a.id }} aria-label={`Open ${a.name}`}>
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </Link>
+                          </Button>
                           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); setEditing(a); }}>
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
@@ -254,6 +259,11 @@ function AnimalsPage() {
                       <div className="flex sm:hidden items-center justify-between gap-2 w-full pt-2 border-t border-border/50">
                         <Badge className={statusBadgeClass(a.status)}>{a.status.replace(/_/g, " ")}</Badge>
                         <div className="flex gap-1">
+                          <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-xs">
+                            <Link to="/animals/$animalId" params={{ animalId: a.id }}>
+                              <ArrowRight className="h-3 w-3 mr-1" /> Open
+                            </Link>
+                          </Button>
                           <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={(e) => { e.stopPropagation(); setEditing(a); }}>
                             <Pencil className="h-3 w-3 mr-1" /> Edit
                           </Button>
