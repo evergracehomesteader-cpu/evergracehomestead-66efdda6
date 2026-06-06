@@ -23,20 +23,38 @@ export const INCUBATION_DAYS: Record<string, number> = {
 
 export const BIRD_SPECIES = new Set(Object.keys(INCUBATION_DAYS));
 
+// Normalize species names like "Pigs", "Goats", "Cattle" to canonical keys.
+function normalizeSpecies(species?: string | null): string {
+  if (!species) return "";
+  let s = species.toLowerCase().trim();
+  // Strip trailing plural "s" (Pigs -> pig, Goats -> goat, Cows -> cow, Ducks -> duck).
+  // Special cases:
+  if (s === "cattle") return "cow";
+  if (s === "sheep") return "sheep"; // already singular/plural same
+  if (s === "geese") return "goose";
+  if (s.endsWith("ies")) s = s.slice(0, -3) + "y";
+  else if (s.endsWith("s") && !s.endsWith("ss")) s = s.slice(0, -1);
+  return s;
+}
+
 export function isBird(species?: string | null): boolean {
-  if (!species) return false;
-  return BIRD_SPECIES.has(species.toLowerCase());
+  const s = normalizeSpecies(species);
+  if (!s) return false;
+  return BIRD_SPECIES.has(s);
 }
 
 export function gestationFor(species?: string | null): number {
-  if (!species) return 150;
-  return GESTATION_DAYS[species.toLowerCase()] ?? 150;
+  const s = normalizeSpecies(species);
+  if (!s) return 150;
+  return GESTATION_DAYS[s] ?? 150;
 }
 
 export function incubationFor(species?: string | null): number {
-  if (!species) return 21;
-  return INCUBATION_DAYS[species.toLowerCase()] ?? 21;
+  const s = normalizeSpecies(species);
+  if (!s) return 21;
+  return INCUBATION_DAYS[s] ?? 21;
 }
+
 
 export const MAMMAL_BREEDING_STATUSES = [
   "open",
