@@ -267,7 +267,7 @@ function ResetPasswordDialog({ open, onOpenChange, userId }: { open: boolean; on
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader><DialogTitle>Reset password</DialogTitle></DialogHeader>
-        <div><Label>New password</Label><Input value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Min 8 chars" /></div>
+        <div><Label>New password</Label><Input type="password" value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Min 8 chars" /></div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button onClick={() => m.mutate()} disabled={m.isPending || pwd.length < 8}>{m.isPending ? "Saving…" : "Set password"}</Button>
