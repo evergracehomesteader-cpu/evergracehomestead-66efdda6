@@ -34,7 +34,10 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       const validUrls = new Set(
-        (self.__WB_MANIFEST || []).map((e) => new URL(e.url, self.location.origin).pathname),
+        (self.__WB_MANIFEST || []).map((e) => {
+          const u = typeof e === "string" ? e : e.url;
+          return new URL(u, self.location.origin).pathname;
+        }),
       );
       const cacheNamesToScrub = ["static-assets", "html-pages"];
       for (const name of cacheNamesToScrub) {
