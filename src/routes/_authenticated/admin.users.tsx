@@ -177,7 +177,7 @@ function CreateUserDialog({ onCreated }: { onCreated: () => void }) {
         <DialogHeader><DialogTitle>Add user</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <div><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-          <div><Label>Password</Label><Input type="text" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Min 8 chars" /></div>
+          <div><Label>Password</Label><Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Min 8 chars" /></div>
           <div><Label>Name</Label><Input value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} /></div>
           <div>
             <Label>Role</Label>
