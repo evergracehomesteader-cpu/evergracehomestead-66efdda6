@@ -177,7 +177,7 @@ function CreateUserDialog({ onCreated }: { onCreated: () => void }) {
         <DialogHeader><DialogTitle>Add user</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <div><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-          <div><Label>Password</Label><Input type="text" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Min 8 chars" /></div>
+          <div><Label>Password</Label><Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Min 8 chars" /></div>
           <div><Label>Name</Label><Input value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} /></div>
           <div>
             <Label>Role</Label>
@@ -267,7 +267,7 @@ function ResetPasswordDialog({ open, onOpenChange, userId }: { open: boolean; on
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader><DialogTitle>Reset password</DialogTitle></DialogHeader>
-        <div><Label>New password</Label><Input value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Min 8 chars" /></div>
+        <div><Label>New password</Label><Input type="password" value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Min 8 chars" /></div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button onClick={() => m.mutate()} disabled={m.isPending || pwd.length < 8}>{m.isPending ? "Saving…" : "Set password"}</Button>
