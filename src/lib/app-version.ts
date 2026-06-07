@@ -1,5 +1,5 @@
-export const APP_VERSION = "0.1.1";
-export const APP_LAST_UPDATED = "2026-06-06T11:25:00Z";
+export const APP_VERSION = "0.1.2";
+export const APP_LAST_UPDATED = "2026-06-07T00:30:00Z";
 
 export const APP_PUBLISHED_URL = "https://evergracehomestead.lovable.app";
 
