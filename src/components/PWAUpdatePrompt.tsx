@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { registerServiceWorker, type ServiceWorkerHandle } from "@/lib/pwa";
 import { setLastUpdateDetected } from "@/lib/pwa-diagnostics";
+import { installChunkReloadHandler } from "@/lib/chunk-reload";
 
 /**
  * Mounts the service worker and shows a toast when a new version is ready.
@@ -11,6 +12,7 @@ export function PWAUpdatePrompt() {
   const handleRef = useRef<ServiceWorkerHandle | null>(null);
 
   useEffect(() => {
+    installChunkReloadHandler();
     let cancelled = false;
     let dispose: (() => void) | null = null;
 
