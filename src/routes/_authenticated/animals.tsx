@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -198,8 +198,14 @@ function AnimalsPage() {
                     : a.breed_type === "unknown" ? "Unknown breed" : (a.breed ?? "—");
                   const front = a.front_photo_url ?? a.photo_url;
                   return (
-                    <Card key={a.id} className="p-3 sm:p-4 hover:shadow-md transition-shadow h-full flex flex-col sm:flex-row gap-3 items-start">
-                      <Link to="/animals/$animalId" params={{ animalId: a.id }} className="flex gap-3 items-start flex-1 min-w-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer">
+                    <Card key={a.id} className="relative p-3 sm:p-4 hover:shadow-md transition-shadow h-full flex flex-col sm:flex-row gap-3 items-start">
+                      <Link
+                        to="/animals/$animalId"
+                        params={{ animalId: a.id }}
+                        aria-label={`Open ${a.name}`}
+                        className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      />
+                      <div className="pointer-events-none flex gap-3 items-start flex-1 min-w-0">
                         <div className="flex flex-col gap-1 flex-shrink-0">
                           {front ? (
                             <SignedImg src={front} bucket="animal-photos" alt={a.name} className="h-16 w-16 rounded-md object-cover" fallback={<div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>} />
@@ -234,16 +240,19 @@ function AnimalsPage() {
                           )}
                           {a.tag && <div className="text-xs text-muted-foreground mt-1">Tag: {a.tag}</div>}
                         </div>
-                      </Link>
+                      </div>
                       {/* Desktop actions */}
-                      <div className="hidden sm:flex flex-col items-end gap-1 flex-shrink-0">
+                      <div className="relative z-10 hidden sm:flex flex-col items-end gap-1 flex-shrink-0">
                         <Badge className={statusBadgeClass(a.status)}>{a.status.replace(/_/g, " ")}</Badge>
                         <div className="flex gap-1">
-                          <Button asChild size="icon" variant="ghost" className="h-7 w-7">
-                            <Link to="/animals/$animalId" params={{ animalId: a.id }} aria-label={`Open ${a.name}`}>
+                          <Link
+                            to="/animals/$animalId"
+                            params={{ animalId: a.id }}
+                            aria-label={`Open ${a.name}`}
+                            className={cn(buttonVariants({ size: "icon", variant: "ghost" }), "h-7 w-7")}
+                          >
                               <ArrowRight className="h-3.5 w-3.5" />
-                            </Link>
-                          </Button>
+                          </Link>
                           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); setEditing(a); }}>
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
@@ -256,14 +265,16 @@ function AnimalsPage() {
                         </div>
                       </div>
                       {/* Mobile action bar */}
-                      <div className="flex sm:hidden items-center justify-between gap-2 w-full pt-2 border-t border-border/50">
+                      <div className="relative z-10 flex sm:hidden items-center justify-between gap-2 w-full pt-2 border-t border-border/50">
                         <Badge className={statusBadgeClass(a.status)}>{a.status.replace(/_/g, " ")}</Badge>
                         <div className="flex gap-1">
-                          <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-xs">
-                            <Link to="/animals/$animalId" params={{ animalId: a.id }}>
+                          <Link
+                            to="/animals/$animalId"
+                            params={{ animalId: a.id }}
+                            className={cn(buttonVariants({ size: "sm", variant: "ghost" }), "h-7 px-2 text-xs")}
+                          >
                               <ArrowRight className="h-3 w-3 mr-1" /> Open
-                            </Link>
-                          </Button>
+                          </Link>
                           <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={(e) => { e.stopPropagation(); setEditing(a); }}>
                             <Pencil className="h-3 w-3 mr-1" /> Edit
                           </Button>
