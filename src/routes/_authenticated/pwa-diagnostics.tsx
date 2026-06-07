@@ -228,6 +228,17 @@ export default function PWADiagnosticsPage() {
         <h2 className="font-semibold">Actions</h2>
         <div className="flex flex-wrap gap-2">
           <Button
+            variant="default"
+            size="sm"
+            onClick={async () => {
+              const { forceFreshReload } = await import("@/lib/chunk-reload");
+              await forceFreshReload();
+            }}
+          >
+            <RefreshCw className="h-4 w-4 mr-1" />
+            Auto-reload stale assets
+          </Button>
+          <Button
             variant="outline"
             size="sm"
             onClick={async () => {
@@ -254,7 +265,7 @@ export default function PWADiagnosticsPage() {
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Clearing caches forces the app to re-download assets on the next visit. The service worker will remain installed and re-populate caches automatically.
+          Auto-reload clears every cache, unregisters the service worker, and reloads the page from the network — use it if a new build is failing to load.
         </p>
       </Card>
     </div>

@@ -26,6 +26,36 @@ clientsClaim();
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST || []);
 
+// On activate, purge any /assets/* entries from the runtime "static-assets"
+// cache that are NOT part of the current precache manifest. This evicts
+// stale JS/CSS chunks left over from previous builds so we never serve a
+// hashed chunk that the new HTML doesn't reference.
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    (async () => {
+      const validUrls = new Set(
+        (self.__WB_MANIFEST || []).map((e) => new URL(e.url, self.location.origin).pathname),
+      );
+      const cacheNamesToScrub = ["static-assets", "html-pages"];
+      for (const name of cacheNamesToScrub) {
+        const cache = await caches.open(name).catch(() => null);
+        if (!cache) continue;
+        const reqs = await cache.keys();
+        await Promise.all(
+          reqs.map(async (req) => {
+            const url = new URL(req.url);
+            if (url.origin !== self.location.origin) return;
+            if (!url.pathname.startsWith("/assets/")) return;
+            if (!validUrls.has(url.pathname)) {
+              await cache.delete(req);
+            }
+          }),
+        );
+      }
+    })(),
+  );
+});
+
 const OFFLINE_URL = "/offline.html";
 
 // HTML navigations: network first, fall back to last good copy, then offline page.
