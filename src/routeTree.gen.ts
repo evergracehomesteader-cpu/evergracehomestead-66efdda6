@@ -20,6 +20,7 @@ import { Route as AuthenticatedPwaDiagnosticsRouteImport } from './routes/_authe
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
 import { Route as AuthenticatedPensRouteImport } from './routes/_authenticated/pens'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
+import { Route as AuthenticatedBreedingRouteImport } from './routes/_authenticated/breeding'
 import { Route as AuthenticatedIncomeRouteImport } from './routes/_authenticated/income'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
@@ -92,6 +93,11 @@ const AuthenticatedPensRoute = AuthenticatedPensRouteImport.update({
 const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
   id: '/litters',
   path: '/litters',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedBreedingRoute = AuthenticatedBreedingRouteImport.update({
+  id: '/breeding',
+  path: '/breeding',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedIncomeRoute = AuthenticatedIncomeRouteImport.update({
