@@ -204,7 +204,6 @@ export interface FileRoutesByFullPath {
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
   '/income': typeof AuthenticatedIncomeRoute
-  '/breeding': typeof AuthenticatedBreedingRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
   '/production': typeof AuthenticatedProductionRoute
