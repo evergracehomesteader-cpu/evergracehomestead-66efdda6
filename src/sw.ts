@@ -23,8 +23,11 @@ self.skipWaiting();
 clientsClaim();
 
 // Precache the build output + offline fallback page.
+// NOTE: workbox-build requires EXACTLY one textual reference to
+// self.__WB_MANIFEST in this file. Capture it once and reuse below.
+const WB_MANIFEST = self.__WB_MANIFEST || [];
 cleanupOutdatedCaches();
-precacheAndRoute(self.__WB_MANIFEST || []);
+precacheAndRoute(WB_MANIFEST);
 
 // On activate, purge any /assets/* entries from the runtime "static-assets"
 // cache that are NOT part of the current precache manifest. This evicts
@@ -34,7 +37,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       const validUrls = new Set(
-        (self.__WB_MANIFEST || []).map((e) => {
+        WB_MANIFEST.map((e: string | { url: string }) => {
           const u = typeof e === "string" ? e : e.url;
           return new URL(u, self.location.origin).pathname;
         }),
