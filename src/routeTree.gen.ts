@@ -29,6 +29,7 @@ import { Route as AuthenticatedCompostRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedChoresRouteImport } from './routes/_authenticated/chores'
 import { Route as AuthenticatedChangelogRouteImport } from './routes/_authenticated/changelog'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
+import { Route as AuthenticatedBreedingRouteImport } from './routes/_authenticated/breeding'
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
 import { Route as AuthenticatedBarterRouteImport } from './routes/_authenticated/barter'
 import { Route as AuthenticatedAppUpdatesRouteImport } from './routes/_authenticated/app-updates'
@@ -138,6 +139,11 @@ const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   path: '/calendar',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedBreedingRoute = AuthenticatedBreedingRouteImport.update({
+  id: '/breeding',
+  path: '/breeding',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedBillsRoute = AuthenticatedBillsRouteImport.update({
   id: '/bills',
   path: '/bills',
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
+  '/breeding': typeof AuthenticatedBreedingRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/changelog': typeof AuthenticatedChangelogRoute
   '/chores': typeof AuthenticatedChoresRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
+  '/breeding': typeof AuthenticatedBreedingRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/changelog': typeof AuthenticatedChangelogRoute
   '/chores': typeof AuthenticatedChoresRoute
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/_authenticated/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/_authenticated/barter': typeof AuthenticatedBarterRoute
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
+  '/_authenticated/breeding': typeof AuthenticatedBreedingRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/changelog': typeof AuthenticatedChangelogRoute
   '/_authenticated/chores': typeof AuthenticatedChoresRoute
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/app-updates'
     | '/barter'
     | '/bills'
+    | '/breeding'
     | '/calendar'
     | '/changelog'
     | '/chores'
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/app-updates'
     | '/barter'
     | '/bills'
+    | '/breeding'
     | '/calendar'
     | '/changelog'
     | '/chores'
@@ -338,6 +349,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app-updates'
     | '/_authenticated/barter'
     | '/_authenticated/bills'
+    | '/_authenticated/breeding'
     | '/_authenticated/calendar'
     | '/_authenticated/changelog'
     | '/_authenticated/chores'
@@ -509,6 +521,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCalendarRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/breeding': {
+      id: '/_authenticated/breeding'
+      path: '/breeding'
+      fullPath: '/breeding'
+      preLoaderRoute: typeof AuthenticatedBreedingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/bills': {
       id: '/_authenticated/bills'
       path: '/bills'
@@ -584,6 +603,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppUpdatesRoute: typeof AuthenticatedAppUpdatesRoute
   AuthenticatedBarterRoute: typeof AuthenticatedBarterRoute
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
+  AuthenticatedBreedingRoute: typeof AuthenticatedBreedingRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedChangelogRoute: typeof AuthenticatedChangelogRoute
   AuthenticatedChoresRoute: typeof AuthenticatedChoresRoute
@@ -611,6 +631,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppUpdatesRoute: AuthenticatedAppUpdatesRoute,
   AuthenticatedBarterRoute: AuthenticatedBarterRoute,
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
+  AuthenticatedBreedingRoute: AuthenticatedBreedingRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedChangelogRoute: AuthenticatedChangelogRoute,
   AuthenticatedChoresRoute: AuthenticatedChoresRoute,
