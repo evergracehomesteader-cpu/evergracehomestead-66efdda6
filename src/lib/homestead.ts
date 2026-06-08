@@ -4,7 +4,7 @@ export const GESTATION_DAYS: Record<string, number> = {
   goat: 150,
   sheep: 147,
   dog: 63,
-  cat: 63,
+  cat: 65,
   rabbit: 31,
   cow: 283,
   horse: 340,
