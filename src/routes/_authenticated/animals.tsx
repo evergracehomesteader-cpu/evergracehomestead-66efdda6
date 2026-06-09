@@ -54,6 +54,8 @@ function AnimalsPage() {
   const [open, setOpen] = useState(false);
   const [litterOpen, setLitterOpen] = useState(false);
   const [editing, setEditing] = useState<Animal | null>(null);
+  const [search, setSearch] = useState("");
+  const [speciesFilter, setSpeciesFilter] = useState<string>("__all__");
 
   const { data: species = [] } = useSpeciesCatalog();
   const { data: breeds = [] } = useBreedsCatalog();
