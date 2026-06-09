@@ -74,7 +74,7 @@ export function AppSidebar() {
       <SidebarHeader className="px-4 py-5">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground font-display text-lg font-semibold">
-            S
+            H
           </div>
           <div className="font-display text-lg font-semibold">Homestead Hub</div>
         </div>
