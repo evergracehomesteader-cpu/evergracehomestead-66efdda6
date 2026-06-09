@@ -124,19 +124,41 @@ function AnimalsPage() {
     return Array.from(s).sort();
   }, [animals]);
 
-  const filtered = (animals ?? []).filter((a) => breedFilter === "__all__" || (a.breed ?? "") === breedFilter);
+  const allSpecies = useMemo(() => {
+    const s = new Set<string>();
+    (animals ?? []).forEach((a) => s.add(a.species));
+    return Array.from(s).sort();
+  }, [animals]);
+
+  const q = search.trim().toLowerCase();
+  const filtered = (animals ?? []).filter((a) => {
+    if (breedFilter !== "__all__" && (a.breed ?? "") !== breedFilter) return false;
+    if (speciesFilter !== "__all__" && a.species !== speciesFilter) return false;
+    if (q && !(
+      a.name.toLowerCase().includes(q) ||
+      (a.breed ?? "").toLowerCase().includes(q) ||
+      (a.tag ?? "").toLowerCase().includes(q) ||
+      a.species.toLowerCase().includes(q)
+    )) return false;
+    return true;
+  });
   const grouped = filtered.reduce<Record<string, Animal[]>>((acc, a) => {
     (acc[a.species] ||= []).push(a); return acc;
   }, {});
+  const totalCount = (animals ?? []).length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-3xl font-display font-semibold">Animals</h1>
-          <p className="text-muted-foreground">Heats, pregnancies, lineage and weight.</p>
+    <div className="space-y-4 pb-24 sm:pb-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-display font-semibold leading-tight">Animals</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {totalCount} {totalCount === 1 ? "animal" : "animals"} · heats, pregnancies, lineage
+          </p>
         </div>
-        <div className="flex gap-2">
+        {/* Desktop action buttons */}
+        <div className="hidden sm:flex gap-2">
           <Dialog open={litterOpen} onOpenChange={setLitterOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" size="lg"><Baby className="h-4 w-4" /> Quick add litter</Button>
@@ -164,11 +186,53 @@ function AnimalsPage() {
         </div>
       </div>
 
+      {/* Search bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name, breed, tag…"
+          className="pl-9 pr-9 h-11 text-base"
+          inputMode="search"
+        />
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            aria-label="Clear search"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-accent"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Species filter pills (horizontal scroll on mobile) */}
+      {allSpecies.length > 1 && (
+        <div className="-mx-3 sm:mx-0 overflow-x-auto scrollbar-none">
+          <div className="flex gap-2 px-3 sm:px-0 min-w-min">
+            <FilterPill active={speciesFilter === "__all__"} onClick={() => setSpeciesFilter("__all__")}>
+              All <span className="ml-1 opacity-70">{totalCount}</span>
+            </FilterPill>
+            {allSpecies.map((sn) => {
+              const n = (animals ?? []).filter((a) => a.species === sn).length;
+              return (
+                <FilterPill key={sn} active={speciesFilter === sn} onClick={() => setSpeciesFilter(sn)}>
+                  <span className="capitalize">{sn}</span> <span className="ml-1 opacity-70">{n}</span>
+                </FilterPill>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Breed filter (compact) */}
       {allBreeds.length > 0 && (
         <div className="flex items-center gap-2">
-          <Label className="text-xs text-muted-foreground">Filter by breed:</Label>
           <Select value={breedFilter} onValueChange={setBreedFilter}>
-            <SelectTrigger className="h-8 w-56"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-9 w-full sm:w-56 text-sm">
+              <SelectValue placeholder="All breeds" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="__all__">All breeds</SelectItem>
               {allBreeds.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
@@ -177,20 +241,24 @@ function AnimalsPage() {
         </div>
       )}
 
-
-
+      {/* List */}
       {Object.keys(grouped).length === 0 ? (
-        <Card className="p-12 text-center">
+        <Card className="p-10 sm:p-12 text-center">
           <PawPrint className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">No animals yet. Add your first one to start tracking.</p>
+          <p className="text-muted-foreground">
+            {totalCount === 0 ? "No animals yet. Tap + to add your first one." : "No animals match your filters."}
+          </p>
         </Card>
       ) : (
         Object.entries(grouped).map(([speciesName, list]) => {
           const sp = speciesByName[speciesName.toLowerCase()];
           return (
-            <div key={speciesName}>
-              <h2 className="font-display text-xl font-semibold capitalize mb-3">{speciesName}</h2>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div key={speciesName} className="space-y-2">
+              <div className="flex items-baseline justify-between">
+                <h2 className="font-display text-lg sm:text-xl font-semibold capitalize">{speciesName}</h2>
+                <span className="text-xs text-muted-foreground">{list.length}</span>
+              </div>
+              <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                 {list.map((a) => {
                   const stage = (a.manual_life_stage_override && a.life_stage)
                     ? (a.life_stage as "baby" | "juvenile" | "adult" | "unknown")
@@ -201,93 +269,98 @@ function AnimalsPage() {
                     : a.breed_type === "unknown" ? "Unknown breed" : (a.breed ?? "—");
                   const front = a.front_photo_url ?? a.photo_url;
                   return (
-                    <Card key={a.id} className="relative p-3 sm:p-4 hover:shadow-md transition-shadow h-full flex flex-col sm:flex-row gap-3 items-start">
+                    <Card key={a.id} className="relative overflow-hidden active:scale-[0.99] active:bg-accent/30 transition-all">
                       <Link
                         to="/animals/$animalId"
                         params={{ animalId: a.id }}
                         aria-label={`Open ${a.name}`}
-                        className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
                       />
-                      <div className="pointer-events-none flex gap-3 items-start flex-1 min-w-0">
-                        <div className="flex flex-col gap-1 flex-shrink-0">
-                          {front ? (
-                            <SignedImg src={front} bucket="animal-photos" alt={a.name} className="h-16 w-16 rounded-md object-cover" fallback={<div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>} />
-                          ) : (
-                            <div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center">
-                              <PawPrint className="h-6 w-6 text-muted-foreground" />
-                            </div>
-                          )}
-                          {a.side_photo_url && (
-                            <SignedImg src={a.side_photo_url} bucket="animal-photos" alt="" className="h-10 w-16 rounded-md object-cover" />
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0">
-                              <div className="font-semibold truncate">
-                                {a.name} <span className="text-muted-foreground font-normal">• {a.sex}</span>
+                      <div className="relative z-[1] pointer-events-none p-3 flex gap-3 items-center">
+                        {front ? (
+                          <SignedImg
+                            src={front}
+                            bucket="animal-photos"
+                            alt={a.name}
+                            className="h-20 w-20 sm:h-16 sm:w-16 rounded-lg object-cover flex-shrink-0 ring-1 ring-border"
+                            fallback={
+                              <div className="h-20 w-20 sm:h-16 sm:w-16 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                                <PawPrint className="h-7 w-7 text-muted-foreground" />
                               </div>
-                              <div className="text-sm text-muted-foreground truncate">
-                                {speciesName} • {breedDisplay} • {lifeLabel}
-                              </div>
-                            </div>
-                            <Badge className={cn("hidden sm:inline-flex", statusBadgeClass(a.status))}>{a.status.replace(/_/g, " ")}</Badge>
+                            }
+                          />
+                        ) : (
+                          <div className="h-20 w-20 sm:h-16 sm:w-16 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                            <PawPrint className="h-7 w-7 text-muted-foreground" />
                           </div>
-                          {a.status === "pending_sale" && (a.expected_sale_price_cents ?? 0) > 0 && (
-                            <div className="text-xs text-success mt-1">Expected: ${((a.expected_sale_price_cents ?? 0) / 100).toFixed(2)}</div>
-                          )}
-                          {(a.user_edited_description ?? a.auto_marking_description) && (
-                            <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                              {a.user_edited_description ?? a.auto_marking_description}
-                            </div>
-                          )}
-                          {a.tag && <div className="text-xs text-muted-foreground mt-1">Tag: {a.tag}</div>}
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-semibold text-base truncate">{a.name}</span>
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 capitalize flex-shrink-0">
+                              {a.sex}
+                            </Badge>
+                          </div>
+                          <div className="text-xs text-muted-foreground truncate mt-0.5">
+                            {breedDisplay} · {lifeLabel}
+                          </div>
+                          <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+                            <Badge className={cn("text-[10px] px-1.5 py-0 h-5", statusBadgeClass(a.status))}>
+                              {a.status.replace(/_/g, " ")}
+                            </Badge>
+                            {a.tag && (
+                              <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                                #{a.tag}
+                              </span>
+                            )}
+                            {a.status === "pending_sale" && (a.expected_sale_price_cents ?? 0) > 0 && (
+                              <span className="text-[10px] text-success font-medium">
+                                ${((a.expected_sale_price_cents ?? 0) / 100).toFixed(0)}
+                              </span>
+                            )}
+                          </div>
                         </div>
+                        <ArrowRight className="h-5 w-5 text-muted-foreground/40 flex-shrink-0" />
                       </div>
-                      {/* Desktop actions */}
-                      <div className="relative z-10 hidden sm:flex flex-col items-end gap-1 flex-shrink-0">
-                        <Badge className={statusBadgeClass(a.status)}>{a.status.replace(/_/g, " ")}</Badge>
-                        <div className="flex gap-1">
-                          <Link
-                            to="/animals/$animalId"
-                            params={{ animalId: a.id }}
-                            aria-label={`Open ${a.name}`}
-                            className={cn(buttonVariants({ size: "icon", variant: "ghost" }), "h-7 w-7")}
-                          >
-                              <ArrowRight className="h-3.5 w-3.5" />
-                          </Link>
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); setEditing(a); }}>
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <ConfirmDelete
-                            trigger={<Button size="icon" variant="ghost" className="h-7 w-7"><Trash2 className="h-3.5 w-3.5" /></Button>}
-                            title={`Delete ${a.name}?`}
-                            description="This permanently removes the animal record. Linked litters keep their reference, but heat/pregnancy/weight/health entries on this animal will be orphaned."
-                            onConfirm={() => del.mutate(a.id)}
-                          />
-                        </div>
-                      </div>
-                      {/* Mobile action bar */}
-                      <div className="relative z-10 flex sm:hidden items-center justify-between gap-2 w-full pt-2 border-t border-border/50">
-                        <Badge className={statusBadgeClass(a.status)}>{a.status.replace(/_/g, " ")}</Badge>
-                        <div className="flex gap-1">
-                          <Link
-                            to="/animals/$animalId"
-                            params={{ animalId: a.id }}
-                            className={cn(buttonVariants({ size: "sm", variant: "ghost" }), "h-7 px-2 text-xs")}
-                          >
-                              <ArrowRight className="h-3 w-3 mr-1" /> Open
-                          </Link>
-                          <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={(e) => { e.stopPropagation(); setEditing(a); }}>
-                            <Pencil className="h-3 w-3 mr-1" /> Edit
-                          </Button>
-                          <ConfirmDelete
-                            trigger={<Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-destructive hover:text-destructive"><Trash2 className="h-3 w-3 mr-1" /> Delete</Button>}
-                            title={`Delete ${a.name}?`}
-                            description="This permanently removes the animal record. Linked litters keep their reference, but heat/pregnancy/weight/health entries on this animal will be orphaned."
-                            onConfirm={() => del.mutate(a.id)}
-                          />
-                        </div>
+                      {/* Overflow menu */}
+                      <div className="absolute top-1.5 right-1.5 z-[2]">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-9 w-9 rounded-full hover:bg-background/80"
+                              onClick={(e) => e.stopPropagation()}
+                              aria-label={`Actions for ${a.name}`}
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                            <DropdownMenuItem asChild>
+                              <Link to="/animals/$animalId" params={{ animalId: a.id }}>
+                                <ArrowRight className="h-4 w-4 mr-2" /> Open profile
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setEditing(a)}>
+                              <Pencil className="h-4 w-4 mr-2" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <ConfirmDelete
+                              trigger={
+                                <DropdownMenuItem
+                                  onSelect={(e) => e.preventDefault()}
+                                  className="text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" /> Delete
+                                </DropdownMenuItem>
+                              }
+                              title={`Delete ${a.name}?`}
+                              description="This permanently removes the animal record. Linked litters keep their reference, but heat/pregnancy/weight/health entries on this animal will be orphaned."
+                              onConfirm={() => del.mutate(a.id)}
+                            />
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </Card>
                   );
@@ -297,6 +370,47 @@ function AnimalsPage() {
           );
         })
       )}
+
+      {/* Mobile floating action buttons */}
+      <div className="sm:hidden fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-40 flex flex-col gap-3 items-end">
+        <Dialog open={litterOpen} onOpenChange={setLitterOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="icon"
+              variant="secondary"
+              className="h-12 w-12 rounded-full shadow-lg border"
+              aria-label="Quick add litter"
+            >
+              <Baby className="h-5 w-5" />
+            </Button>
+          </DialogTrigger>
+          <QuickLitterForm
+            animals={animals ?? []}
+            speciesByName={speciesByName}
+            onDone={() => { setLitterOpen(false); qc.invalidateQueries({ queryKey: ["animals"] }); }}
+          />
+        </Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="icon"
+              className="h-14 w-14 rounded-full shadow-xl"
+              aria-label="Add animal"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </DialogTrigger>
+          <AnimalForm
+            animals={animals ?? []}
+            species={species}
+            speciesByName={speciesByName}
+            breeds={breeds}
+            pens={pens}
+            onSubmit={(p) => save.mutate(p)}
+            submitting={save.isPending}
+          />
+        </Dialog>
+      </div>
 
       {editing && (
         <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
@@ -313,6 +427,22 @@ function AnimalsPage() {
         </Dialog>
       )}
     </div>
+  );
+}
+
+function FilterPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "shrink-0 inline-flex items-center h-9 px-4 rounded-full text-sm font-medium border transition-colors whitespace-nowrap",
+        active
+          ? "bg-primary text-primary-foreground border-primary shadow-sm"
+          : "bg-card text-foreground border-border hover:bg-accent"
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
