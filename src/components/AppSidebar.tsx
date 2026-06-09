@@ -76,7 +76,7 @@ export function AppSidebar() {
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground font-display text-lg font-semibold">
             S
           </div>
-          <div className="font-display text-lg font-semibold">Smileys</div>
+          <div className="font-display text-lg font-semibold">Homestead Hub</div>
         </div>
       </SidebarHeader>
       <SidebarContent>

@@ -17,7 +17,7 @@ const CHECKLIST = [
   "Confirm mobile home-screen app opens correctly",
 ];
 
-const INSTALL_INSTRUCTIONS = `Install Smileys app on Android:
+const INSTALL_INSTRUCTIONS = `Install Homestead Hub on Android:
 
 1. Open ${APP_PUBLISHED_URL} in Chrome on your Android phone.
 2. Tap the three-dot menu (⋮) in the top-right.
