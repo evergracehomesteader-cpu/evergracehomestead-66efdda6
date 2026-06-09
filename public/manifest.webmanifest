@@ -1,6 +1,6 @@
 {
-  "name": "Smileys app",
-  "short_name": "Smileys",
+  "name": "Homestead Hub",
+  "short_name": "Homestead",
   "description": "Track livestock, breeding, feed, gardens, and homestead finances.",
   "start_url": "/",
   "scope": "/",

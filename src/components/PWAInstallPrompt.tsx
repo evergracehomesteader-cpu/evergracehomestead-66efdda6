@@ -76,7 +76,7 @@ export function PWAInstallPrompt() {
   return (
     <div
       role="dialog"
-      aria-label="Install Smileys app"
+      aria-label="Install Homestead Hub"
       className="fixed bottom-4 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-xl border border-border bg-card p-4 shadow-lg"
     >
       <div className="flex items-start gap-3">
@@ -84,7 +84,7 @@ export function PWAInstallPrompt() {
           <Download className="h-5 w-5" />
         </div>
         <div className="flex-1">
-          <div className="text-sm font-semibold">Install Smileys app</div>
+          <div className="text-sm font-semibold">Install Homestead Hub</div>
           <p className="mt-0.5 text-xs text-muted-foreground">
             Add to your home screen for quick access and offline use.
           </p>
