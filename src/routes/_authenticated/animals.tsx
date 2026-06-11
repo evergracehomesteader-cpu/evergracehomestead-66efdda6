@@ -754,6 +754,7 @@ function PhotoSlot({ label, url, uploading, onPick }: { label: string; url: stri
 // ---------- Quick Add Litter ----------
 
 function QuickLitterForm({ animals, speciesByName, onDone }: { animals: Animal[]; speciesByName: Record<string, SpeciesRow>; onDone: () => void }) {
+  const qc = useQueryClient();
   const moms = animals.filter((a) => {
     if (a.sex !== "female") return false;
     const sp = speciesByName[a.species.toLowerCase()];
@@ -814,6 +815,49 @@ function QuickLitterForm({ animals, speciesByName, onDone }: { animals: Animal[]
         const { error: aErr } = await supabase.from("animals").insert(inserts as never);
         if (aErr) throw aErr;
       }
+
+      // Close out the mom's active pregnancy record, if any.
+      const litterId = (litter as { id: string }).id;
+      const totalBabies = maleCount + femaleCount + unknownCount;
+      try {
+        const { data: openPregs } = await supabase
+          .from("pregnancies")
+          .select("id,notes,status,bred_date")
+          .eq("animal_id", motherId)
+          .in("status", ["suspected", "confirmed", "active", "due_soon"] as never)
+          .is("actual_birth", null)
+          .order("bred_date", { ascending: false })
+          .limit(1);
+        const openPreg = openPregs?.[0] as { id: string; notes: string | null } | undefined;
+        if (openPreg) {
+          const linkNote = `Litter recorded ${birthDate} (${totalBabies} babies) [litter:${litterId}]`;
+          const mergedNotes = openPreg.notes ? `${openPreg.notes}\n${linkNote}` : linkNote;
+          await supabase
+            .from("pregnancies")
+            .update({ status: "delivered", actual_birth: birthDate, notes: mergedNotes } as never)
+            .eq("id", openPreg.id);
+        }
+      } catch (pregErr) {
+        console.warn("Could not close pregnancy record:", pregErr);
+      }
+
+      // Move mom out of pregnant state.
+      try {
+        await supabase
+          .from("animals")
+          .update({ breeding_status: "lactating" } as never)
+          .eq("id", motherId);
+      } catch (momErr) {
+        console.warn("Could not update mom breeding status:", momErr);
+      }
+
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["animals"] }),
+        qc.invalidateQueries({ queryKey: ["litters"] }),
+        qc.invalidateQueries({ queryKey: ["breeding-pregs"] }),
+        qc.invalidateQueries({ queryKey: ["breeding-animals"] }),
+      ]);
+
       toast.success(`Litter saved (${inserts.length} babies)`);
       onDone();
     } catch (e) {
