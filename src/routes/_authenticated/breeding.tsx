@@ -252,7 +252,7 @@ function PregnancyRow({
   const due = preg.expected_due ? parseISO(preg.expected_due) : null;
   const daysPregnant = differenceInDays(today, bred);
   const daysUntilDue = due ? differenceInDays(due, today) : null;
-  const isActive = !["delivered", "lost", "false_alarm"].includes(preg.status);
+  const isActive = !preg.actual_birth && !["delivered", "lost", "false_alarm"].includes(preg.status);
 
   let alertCls = "";
   let alertText = "";

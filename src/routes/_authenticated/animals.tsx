@@ -816,29 +816,48 @@ function QuickLitterForm({ animals, speciesByName, onDone }: { animals: Animal[]
         if (aErr) throw aErr;
       }
 
-      // Close out the mom's active pregnancy record, if any.
+      // Close out the mom's open pregnancy record, if any.
+      // Match ANY record (regardless of status) with actual_birth null whose
+      // expected_due is within 14 days of the litter birth date; pick closest.
       const litterId = (litter as { id: string }).id;
       const totalBabies = maleCount + femaleCount + unknownCount;
       try {
-        const { data: openPregs } = await supabase
+        const { data: openPregs, error: pregSelErr } = await supabase
           .from("pregnancies")
-          .select("id,notes,status,bred_date")
+          .select("id,notes,status,bred_date,expected_due")
           .eq("animal_id", motherId)
-          .in("status", ["suspected", "confirmed", "active", "due_soon"] as never)
-          .is("actual_birth", null)
-          .order("bred_date", { ascending: false })
-          .limit(1);
-        const openPreg = openPregs?.[0] as { id: string; notes: string | null } | undefined;
+          .is("actual_birth", null);
+        if (pregSelErr) throw pregSelErr;
+        const birthTime = new Date(birthDate + "T00:00:00").getTime();
+        const DAY = 86400000;
+        const candidates = ((openPregs ?? []) as Array<{ id: string; notes: string | null; status: string; bred_date: string; expected_due: string | null }>)
+          .filter((p) => !["delivered", "lost", "false_alarm"].includes(p.status))
+          .map((p) => {
+            const dist = p.expected_due
+              ? Math.abs(new Date(p.expected_due + "T00:00:00").getTime() - birthTime) / DAY
+              : Infinity;
+            return { ...p, dist };
+          })
+          .filter((p) => p.dist <= 14)
+          .sort((a, b) => a.dist - b.dist);
+        // Fall back to most recent open record with no usable due date match.
+        const openPreg =
+          candidates[0] ??
+          ((openPregs ?? []) as Array<{ id: string; notes: string | null; status: string; bred_date: string; expected_due: string | null }>)
+            .filter((p) => !["delivered", "lost", "false_alarm"].includes(p.status) && !p.expected_due)
+            .sort((a, b) => b.bred_date.localeCompare(a.bred_date))[0];
         if (openPreg) {
           const linkNote = `Litter recorded ${birthDate} (${totalBabies} babies) [litter:${litterId}]`;
           const mergedNotes = openPreg.notes ? `${openPreg.notes}\n${linkNote}` : linkNote;
-          await supabase
+          const { error: pregUpdErr } = await supabase
             .from("pregnancies")
             .update({ status: "delivered", actual_birth: birthDate, notes: mergedNotes } as never)
             .eq("id", openPreg.id);
+          if (pregUpdErr) throw pregUpdErr;
         }
       } catch (pregErr) {
         console.warn("Could not close pregnancy record:", pregErr);
+        toast.error("Litter saved, but couldn't close the pregnancy record: " + (pregErr as Error).message);
       }
 
       // Move mom out of pregnant state.
