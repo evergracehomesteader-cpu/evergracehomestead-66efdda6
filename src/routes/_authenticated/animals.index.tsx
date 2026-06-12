@@ -29,7 +29,7 @@ import {
 } from "@/lib/terminology";
 import { useSpeciesCatalog, useBreedsCatalog, type BreedRow } from "@/hooks/useSpeciesCatalog";
 
-export const Route = createFileRoute("/_authenticated/animals/")({ component: AnimalsPage });
+export const Route = createFileRoute("/_authenticated/animals")({ component: AnimalsPage });
 
 type Animal = {
   id: string; name: string; species: string; breed: string | null;

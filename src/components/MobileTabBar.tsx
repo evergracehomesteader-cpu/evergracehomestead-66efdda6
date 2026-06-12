@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useSidebar } from "@/components/ui/sidebar";
 
 const tabs = [
-  { title: "Home", url: "/dashboard", icon: Home },
+  { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Animals", url: "/animals", icon: PawPrint },
   { title: "Feed", url: "/feed", icon: Wheat },
   { title: "Chores", url: "/chores", icon: CalendarCheck },
