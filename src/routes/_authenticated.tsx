@@ -17,13 +17,8 @@ function AuthLayout() {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
-        <div className="hidden md:block">
-          <AppSidebar />
-        </div>
-        {/* Mobile sheet sidebar (opened via "More" tab) */}
-        <div className="md:hidden">
-          <AppSidebar />
-        </div>
+        <AppSidebar />
+
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-12 md:h-14 flex items-center border-b bg-card/80 backdrop-blur px-3 md:px-4 gap-2 sticky top-0 z-30">
             <div className="hidden md:block">
