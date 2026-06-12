@@ -33,7 +33,7 @@ import { Route as AuthenticatedBreedingRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
 import { Route as AuthenticatedBarterRouteImport } from './routes/_authenticated/barter'
 import { Route as AuthenticatedAppUpdatesRouteImport } from './routes/_authenticated/app-updates'
-import { Route as AuthenticatedAnimalsRouteImport } from './routes/_authenticated/animals'
+import { Route as AuthenticatedAnimalsIndexRouteImport } from './routes/_authenticated/animals.index'
 import { Route as AuthenticatedAnimalsAnimalIdRouteImport } from './routes/_authenticated/animals.$animalId'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin.roles'
@@ -159,16 +159,17 @@ const AuthenticatedAppUpdatesRoute = AuthenticatedAppUpdatesRouteImport.update({
   path: '/app-updates',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAnimalsRoute = AuthenticatedAnimalsRouteImport.update({
-  id: '/animals',
-  path: '/animals',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
+const AuthenticatedAnimalsIndexRoute =
+  AuthenticatedAnimalsIndexRouteImport.update({
+    id: '/animals/',
+    path: '/animals/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAnimalsAnimalIdRoute =
   AuthenticatedAnimalsAnimalIdRouteImport.update({
-    id: '/$animalId',
-    path: '/$animalId',
-    getParentRoute: () => AuthenticatedAnimalsRoute,
+    id: '/animals/$animalId',
+    path: '/animals/$animalId',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/admin/users',
@@ -190,7 +191,6 @@ const AuthenticatedAdminBackupsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/animals': typeof AuthenticatedAnimalsRouteWithChildren
   '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
@@ -216,11 +216,11 @@ export interface FileRoutesByFullPath {
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
+  '/animals/': typeof AuthenticatedAnimalsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/animals': typeof AuthenticatedAnimalsRouteWithChildren
   '/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/barter': typeof AuthenticatedBarterRoute
   '/bills': typeof AuthenticatedBillsRoute
@@ -246,13 +246,13 @@ export interface FileRoutesByTo {
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
+  '/animals': typeof AuthenticatedAnimalsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
-  '/_authenticated/animals': typeof AuthenticatedAnimalsRouteWithChildren
   '/_authenticated/app-updates': typeof AuthenticatedAppUpdatesRoute
   '/_authenticated/barter': typeof AuthenticatedBarterRoute
   '/_authenticated/bills': typeof AuthenticatedBillsRoute
@@ -278,13 +278,13 @@ export interface FileRoutesById {
   '/_authenticated/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
+  '/_authenticated/animals/': typeof AuthenticatedAnimalsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/login'
-    | '/animals'
     | '/app-updates'
     | '/barter'
     | '/bills'
@@ -310,11 +310,11 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/users'
     | '/animals/$animalId'
+    | '/animals/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
-    | '/animals'
     | '/app-updates'
     | '/barter'
     | '/bills'
@@ -340,12 +340,12 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/users'
     | '/animals/$animalId'
+    | '/animals'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
-    | '/_authenticated/animals'
     | '/_authenticated/app-updates'
     | '/_authenticated/barter'
     | '/_authenticated/bills'
@@ -371,6 +371,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/roles'
     | '/_authenticated/admin/users'
     | '/_authenticated/animals/$animalId'
+    | '/_authenticated/animals/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -549,19 +550,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppUpdatesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/animals': {
-      id: '/_authenticated/animals'
+    '/_authenticated/animals/': {
+      id: '/_authenticated/animals/'
       path: '/animals'
-      fullPath: '/animals'
-      preLoaderRoute: typeof AuthenticatedAnimalsRouteImport
+      fullPath: '/animals/'
+      preLoaderRoute: typeof AuthenticatedAnimalsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/animals/$animalId': {
       id: '/_authenticated/animals/$animalId'
-      path: '/$animalId'
+      path: '/animals/$animalId'
       fullPath: '/animals/$animalId'
       preLoaderRoute: typeof AuthenticatedAnimalsAnimalIdRouteImport
-      parentRoute: typeof AuthenticatedAnimalsRoute
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin/users': {
       id: '/_authenticated/admin/users'
@@ -587,19 +588,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedAnimalsRouteChildren {
-  AuthenticatedAnimalsAnimalIdRoute: typeof AuthenticatedAnimalsAnimalIdRoute
-}
-
-const AuthenticatedAnimalsRouteChildren: AuthenticatedAnimalsRouteChildren = {
-  AuthenticatedAnimalsAnimalIdRoute: AuthenticatedAnimalsAnimalIdRoute,
-}
-
-const AuthenticatedAnimalsRouteWithChildren =
-  AuthenticatedAnimalsRoute._addFileChildren(AuthenticatedAnimalsRouteChildren)
-
 interface AuthenticatedRouteChildren {
-  AuthenticatedAnimalsRoute: typeof AuthenticatedAnimalsRouteWithChildren
   AuthenticatedAppUpdatesRoute: typeof AuthenticatedAppUpdatesRoute
   AuthenticatedBarterRoute: typeof AuthenticatedBarterRoute
   AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
@@ -624,10 +613,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminBackupsRoute: typeof AuthenticatedAdminBackupsRoute
   AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAnimalsAnimalIdRoute: typeof AuthenticatedAnimalsAnimalIdRoute
+  AuthenticatedAnimalsIndexRoute: typeof AuthenticatedAnimalsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAnimalsRoute: AuthenticatedAnimalsRouteWithChildren,
   AuthenticatedAppUpdatesRoute: AuthenticatedAppUpdatesRoute,
   AuthenticatedBarterRoute: AuthenticatedBarterRoute,
   AuthenticatedBillsRoute: AuthenticatedBillsRoute,
@@ -652,6 +642,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminBackupsRoute: AuthenticatedAdminBackupsRoute,
   AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAnimalsAnimalIdRoute: AuthenticatedAnimalsAnimalIdRoute,
+  AuthenticatedAnimalsIndexRoute: AuthenticatedAnimalsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
