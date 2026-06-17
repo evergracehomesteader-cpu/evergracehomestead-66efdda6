@@ -39,8 +39,11 @@ function PensPage() {
   const { data: animals = [] } = useQuery({
     queryKey: ["pens-animals"],
     queryFn: async () => {
-      const { data } = await supabase.from("animals").select("id,name,species,current_pen").eq("status", "active");
-      return (data ?? []) as { id: string; name: string; species: string; current_pen: string | null }[];
+      const { data } = await supabase
+        .from("animals")
+        .select("id,name,species,current_pen,status")
+        .not("status", "in", "(sold,deceased,archived,butchered)");
+      return (data ?? []) as { id: string; name: string; species: string; current_pen: string | null; status: string }[];
     },
   });
 
