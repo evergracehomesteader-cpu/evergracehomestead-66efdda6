@@ -42,6 +42,25 @@ function Stat({ icon: Icon, label, value, to, accent, onClick }: { icon: typeof 
 
 const fmt = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
+function CountTile({ label, value, tone, onClick }: { label: string; value: number; tone: "success" | "warning" | "destructive" | "muted"; onClick?: () => void }) {
+  const toneClass = {
+    success: "text-success",
+    warning: "text-warning",
+    destructive: "text-destructive",
+    muted: "text-foreground",
+  }[tone];
+  const Wrapper: React.ElementType = onClick ? "button" : "div";
+  return (
+    <Wrapper
+      onClick={onClick}
+      className={`rounded-lg border bg-card p-3 text-left ${onClick ? "hover:bg-accent cursor-pointer" : ""}`}
+    >
+      <div className={`text-2xl font-display font-semibold ${toneClass}`}>{value}</div>
+      <div className="text-[11px] text-muted-foreground uppercase tracking-wide mt-0.5">{label}</div>
+    </Wrapper>
+  );
+}
+
 function Dashboard() {
   const [activeOpen, setActiveOpen] = useState(false);
   const animals = useQuery({
