@@ -4,16 +4,27 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg, Users } from "lucide-react";
 import { format, addDays, isBefore, startOfMonth, endOfMonth, parseISO, isWithinInterval } from "date-fns";
 import { computeReminders, severityClass } from "@/lib/reminders";
 import { QuickActions } from "@/components/QuickActions";
+import { statusBadgeClass } from "@/lib/homestead";
+import { cn } from "@/lib/utils";
+import { useState, type MouseEvent } from "react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
-function Stat({ icon: Icon, label, value, to, accent }: { icon: typeof PawPrint; label: string; value: string | number; to: string; accent?: string }) {
+// Statuses considered "active" for dashboard counts.
+// Mirrors Animals page semantics: animals currently part of the herd/flock.
+const ACTIVE_STATUSES = ["active", "pregnant", "nursing", "lactating", "due_soon"] as const;
+const EXCLUDED_STATUSES = ["sold", "deceased", "butchered", "archived", "lost", "pending_sale"] as const;
+const isActiveStatus = (s: string): boolean =>
+  (ACTIVE_STATUSES as readonly string[]).includes(s);
+
+function Stat({ icon: Icon, label, value, to, accent, onClick }: { icon: typeof PawPrint; label: string; value: string | number; to: string; accent?: string; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void }) {
   return (
-    <Link to={to}>
+    <Link to={to} onClick={onClick}>
       <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer h-full">
         <div className="flex items-center gap-3">
           <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${accent ?? "bg-primary/10 text-primary"}`}>
@@ -32,7 +43,11 @@ function Stat({ icon: Icon, label, value, to, accent }: { icon: typeof PawPrint;
 const fmt = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 function Dashboard() {
-  const animals = useQuery({ queryKey: ["dash-animals"], queryFn: async () => (await supabase.from("animals").select("id,name,sex,species,status").eq("status", "active")).data ?? [] });
+  const [activeOpen, setActiveOpen] = useState(false);
+  const animals = useQuery({
+    queryKey: ["dash-animals"],
+    queryFn: async () => (await supabase.from("animals").select("id,name,sex,species,status").order("name")).data ?? [],
+  });
   const heats = useQuery({ queryKey: ["dash-heats"], queryFn: async () => (await supabase.from("heat_events").select("id,animal_id,event_date")).data ?? [] });
   const pregs = useQuery({
     queryKey: ["dash-preg"],
