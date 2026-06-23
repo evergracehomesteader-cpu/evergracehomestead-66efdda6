@@ -88,8 +88,15 @@ function Dashboard() {
     },
   });
 
+  // Derived animal counts — single source of truth across the dashboard.
+  const allAnimals = animals.data ?? [];
+  const activeAnimals = allAnimals.filter((a) => isActiveStatus(a.status));
+  const pendingSaleAnimals = allAnimals.filter((a) => a.status === "pending_sale");
+  const soldAnimals = allAnimals.filter((a) => a.status === "sold");
+  const deceasedAnimals = allAnimals.filter((a) => a.status === "deceased");
+
   const reminders = computeReminders({
-    animals: animals.data, heats: heats.data,
+    animals: activeAnimals, heats: heats.data,
     pregnancies: pregs.data?.map((p) => ({ id: p.id, animal_id: p.animal_id, status: p.status, expected_due: p.expected_due, bred_date: p.bred_date })),
     feed: feed.data, bills: bills.data, tasks: tasks.data, garden: garden.data, compost: compost.data, barter: barter.data, incubations: incubations.data,
   });
