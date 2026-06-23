@@ -161,7 +161,13 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        <Stat icon={PawPrint} label="Active animals" value={animals.data?.length ?? "—"} to="/animals" />
+        <Stat
+          icon={PawPrint}
+          label="Active animals"
+          value={activeAnimals.length}
+          to="/animals"
+          onClick={(e) => { e.preventDefault(); setActiveOpen(true); }}
+        />
         <Stat icon={Wheat} label="Feed items" value={feed.data?.length ?? "—"} to="/feed" />
         <Stat icon={Sprout} label="Garden plots" value={garden.data?.length ?? "—"} to="/garden" />
         <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />
@@ -170,6 +176,61 @@ function Dashboard() {
         <Stat icon={Egg} label="Eggs today" value={todayEggs || "—"} to="/production" accent="bg-success/15 text-success" />
         <Stat icon={Heart} label="Milk today" value={todayMilk || "—"} to="/production" accent="bg-accent/15 text-accent" />
       </div>
+
+      {/* Animal counts breakdown — transparent, matches Animals page filtering */}
+      <Card className="p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <Users className="h-4 w-4 text-primary" />
+          <h3 className="font-semibold">Animal counts</h3>
+          <Link to="/animals" className="ml-auto text-xs text-primary hover:underline">Go to Animals</Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <CountTile label="Active" value={activeAnimals.length} tone="success" onClick={() => setActiveOpen(true)} />
+          <CountTile label="Total records" value={allAnimals.length} tone="muted" />
+          <CountTile label="Pending sale" value={pendingSaleAnimals.length} tone="warning" />
+          <CountTile label="Sold" value={soldAnimals.length} tone="muted" />
+          <CountTile label="Deceased" value={deceasedAnimals.length} tone="destructive" />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-3">
+          Active includes: {ACTIVE_STATUSES.join(", ").replace(/_/g, " ")}. Excludes: {EXCLUDED_STATUSES.join(", ").replace(/_/g, " ")}.
+        </p>
+      </Card>
+
+      <Dialog open={activeOpen} onOpenChange={setActiveOpen}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Active animals ({activeAnimals.length})</DialogTitle>
+            <DialogDescription>
+              Counted because their status is one of: {ACTIVE_STATUSES.join(", ").replace(/_/g, " ")}.
+              Sold, deceased, butchered, archived, lost, and pending sale are excluded.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="overflow-y-auto -mx-6 px-6">
+            {activeAnimals.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-6 text-center">No active animals.</p>
+            ) : (
+              <ul className="divide-y">
+                {activeAnimals.map((a) => (
+                  <li key={a.id} className="py-2">
+                    <Link
+                      to="/animals/$animalId"
+                      params={{ animalId: a.id }}
+                      onClick={() => setActiveOpen(false)}
+                      className="flex items-center gap-2 hover:bg-accent rounded p-1 -m-1"
+                    >
+                      <span className="font-medium flex-1 truncate">{a.name}</span>
+                      <span className="text-xs text-muted-foreground capitalize">{a.species}</span>
+                      <Badge className={cn("text-[10px] capitalize", statusBadgeClass(a.status))}>
+                        {a.status.replace(/_/g, " ")}
+                      </Badge>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid md:grid-cols-3 gap-4">
         <Card className="p-5">
