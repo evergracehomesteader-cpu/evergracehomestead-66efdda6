@@ -4,16 +4,27 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, ListTodo, Bell, TrendingUp, TrendingDown, BarChart3, Egg, Users } from "lucide-react";
 import { format, addDays, isBefore, startOfMonth, endOfMonth, parseISO, isWithinInterval } from "date-fns";
 import { computeReminders, severityClass } from "@/lib/reminders";
 import { QuickActions } from "@/components/QuickActions";
+import { statusBadgeClass } from "@/lib/homestead";
+import { cn } from "@/lib/utils";
+import { useState, type MouseEvent, type ElementType } from "react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
-function Stat({ icon: Icon, label, value, to, accent }: { icon: typeof PawPrint; label: string; value: string | number; to: string; accent?: string }) {
+// Statuses considered "active" for dashboard counts.
+// Mirrors Animals page semantics: animals currently part of the herd/flock.
+const ACTIVE_STATUSES = ["active", "pregnant", "nursing", "lactating", "due_soon"] as const;
+const EXCLUDED_STATUSES = ["sold", "deceased", "butchered", "archived", "lost", "pending_sale"] as const;
+const isActiveStatus = (s: string): boolean =>
+  (ACTIVE_STATUSES as readonly string[]).includes(s);
+
+function Stat({ icon: Icon, label, value, to, accent, onClick }: { icon: typeof PawPrint; label: string; value: string | number; to: string; accent?: string; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void }) {
   return (
-    <Link to={to}>
+    <Link to={to} onClick={onClick}>
       <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer h-full">
         <div className="flex items-center gap-3">
           <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${accent ?? "bg-primary/10 text-primary"}`}>
@@ -31,8 +42,31 @@ function Stat({ icon: Icon, label, value, to, accent }: { icon: typeof PawPrint;
 
 const fmt = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
+function CountTile({ label, value, tone, onClick }: { label: string; value: number; tone: "success" | "warning" | "destructive" | "muted"; onClick?: () => void }) {
+  const toneClass = {
+    success: "text-success",
+    warning: "text-warning",
+    destructive: "text-destructive",
+    muted: "text-foreground",
+  }[tone];
+  const Wrapper: ElementType = onClick ? "button" : "div";
+  return (
+    <Wrapper
+      onClick={onClick}
+      className={`rounded-lg border bg-card p-3 text-left ${onClick ? "hover:bg-accent cursor-pointer" : ""}`}
+    >
+      <div className={`text-2xl font-display font-semibold ${toneClass}`}>{value}</div>
+      <div className="text-[11px] text-muted-foreground uppercase tracking-wide mt-0.5">{label}</div>
+    </Wrapper>
+  );
+}
+
 function Dashboard() {
-  const animals = useQuery({ queryKey: ["dash-animals"], queryFn: async () => (await supabase.from("animals").select("id,name,sex,species,status").eq("status", "active")).data ?? [] });
+  const [activeOpen, setActiveOpen] = useState(false);
+  const animals = useQuery({
+    queryKey: ["dash-animals"],
+    queryFn: async () => (await supabase.from("animals").select("id,name,sex,species,status").order("name")).data ?? [],
+  });
   const heats = useQuery({ queryKey: ["dash-heats"], queryFn: async () => (await supabase.from("heat_events").select("id,animal_id,event_date")).data ?? [] });
   const pregs = useQuery({
     queryKey: ["dash-preg"],
@@ -73,8 +107,15 @@ function Dashboard() {
     },
   });
 
+  // Derived animal counts — single source of truth across the dashboard.
+  const allAnimals = animals.data ?? [];
+  const activeAnimals = allAnimals.filter((a) => isActiveStatus(a.status));
+  const pendingSaleAnimals = allAnimals.filter((a) => a.status === "pending_sale");
+  const soldAnimals = allAnimals.filter((a) => a.status === "sold");
+  const deceasedAnimals = allAnimals.filter((a) => a.status === "deceased");
+
   const reminders = computeReminders({
-    animals: animals.data, heats: heats.data,
+    animals: activeAnimals, heats: heats.data,
     pregnancies: pregs.data?.map((p) => ({ id: p.id, animal_id: p.animal_id, status: p.status, expected_due: p.expected_due, bred_date: p.bred_date })),
     feed: feed.data, bills: bills.data, tasks: tasks.data, garden: garden.data, compost: compost.data, barter: barter.data, incubations: incubations.data,
   });
@@ -139,7 +180,13 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        <Stat icon={PawPrint} label="Active animals" value={animals.data?.length ?? "—"} to="/animals" />
+        <Stat
+          icon={PawPrint}
+          label="Active animals"
+          value={activeAnimals.length}
+          to="/animals"
+          onClick={(e) => { e.preventDefault(); setActiveOpen(true); }}
+        />
         <Stat icon={Wheat} label="Feed items" value={feed.data?.length ?? "—"} to="/feed" />
         <Stat icon={Sprout} label="Garden plots" value={garden.data?.length ?? "—"} to="/garden" />
         <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />
@@ -148,6 +195,61 @@ function Dashboard() {
         <Stat icon={Egg} label="Eggs today" value={todayEggs || "—"} to="/production" accent="bg-success/15 text-success" />
         <Stat icon={Heart} label="Milk today" value={todayMilk || "—"} to="/production" accent="bg-accent/15 text-accent" />
       </div>
+
+      {/* Animal counts breakdown — transparent, matches Animals page filtering */}
+      <Card className="p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <Users className="h-4 w-4 text-primary" />
+          <h3 className="font-semibold">Animal counts</h3>
+          <Link to="/animals" className="ml-auto text-xs text-primary hover:underline">Go to Animals</Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <CountTile label="Active" value={activeAnimals.length} tone="success" onClick={() => setActiveOpen(true)} />
+          <CountTile label="Total records" value={allAnimals.length} tone="muted" />
+          <CountTile label="Pending sale" value={pendingSaleAnimals.length} tone="warning" />
+          <CountTile label="Sold" value={soldAnimals.length} tone="muted" />
+          <CountTile label="Deceased" value={deceasedAnimals.length} tone="destructive" />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-3">
+          Active includes: {ACTIVE_STATUSES.join(", ").replace(/_/g, " ")}. Excludes: {EXCLUDED_STATUSES.join(", ").replace(/_/g, " ")}.
+        </p>
+      </Card>
+
+      <Dialog open={activeOpen} onOpenChange={setActiveOpen}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Active animals ({activeAnimals.length})</DialogTitle>
+            <DialogDescription>
+              Counted because their status is one of: {ACTIVE_STATUSES.join(", ").replace(/_/g, " ")}.
+              Sold, deceased, butchered, archived, lost, and pending sale are excluded.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="overflow-y-auto -mx-6 px-6">
+            {activeAnimals.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-6 text-center">No active animals.</p>
+            ) : (
+              <ul className="divide-y">
+                {activeAnimals.map((a) => (
+                  <li key={a.id} className="py-2">
+                    <Link
+                      to="/animals/$animalId"
+                      params={{ animalId: a.id }}
+                      onClick={() => setActiveOpen(false)}
+                      className="flex items-center gap-2 hover:bg-accent rounded p-1 -m-1"
+                    >
+                      <span className="font-medium flex-1 truncate">{a.name}</span>
+                      <span className="text-xs text-muted-foreground capitalize">{a.species}</span>
+                      <Badge className={cn("text-[10px] capitalize", statusBadgeClass(a.status))}>
+                        {a.status.replace(/_/g, " ")}
+                      </Badge>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid md:grid-cols-3 gap-4">
         <Card className="p-5">
