@@ -11,7 +11,7 @@ import { computeReminders, severityClass } from "@/lib/reminders";
 import { QuickActions } from "@/components/QuickActions";
 import { statusBadgeClass } from "@/lib/homestead";
 import { cn } from "@/lib/utils";
-import { useState, type MouseEvent } from "react";
+import { useState, type MouseEvent, type ElementType } from "react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
