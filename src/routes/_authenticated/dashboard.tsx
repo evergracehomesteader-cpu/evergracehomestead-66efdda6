@@ -49,7 +49,7 @@ function CountTile({ label, value, tone, onClick }: { label: string; value: numb
     destructive: "text-destructive",
     muted: "text-foreground",
   }[tone];
-  const Wrapper: React.ElementType = onClick ? "button" : "div";
+  const Wrapper: ElementType = onClick ? "button" : "div";
   return (
     <Wrapper
       onClick={onClick}
