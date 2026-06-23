@@ -215,11 +215,13 @@ function AnimalDetail() {
       </Link>
 
       <div className="flex items-start gap-4 flex-wrap">
-        {animal.photo_url ? (
-          <SignedImg src={animal.photo_url} bucket="animal-photos" alt={animal.name} className="h-24 w-24 rounded-xl object-cover" fallback={<div className="h-24 w-24 rounded-xl bg-muted flex items-center justify-center"><PawPrint className="h-9 w-9 text-muted-foreground" /></div>} />
-        ) : (
-          <div className="h-24 w-24 rounded-xl bg-muted flex items-center justify-center"><PawPrint className="h-9 w-9 text-muted-foreground" /></div>
-        )}
+        {(() => {
+          const hero = animal.front_photo_url ?? animal.photo_url ?? animal.side_photo_url ?? (animal.additional_photo_urls ?? [])[0] ?? null;
+          const placeholder = <div className="h-24 w-24 rounded-xl bg-muted flex items-center justify-center"><PawPrint className="h-9 w-9 text-muted-foreground" /></div>;
+          return hero ? (
+            <SignedImg src={hero} bucket="animal-photos" alt={animal.name} className="h-24 w-24 rounded-xl object-cover" fallback={placeholder} />
+          ) : placeholder;
+        })()}
         <div className="flex-1 min-w-0">
           <h1 className="text-3xl font-display font-semibold">{animal.name}</h1>
           <p className="text-muted-foreground">{animal.species}{animal.breed ? ` · ${animal.breed}` : ""} · {animal.sex}</p>
