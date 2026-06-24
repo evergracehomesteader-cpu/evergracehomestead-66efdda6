@@ -189,6 +189,15 @@ function AnimalDetail() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["weights", animalId] }),
   });
 
+  const updateAnimal = useMutation({
+    mutationFn: async (patch: Record<string, unknown>) => {
+      const { error } = await supabase.from("animals").update(patch as never).eq("id", animalId);
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["animal", animalId] }); qc.invalidateQueries({ queryKey: ["animals"] }); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
   const timeline = useMemo(() => {
     if (!animal) return [];
     type Event = { date: string; label: string; icon: "born" | "added" | "heat" | "bred" | "preg" | "due" | "birth" | "weight" | "status" };
