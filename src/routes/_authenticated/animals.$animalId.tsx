@@ -261,6 +261,8 @@ function AnimalDetail() {
 
       <WithdrawalBanner records={healthRecs ?? []} />
 
+      <NursingCard animal={animal} onUpdate={(p) => updateAnimal.mutate(p)} />
+
       <DecisionCard decisions={decisions ?? []} onAdd={(p) => addDecision.mutate(p)} onDelete={(id) => delDecision.mutate(id)} />
 
       <Tabs defaultValue="timeline">
