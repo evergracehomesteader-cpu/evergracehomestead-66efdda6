@@ -659,3 +659,96 @@ function DecisionCard({ decisions, onAdd, onDelete }: { decisions: DecisionRow[]
     </Card>
   );
 }
+
+type NursingAnimal = {
+  status: string;
+  species: string;
+  sex: string;
+  nursing_started_at: string | null;
+  weaning_due: string | null;
+  recovery_complete_at: string | null;
+};
+
+function NursingCard({ animal, onUpdate }: { animal: NursingAnimal; onUpdate: (p: Record<string, unknown>) => void }) {
+  const isNursing = animal.status === "nursing" || !!animal.nursing_started_at;
+  const recoveryComplete = !!animal.recovery_complete_at;
+  const [editingWeaning, setEditingWeaning] = useState(false);
+  const [weaningDate, setWeaningDate] = useState(animal.weaning_due ?? "");
+  if (!isNursing && !recoveryComplete) return null;
+
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const start = animal.nursing_started_at ? new Date(animal.nursing_started_at + "T00:00:00") : null;
+  const due = animal.weaning_due ? new Date(animal.weaning_due + "T00:00:00") : null;
+  const sinceBirth = start ? Math.max(0, Math.floor((today.getTime() - start.getTime()) / 86400000)) : null;
+  const weaningIn = due ? Math.ceil((due.getTime() - today.getTime()) / 86400000) : null;
+  const defaultDays = weaningDaysFor(animal.species);
+
+  return (
+    <Card className="p-4 space-y-3">
+      <div className="flex items-center gap-2 flex-wrap">
+        <Baby className="h-4 w-4 text-primary" />
+        <h3 className="font-semibold text-sm">{recoveryComplete && !isNursing ? "Postpartum" : "Nursing / Postpartum"}</h3>
+        {animal.status === "nursing" && <Badge className={statusBadgeClass("lactating")}>Nursing</Badge>}
+        {recoveryComplete && <Badge variant="outline">Recovery complete</Badge>}
+      </div>
+
+      {isNursing && (
+        <div className="grid sm:grid-cols-2 gap-2 text-sm">
+          {sinceBirth !== null && (
+            <div className="bg-muted/40 rounded p-2">
+              <div className="text-xs text-muted-foreground">Nursing</div>
+              <div className="font-medium">{sinceBirth} day{sinceBirth === 1 ? "" : "s"} since birth</div>
+            </div>
+          )}
+          {weaningIn !== null && (
+            <div className="bg-muted/40 rounded p-2 flex items-start justify-between gap-2">
+              <div>
+                <div className="text-xs text-muted-foreground">Weaning due</div>
+                <div className="font-medium">
+                  {weaningIn > 0 ? `in ${weaningIn} day${weaningIn === 1 ? "" : "s"}` : weaningIn === 0 ? "today" : `${-weaningIn} day${weaningIn === -1 ? "" : "s"} overdue`}
+                </div>
+                {due && <div className="text-xs text-muted-foreground">{format(due, "MMM d, yyyy")}</div>}
+              </div>
+              {!editingWeaning && (
+                <Button size="sm" variant="ghost" onClick={() => { setWeaningDate(animal.weaning_due ?? ""); setEditingWeaning(true); }}>Edit</Button>
+              )}
+            </div>
+          )}
+          {editingWeaning && (
+            <div className="sm:col-span-2 flex items-end gap-2">
+              <div className="flex-1">
+                <Label className="text-xs">Weaning date {defaultDays ? `(default ${defaultDays}d)` : ""}</Label>
+                <Input type="date" value={weaningDate} onChange={(e) => setWeaningDate(e.target.value)} />
+              </div>
+              <Button size="sm" onClick={() => { onUpdate({ weaning_due: weaningDate || null }); setEditingWeaning(false); }}>Save</Button>
+              <Button size="sm" variant="ghost" onClick={() => setEditingWeaning(false)}>Cancel</Button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {recoveryComplete && !isNursing && (
+        <p className="text-sm text-muted-foreground">Recovery complete: review before rebreeding.</p>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {isNursing && (
+          <Button size="sm" variant="outline" onClick={() => {
+            onUpdate({ status: "active", breeding_status: "recently_gave_birth", weaning_due: null });
+            toast.success("Marked weaned");
+          }}>Mark weaned</Button>
+        )}
+        {!recoveryComplete && (
+          <Button size="sm" variant="outline" onClick={() => {
+            onUpdate({ recovery_complete_at: new Date().toISOString(), status: isNursing ? "active" : animal.status });
+            toast.success("Recovery complete — review before rebreeding");
+          }}>Mark recovered</Button>
+        )}
+        <Button size="sm" variant="ghost" onClick={() => {
+          onUpdate({ status: "active", breeding_status: "open", nursing_started_at: null, weaning_due: null, recovery_complete_at: null });
+          toast.success("Returned to Active");
+        }}>Return to Active</Button>
+      </div>
+    </Card>
+  );
+}
