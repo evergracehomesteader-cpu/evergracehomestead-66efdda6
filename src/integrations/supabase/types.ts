@@ -74,10 +74,12 @@ export type Database = {
           mother_id: string | null
           name: string
           notes: string | null
+          nursing_started_at: string | null
           ownership: string
           photo_url: string | null
           purchase_cost_cents: number
           purchase_date: string | null
+          recovery_complete_at: string | null
           sale_date: string | null
           sale_price_cents: number
           secondary_breed: string | null
@@ -91,6 +93,7 @@ export type Database = {
           testicle_status_notes: string | null
           updated_at: string
           user_edited_description: string | null
+          weaning_due: string | null
         }
         Insert: {
           additional_photo_urls?: string[]
@@ -118,10 +121,12 @@ export type Database = {
           mother_id?: string | null
           name: string
           notes?: string | null
+          nursing_started_at?: string | null
           ownership?: string
           photo_url?: string | null
           purchase_cost_cents?: number
           purchase_date?: string | null
+          recovery_complete_at?: string | null
           sale_date?: string | null
           sale_price_cents?: number
           secondary_breed?: string | null
@@ -135,6 +140,7 @@ export type Database = {
           testicle_status_notes?: string | null
           updated_at?: string
           user_edited_description?: string | null
+          weaning_due?: string | null
         }
         Update: {
           additional_photo_urls?: string[]
@@ -162,10 +168,12 @@ export type Database = {
           mother_id?: string | null
           name?: string
           notes?: string | null
+          nursing_started_at?: string | null
           ownership?: string
           photo_url?: string | null
           purchase_cost_cents?: number
           purchase_date?: string | null
+          recovery_complete_at?: string | null
           sale_date?: string | null
           sale_price_cents?: number
           secondary_breed?: string | null
@@ -179,6 +187,7 @@ export type Database = {
           testicle_status_notes?: string | null
           updated_at?: string
           user_edited_description?: string | null
+          weaning_due?: string | null
         }
         Relationships: [
           {
@@ -1629,6 +1638,7 @@ export type Database = {
         | "quarantine"
         | "pet"
         | "retired"
+        | "nursing"
       app_role:
         | "admin"
         | "manager"
@@ -1809,6 +1819,7 @@ export const Constants = {
         "quarantine",
         "pet",
         "retired",
+        "nursing",
       ],
       app_role: [
         "admin",
