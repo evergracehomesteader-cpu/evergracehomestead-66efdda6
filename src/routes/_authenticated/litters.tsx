@@ -29,7 +29,7 @@ function LittersPage() {
   const { data: animals } = useQuery({
     queryKey: ["animals-for-litters"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("animals").select("id,name,species,date_of_birth,sex,litter_id");
+      const { data, error } = await supabase.from("animals").select("id,name,species,date_of_birth,sex,litter_id,status,nursing_started_at,weaning_due");
       if (error) throw error;
       return (data ?? []) as AnimalLite[];
     },
