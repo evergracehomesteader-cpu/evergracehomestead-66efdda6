@@ -104,7 +104,7 @@ export function prettyStatus(s?: string | null): string {
   return s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export const ANIMAL_STATUSES = ["active", "sold", "butchered", "deceased", "missing", "archived"] as const;
+export const ANIMAL_STATUSES = ["active", "nursing", "sold", "butchered", "deceased", "missing", "archived"] as const;
 export type AnimalStatus = (typeof ANIMAL_STATUSES)[number];
 
 export const PREGNANCY_STATUSES = ["suspected", "confirmed", "active", "delivered", "born", "lost"] as const;
