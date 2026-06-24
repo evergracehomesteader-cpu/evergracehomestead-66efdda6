@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Plus, Heart, Baby, Trash2, Scale, PawPrint, Stethoscope, History, GitBranch, DollarSign, Target, Sparkles } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { toast } from "sonner";
-import { gestationFor, statusBadgeClass } from "@/lib/homestead";
+import { gestationFor, statusBadgeClass, weaningDaysFor } from "@/lib/homestead";
 import { LineageTree } from "@/components/LineageTree";
 import { WithdrawalBanner } from "@/components/WithdrawalBanner";
 import { loadAnimalFinance } from "@/lib/animal-finance";
