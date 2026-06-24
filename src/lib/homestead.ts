@@ -23,6 +23,29 @@ export const INCUBATION_DAYS: Record<string, number> = {
 
 export const BIRD_SPECIES = new Set(Object.keys(INCUBATION_DAYS));
 
+// Default nursing/weaning duration in days, keyed by lowercase canonical species.
+// Birds are intentionally omitted — they don't nurse. Goat is editable in UI.
+export const WEANING_DAYS: Record<string, number> = {
+  pig: 56,
+  cat: 56,
+  dog: 56,
+  goat: 84,
+  sheep: 60,
+  rabbit: 42,
+  cow: 210,
+};
+
+export function weaningDaysFor(species?: string | null): number | null {
+  if (!species) return null;
+  let s = species.toLowerCase().trim();
+  if (s === "cattle") s = "cow";
+  else if (s === "geese") s = "goose";
+  else if (s.endsWith("ies")) s = s.slice(0, -3) + "y";
+  else if (s.endsWith("s") && !s.endsWith("ss")) s = s.slice(0, -1);
+  if (BIRD_SPECIES.has(s)) return null;
+  return WEANING_DAYS[s] ?? 56;
+}
+
 // Normalize species names like "Pigs", "Goats", "Cattle" to canonical keys.
 function normalizeSpecies(species?: string | null): string {
   if (!species) return "";

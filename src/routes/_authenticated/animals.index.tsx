@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, PawPrint, ImagePlus, Baby, Pencil, Trash2, ArrowRight, MoreVertical, Search, X } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { statusBadgeClass } from "@/lib/homestead";
+import { statusBadgeClass, weaningDaysFor } from "@/lib/homestead";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { cn } from "@/lib/utils";
 import { validateImageFile } from "@/lib/photo-storage";
@@ -860,14 +860,26 @@ function QuickLitterForm({ animals, speciesByName, onDone }: { animals: Animal[]
         toast.error("Litter saved, but couldn't close the pregnancy record: " + (pregErr as Error).message);
       }
 
-      // Move mom out of pregnant state.
+      // Move mom into Nursing/Postpartum with weaning countdown.
       try {
+        const wDays = weaningDaysFor(mother.species);
+        const weaning_due = wDays
+          ? new Date(new Date(birthDate + "T00:00:00").getTime() + wDays * 86400000)
+              .toISOString()
+              .slice(0, 10)
+          : null;
         await supabase
           .from("animals")
-          .update({ breeding_status: "lactating" } as never)
+          .update({
+            status: "nursing",
+            breeding_status: "lactating",
+            nursing_started_at: birthDate,
+            weaning_due,
+            recovery_complete_at: null,
+          } as never)
           .eq("id", motherId);
       } catch (momErr) {
-        console.warn("Could not update mom breeding status:", momErr);
+        console.warn("Could not update mom nursing status:", momErr);
       }
 
       await Promise.all([

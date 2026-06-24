@@ -110,6 +110,7 @@ function Dashboard() {
   // Derived animal counts — single source of truth across the dashboard.
   const allAnimals = animals.data ?? [];
   const activeAnimals = allAnimals.filter((a) => isActiveStatus(a.status));
+  const nursingAnimals = allAnimals.filter((a) => a.status === "nursing");
   const pendingSaleAnimals = allAnimals.filter((a) => a.status === "pending_sale");
   const soldAnimals = allAnimals.filter((a) => a.status === "sold");
   const deceasedAnimals = allAnimals.filter((a) => a.status === "deceased");
@@ -203,8 +204,9 @@ function Dashboard() {
           <h3 className="font-semibold">Animal counts</h3>
           <Link to="/animals" className="ml-auto text-xs text-primary hover:underline">Go to Animals</Link>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
           <CountTile label="Active" value={activeAnimals.length} tone="success" onClick={() => setActiveOpen(true)} />
+          <CountTile label="Nursing" value={nursingAnimals.length} tone="success" />
           <CountTile label="Total records" value={allAnimals.length} tone="muted" />
           <CountTile label="Pending sale" value={pendingSaleAnimals.length} tone="warning" />
           <CountTile label="Sold" value={soldAnimals.length} tone="muted" />

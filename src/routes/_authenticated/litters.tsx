@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Baby } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, differenceInCalendarDays } from "date-fns";
+import { weaningDaysFor } from "@/lib/homestead";
 
 export const Route = createFileRoute("/_authenticated/litters")({ component: LittersPage });
 
@@ -13,7 +14,7 @@ type Litter = {
   birth_date: string; male_count: number; female_count: number; unknown_count: number;
   notes: string | null;
 };
-type AnimalLite = { id: string; name: string; species: string; date_of_birth: string | null; sex: string; litter_id: string | null };
+type AnimalLite = { id: string; name: string; species: string; date_of_birth: string | null; sex: string; litter_id: string | null; status?: string; nursing_started_at?: string | null; weaning_due?: string | null };
 
 function LittersPage() {
   const { data: litters } = useQuery({
@@ -28,7 +29,7 @@ function LittersPage() {
   const { data: animals } = useQuery({
     queryKey: ["animals-for-litters"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("animals").select("id,name,species,date_of_birth,sex,litter_id");
+      const { data, error } = await supabase.from("animals").select("id,name,species,date_of_birth,sex,litter_id,status,nursing_started_at,weaning_due");
       if (error) throw error;
       return (data ?? []) as AnimalLite[];
     },
@@ -75,6 +76,20 @@ function LittersPage() {
                     {l.unknown_count > 0 && <Badge variant="outline">{l.unknown_count} unknown</Badge>}
                   </div>
                 </div>
+                {mom && (mom.status === "nursing" || mom.nursing_started_at) && (() => {
+                  const birth = parseISO(l.birth_date);
+                  const sinceBirth = Math.max(0, differenceInCalendarDays(new Date(), birth));
+                  const due = mom.weaning_due ? parseISO(mom.weaning_due) : null;
+                  const weaningIn = due ? differenceInCalendarDays(due, new Date()) : weaningDaysFor(mom.species);
+                  return (
+                    <div className="mt-2 text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">
+                      <span>🍼 Nursing: {sinceBirth} day{sinceBirth === 1 ? "" : "s"} since birth</span>
+                      {weaningIn !== null && (
+                        <span>Weaning due {weaningIn > 0 ? `in ${weaningIn} day${weaningIn === 1 ? "" : "s"}` : weaningIn === 0 ? "today" : `${-weaningIn} day${weaningIn === -1 ? "" : "s"} overdue`}</span>
+                      )}
+                    </div>
+                  );
+                })()}
                 {l.notes && <p className="text-sm text-muted-foreground mt-2">{l.notes}</p>}
                 {babies.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
