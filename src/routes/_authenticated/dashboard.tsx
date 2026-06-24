@@ -110,6 +110,7 @@ function Dashboard() {
   // Derived animal counts — single source of truth across the dashboard.
   const allAnimals = animals.data ?? [];
   const activeAnimals = allAnimals.filter((a) => isActiveStatus(a.status));
+  const nursingAnimals = allAnimals.filter((a) => a.status === "nursing");
   const pendingSaleAnimals = allAnimals.filter((a) => a.status === "pending_sale");
   const soldAnimals = allAnimals.filter((a) => a.status === "sold");
   const deceasedAnimals = allAnimals.filter((a) => a.status === "deceased");
