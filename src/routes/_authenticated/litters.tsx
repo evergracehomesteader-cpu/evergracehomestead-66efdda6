@@ -76,6 +76,20 @@ function LittersPage() {
                     {l.unknown_count > 0 && <Badge variant="outline">{l.unknown_count} unknown</Badge>}
                   </div>
                 </div>
+                {mom && (mom.status === "nursing" || mom.nursing_started_at) && (() => {
+                  const birth = parseISO(l.birth_date);
+                  const sinceBirth = Math.max(0, differenceInCalendarDays(new Date(), birth));
+                  const due = mom.weaning_due ? parseISO(mom.weaning_due) : null;
+                  const weaningIn = due ? differenceInCalendarDays(due, new Date()) : weaningDaysFor(mom.species);
+                  return (
+                    <div className="mt-2 text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">
+                      <span>🍼 Nursing: {sinceBirth} day{sinceBirth === 1 ? "" : "s"} since birth</span>
+                      {weaningIn !== null && (
+                        <span>Weaning due {weaningIn > 0 ? `in ${weaningIn} day${weaningIn === 1 ? "" : "s"}` : weaningIn === 0 ? "today" : `${-weaningIn} day${weaningIn === -1 ? "" : "s"} overdue`}</span>
+                      )}
+                    </div>
+                  );
+                })()}
                 {l.notes && <p className="text-sm text-muted-foreground mt-2">{l.notes}</p>}
                 {babies.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
