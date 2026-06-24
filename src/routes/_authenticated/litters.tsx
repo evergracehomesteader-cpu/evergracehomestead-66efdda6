@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Baby } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, differenceInCalendarDays } from "date-fns";
+import { weaningDaysFor } from "@/lib/homestead";
 
 export const Route = createFileRoute("/_authenticated/litters")({ component: LittersPage });
 
@@ -13,7 +14,7 @@ type Litter = {
   birth_date: string; male_count: number; female_count: number; unknown_count: number;
   notes: string | null;
 };
-type AnimalLite = { id: string; name: string; species: string; date_of_birth: string | null; sex: string; litter_id: string | null };
+type AnimalLite = { id: string; name: string; species: string; date_of_birth: string | null; sex: string; litter_id: string | null; status?: string; nursing_started_at?: string | null; weaning_due?: string | null };
 
 function LittersPage() {
   const { data: litters } = useQuery({
