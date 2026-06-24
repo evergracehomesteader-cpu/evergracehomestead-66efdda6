@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, PawPrint, ImagePlus, Baby, Pencil, Trash2, ArrowRight, MoreVertical, Search, X } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { statusBadgeClass } from "@/lib/homestead";
+import { statusBadgeClass, weaningDaysFor } from "@/lib/homestead";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { cn } from "@/lib/utils";
 import { validateImageFile } from "@/lib/photo-storage";
