@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate, Navigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -10,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Sprout } from "lucide-react";
-import { previewSignIn } from "@/lib/preview-auth.functions";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
@@ -19,46 +17,12 @@ const schema = z.object({
   password: z.string().min(6).max(72),
 });
 
-function isPreviewHost(): boolean {
-  if (typeof window === "undefined") return false;
-  const h = window.location.hostname.toLowerCase();
-  if (!h.endsWith(".lovable.app")) return false;
-  return h.includes("preview") || h.endsWith("-dev.lovable.app");
-}
-
 function LoginPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [previewBusy, setPreviewBusy] = useState(false);
-  const callPreviewSignIn = useServerFn(previewSignIn);
-
-  // Auto sign-in as the read-only Demo User on Lovable preview hosts.
-  useEffect(() => {
-    if (loading || user || !isPreviewHost()) return;
-    let cancelled = false;
-    (async () => {
-      setPreviewBusy(true);
-      try {
-        const { access_token, refresh_token } = await callPreviewSignIn();
-        if (cancelled) return;
-        const { error } = await supabase.auth.setSession({ access_token, refresh_token });
-        if (error) throw error;
-        navigate({ to: "/dashboard" });
-      } catch (err) {
-        if (!cancelled) {
-          toast.error(err instanceof Error ? err.message : "Preview sign-in failed");
-        }
-      } finally {
-        if (!cancelled) setPreviewBusy(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [loading, user, callPreviewSignIn, navigate]);
 
   if (!loading && user) return <Navigate to="/dashboard" />;
 
@@ -93,25 +57,19 @@ function LoginPage() {
           <p className="text-muted-foreground text-sm mt-1">Livestock · Feed · Garden · Finances</p>
         </div>
         <Card className="p-6">
-          {previewBusy ? (
-            <div className="text-center text-sm text-muted-foreground py-6">
-              Signing you in as Preview User…
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              </div>
-              <Button type="submit" disabled={busy} className="w-full">
-                {busy ? "Please wait…" : "Sign in"}
-              </Button>
-            </form>
-          )}
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+            <Button type="submit" disabled={busy} className="w-full">
+              {busy ? "Please wait…" : "Sign in"}
+            </Button>
+          </form>
         </Card>
         <p className="text-xs text-muted-foreground text-center mt-6">
           Family-only access. New accounts are added by an admin.
@@ -120,5 +78,3 @@ function LoginPage() {
     </div>
   );
 }
-
-
