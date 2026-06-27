@@ -1610,6 +1610,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_write_data: { Args: { _uid: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1617,6 +1618,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_approved_user: { Args: { _uid: string }; Returns: boolean }
     }
     Enums: {
       animal_sex: "female" | "male" | "unknown"
