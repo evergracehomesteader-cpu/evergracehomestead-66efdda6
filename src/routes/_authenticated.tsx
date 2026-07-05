@@ -14,7 +14,7 @@ function AuthLayout() {
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;
   }
-  if (!user) return <Navigate to="/login" />;
+  if (!user && !isDemoMode()) return <Navigate to="/login" />;
 
   return (
     <SidebarProvider>
@@ -22,6 +22,7 @@ function AuthLayout() {
         <AppSidebar />
 
         <div className="flex-1 flex flex-col min-w-0">
+          <DemoBanner />
           <header className="h-12 md:h-14 flex items-center border-b bg-card/80 backdrop-blur px-3 md:px-4 gap-2 sticky top-0 z-30">
             <div className="hidden md:block">
               <SidebarTrigger />
