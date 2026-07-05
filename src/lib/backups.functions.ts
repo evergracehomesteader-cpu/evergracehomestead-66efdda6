@@ -30,7 +30,7 @@ export const listBackups = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } = await import("@/lib/supabase.server");
     const { data, error } = await supabaseAdmin
       .from("backups")
       .select("id, label, created_at, size_bytes, table_counts, notes, storage_path")
@@ -50,7 +50,7 @@ export const createBackup = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } = await import("@/lib/supabase.server");
 
     const dump: Record<string, unknown[]> = {};
     const counts: Record<string, number> = {};
@@ -92,7 +92,7 @@ export const deleteBackup = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } = await import("@/lib/supabase.server");
     const { data: row, error } = await supabaseAdmin.from("backups")
       .select("storage_path").eq("id", data.id).single();
     if (error) throw new Error(error.message);
@@ -116,7 +116,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
     const tables = data.tables.filter((t) => allowed.has(t));
     if (tables.length === 0) throw new Error("No restorable tables selected");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } = await import("@/lib/supabase.server");
     const { data: row, error } = await supabaseAdmin.from("backups")
       .select("storage_path").eq("id", data.id).single();
     if (error) throw new Error(error.message);
