@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Navigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -70,6 +70,16 @@ function LoginPage() {
               {busy ? "Please wait…" : "Sign in"}
             </Button>
           </form>
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <div className="relative flex justify-center"><span className="bg-card px-2 text-xs uppercase text-muted-foreground">or</span></div>
+          </div>
+          <Button type="button" variant="outline" className="w-full" onClick={async () => { const { enterDemoMode } = await import("@/lib/demo/mode"); await enterDemoMode(); }}>
+            Try Demo Mode
+          </Button>
+          <p className="text-xs text-muted-foreground text-center mt-3">
+            Explore with realistic sample data. Nothing is saved to your account.
+          </p>
         </Card>
         <p className="text-xs text-muted-foreground text-center mt-6">
           Family-only access. New accounts are added by an admin.

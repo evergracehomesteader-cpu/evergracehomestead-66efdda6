@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 export type AncestorMap = Map<string, { name: string; depth: number; via: "mother" | "father" | "self" }>;
 
