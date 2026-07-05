@@ -22,7 +22,7 @@ export const adminListUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { supabaseAdmin } = await import("@/lib/supabase.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
     if (error) throw new Error(error.message);
 
@@ -70,7 +70,7 @@ export const adminCreateUser = createServerFn({ method: "POST" })
   }).parse(d))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { supabaseAdmin } = await import("@/lib/supabase.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
       password: data.password,
@@ -98,7 +98,7 @@ export const adminUpdateProfile = createServerFn({ method: "POST" })
   }).parse(d))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { supabaseAdmin } = await import("@/lib/supabase.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const patch: any = {};
     if (data.display_name !== undefined) patch.display_name = data.display_name;
     if (data.notes !== undefined) patch.notes = data.notes;
@@ -130,7 +130,7 @@ export const adminSetUserRoles = createServerFn({ method: "POST" })
     if (data.user_id === context.userId && !data.roles.includes("admin")) {
       throw new Error("You cannot remove your own admin role.");
     }
-    const { supabaseAdmin } = await import("@/lib/supabase.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.user_id);
     if (data.roles.length > 0) {
       const rows = data.roles.map((role) => ({ user_id: data.user_id, role }));
@@ -148,7 +148,7 @@ export const adminResetPassword = createServerFn({ method: "POST" })
   }).parse(d))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { supabaseAdmin } = await import("@/lib/supabase.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.user_id, {
       password: data.password,
     });
@@ -164,7 +164,7 @@ export const adminDeleteUser = createServerFn({ method: "POST" })
     if (data.user_id === context.userId) {
       throw new Error("You cannot delete your own account.");
     }
-    const { supabaseAdmin } = await import("@/lib/supabase.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.user_id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -181,7 +181,7 @@ export const adminSetRolePermissions = createServerFn({ method: "POST" })
     if (data.role === "admin") {
       throw new Error("Admin role permissions cannot be modified.");
     }
-    const { supabaseAdmin } = await import("@/lib/supabase.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await supabaseAdmin.from("role_permissions").delete().eq("role", data.role);
     if (data.permissions.length > 0) {
       const rows = data.permissions.map((permission) => ({ role: data.role, permission }));
