@@ -2,8 +2,10 @@ import { createFileRoute, Outlet, Navigate, Link } from "@tanstack/react-router"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileTabBar } from "@/components/MobileTabBar";
+import { DemoBanner } from "@/components/DemoBanner";
 import { useAuth } from "@/lib/auth-context";
 import { APP_VERSION } from "@/lib/app-version";
+import { isDemoMode } from "@/lib/demo/mode";
 
 export const Route = createFileRoute("/_authenticated")({ component: AuthLayout });
 
