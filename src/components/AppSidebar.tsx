@@ -33,6 +33,7 @@ const plan = [
   { title: "Reminders", url: "/reminders", icon: Bell },
   { title: "Reports", url: "/reports", icon: BarChart3 },
   { title: "App Updates", url: "/app-updates", icon: Wrench },
+  { title: "Homestead", url: "/homestead", icon: Home },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

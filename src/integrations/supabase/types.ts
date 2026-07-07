@@ -22,6 +22,7 @@ export type Database = {
           details: Json | null
           event_date: string
           event_type: string
+          homestead_id: string
           id: string
           title: string
         }
@@ -32,6 +33,7 @@ export type Database = {
           details?: Json | null
           event_date?: string
           event_type: string
+          homestead_id?: string
           id?: string
           title: string
         }
@@ -42,10 +44,19 @@ export type Database = {
           details?: Json | null
           event_date?: string
           event_type?: string
+          homestead_id?: string
           id?: string
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "animal_events_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       animals: {
         Row: {
@@ -64,6 +75,7 @@ export type Database = {
           expected_sale_price_cents: number
           father_id: string | null
           front_photo_url: string | null
+          homestead_id: string
           id: string
           is_intact_male: string
           life_stage: string | null
@@ -111,6 +123,7 @@ export type Database = {
           expected_sale_price_cents?: number
           father_id?: string | null
           front_photo_url?: string | null
+          homestead_id?: string
           id?: string
           is_intact_male?: string
           life_stage?: string | null
@@ -158,6 +171,7 @@ export type Database = {
           expected_sale_price_cents?: number
           father_id?: string | null
           front_photo_url?: string | null
+          homestead_id?: string
           id?: string
           is_intact_male?: string
           life_stage?: string | null
@@ -198,6 +212,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "animals_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "animals_mother_id_fkey"
             columns: ["mother_id"]
             isOneToOne: false
@@ -210,6 +231,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          homestead_id: string
           id: string
           label: string
           notes: string | null
@@ -220,6 +242,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           label: string
           notes?: string | null
@@ -230,6 +253,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           label?: string
           notes?: string | null
@@ -237,13 +261,22 @@ export type Database = {
           storage_path?: string
           table_counts?: Json
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "backups_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       barter_contacts: {
         Row: {
           created_at: string
           created_by: string | null
           email: string | null
+          homestead_id: string
           id: string
           location: string | null
           name: string
@@ -255,6 +288,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -266,6 +300,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name?: string
@@ -273,7 +308,15 @@ export type Database = {
           phone?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "barter_contacts_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       barter_deals: {
         Row: {
@@ -285,6 +328,7 @@ export type Database = {
           due_date: string | null
           estimated_value_cents: number
           given_summary: string | null
+          homestead_id: string
           id: string
           location: string | null
           notes: string | null
@@ -306,6 +350,7 @@ export type Database = {
           due_date?: string | null
           estimated_value_cents?: number
           given_summary?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           notes?: string | null
@@ -327,6 +372,7 @@ export type Database = {
           due_date?: string | null
           estimated_value_cents?: number
           given_summary?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           notes?: string | null
@@ -347,6 +393,13 @@ export type Database = {
             referencedRelation: "barter_contacts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "barter_deals_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
         ]
       }
       barter_items: {
@@ -355,6 +408,7 @@ export type Database = {
           deal_id: string
           description: string
           direction: Database["public"]["Enums"]["barter_direction"]
+          homestead_id: string
           id: string
           link_id: string | null
           link_type: Database["public"]["Enums"]["barter_link_type"]
@@ -367,6 +421,7 @@ export type Database = {
           deal_id: string
           description: string
           direction: Database["public"]["Enums"]["barter_direction"]
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: Database["public"]["Enums"]["barter_link_type"]
@@ -379,6 +434,7 @@ export type Database = {
           deal_id?: string
           description?: string
           direction?: Database["public"]["Enums"]["barter_direction"]
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: Database["public"]["Enums"]["barter_link_type"]
@@ -394,6 +450,13 @@ export type Database = {
             referencedRelation: "barter_deals"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "barter_items_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
         ]
       }
       bills: {
@@ -403,6 +466,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           due_date: string | null
+          homestead_id: string
           id: string
           name: string
           notes: string | null
@@ -417,6 +481,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           due_date?: string | null
+          homestead_id?: string
           id?: string
           name: string
           notes?: string | null
@@ -431,6 +496,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           due_date?: string | null
+          homestead_id?: string
           id?: string
           name?: string
           notes?: string | null
@@ -439,7 +505,15 @@ export type Database = {
           recurring?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bills_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       breeding_decisions: {
         Row: {
@@ -447,6 +521,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           decision: string
+          homestead_id: string
           id: string
           reason: string | null
           target_date: string | null
@@ -457,6 +532,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           decision?: string
+          homestead_id?: string
           id?: string
           reason?: string | null
           target_date?: string | null
@@ -467,12 +543,21 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           decision?: string
+          homestead_id?: string
           id?: string
           reason?: string | null
           target_date?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "breeding_decisions_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       breeds_catalog: {
         Row: {
@@ -513,18 +598,21 @@ export type Database = {
         Row: {
           chore_id: string
           created_at: string
+          homestead_id: string
           id: string
           user_id: string
         }
         Insert: {
           chore_id: string
           created_at?: string
+          homestead_id?: string
           id?: string
           user_id: string
         }
         Update: {
           chore_id?: string
           created_at?: string
+          homestead_id?: string
           id?: string
           user_id?: string
         }
@@ -536,6 +624,13 @@ export type Database = {
             referencedRelation: "chores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "chore_assignments_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chore_completions: {
@@ -543,6 +638,7 @@ export type Database = {
           chore_id: string
           completed_at: string
           completed_by: string | null
+          homestead_id: string
           id: string
           instance_date: string
           notes: string | null
@@ -551,6 +647,7 @@ export type Database = {
           chore_id: string
           completed_at?: string
           completed_by?: string | null
+          homestead_id?: string
           id?: string
           instance_date: string
           notes?: string | null
@@ -559,6 +656,7 @@ export type Database = {
           chore_id?: string
           completed_at?: string
           completed_by?: string | null
+          homestead_id?: string
           id?: string
           instance_date?: string
           notes?: string | null
@@ -569,6 +667,13 @@ export type Database = {
             columns: ["chore_id"]
             isOneToOne: false
             referencedRelation: "chores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chore_completions_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
             referencedColumns: ["id"]
           },
         ]
@@ -583,6 +688,7 @@ export type Database = {
           days_of_week: number[]
           due_time: string | null
           end_date: string | null
+          homestead_id: string
           id: string
           notes: string | null
           recurrence: string
@@ -599,6 +705,7 @@ export type Database = {
           days_of_week?: number[]
           due_time?: string | null
           end_date?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           recurrence?: string
@@ -615,6 +722,7 @@ export type Database = {
           days_of_week?: number[]
           due_time?: string | null
           end_date?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           recurrence?: string
@@ -622,7 +730,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "chores_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       compost_entries: {
         Row: {
@@ -630,6 +746,7 @@ export type Database = {
           created_by: string | null
           entry_date: string
           entry_type: string
+          homestead_id: string
           id: string
           material: string | null
           notes: string | null
@@ -640,6 +757,7 @@ export type Database = {
           created_by?: string | null
           entry_date?: string
           entry_type?: string
+          homestead_id?: string
           id?: string
           material?: string | null
           notes?: string | null
@@ -650,18 +768,28 @@ export type Database = {
           created_by?: string | null
           entry_date?: string
           entry_type?: string
+          homestead_id?: string
           id?: string
           material?: string | null
           notes?: string | null
           quantity?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "compost_entries_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       contacts: {
         Row: {
           created_at: string
           created_by: string | null
           email: string | null
+          homestead_id: string
           id: string
           location: string | null
           name: string
@@ -674,6 +802,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -686,6 +815,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name?: string
@@ -694,12 +824,21 @@ export type Database = {
           role?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "contacts_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       feed_container_stock: {
         Row: {
           container_id: string
           feed_item_id: string
+          homestead_id: string
           id: string
           stock_lbs: number
           updated_at: string
@@ -707,6 +846,7 @@ export type Database = {
         Insert: {
           container_id: string
           feed_item_id: string
+          homestead_id?: string
           id?: string
           stock_lbs?: number
           updated_at?: string
@@ -714,11 +854,20 @@ export type Database = {
         Update: {
           container_id?: string
           feed_item_id?: string
+          homestead_id?: string
           id?: string
           stock_lbs?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "feed_container_stock_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       feed_containers: {
         Row: {
@@ -726,6 +875,7 @@ export type Database = {
           capacity_lbs: number | null
           created_at: string
           created_by: string | null
+          homestead_id: string
           id: string
           location: string | null
           name: string
@@ -737,6 +887,7 @@ export type Database = {
           capacity_lbs?: number | null
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -748,18 +899,28 @@ export type Database = {
           capacity_lbs?: number | null
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name?: string
           notes?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "feed_containers_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       feed_items: {
         Row: {
           created_at: string
           created_by: string | null
+          homestead_id: string
           id: string
           low_stock_threshold: number
           name: string
@@ -775,6 +936,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           low_stock_threshold?: number
           name: string
@@ -790,6 +952,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           low_stock_threshold?: number
           name?: string
@@ -802,7 +965,15 @@ export type Database = {
           unit?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "feed_items_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       feed_logs: {
         Row: {
@@ -812,6 +983,7 @@ export type Database = {
           created_by: string | null
           fed_on: string
           feed_item_id: string
+          homestead_id: string
           id: string
           notes: string | null
           quantity: number
@@ -828,6 +1000,7 @@ export type Database = {
           created_by?: string | null
           fed_on?: string
           feed_item_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           quantity: number
@@ -844,6 +1017,7 @@ export type Database = {
           created_by?: string | null
           fed_on?: string
           feed_item_id?: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           quantity?: number
@@ -868,6 +1042,13 @@ export type Database = {
             referencedRelation: "feed_items"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "feed_logs_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
         ]
       }
       feed_purchases: {
@@ -881,6 +1062,7 @@ export type Database = {
           custom_unit_id: string | null
           custom_unit_qty: number | null
           feed_item_id: string
+          homestead_id: string
           id: string
           notes: string | null
           price_cents: number
@@ -900,6 +1082,7 @@ export type Database = {
           custom_unit_id?: string | null
           custom_unit_qty?: number | null
           feed_item_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           price_cents: number
@@ -919,6 +1102,7 @@ export type Database = {
           custom_unit_id?: string | null
           custom_unit_qty?: number | null
           feed_item_id?: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           price_cents?: number
@@ -936,12 +1120,20 @@ export type Database = {
             referencedRelation: "feed_items"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "feed_purchases_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
         ]
       }
       feed_units: {
         Row: {
           created_at: string
           created_by: string | null
+          homestead_id: string
           id: string
           is_system: boolean
           lbs_per_unit: number
@@ -951,6 +1143,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           is_system?: boolean
           lbs_per_unit?: number
@@ -960,13 +1153,22 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           is_system?: boolean
           lbs_per_unit?: number
           name?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "feed_units_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       garden_plots: {
         Row: {
@@ -974,6 +1176,7 @@ export type Database = {
           created_by: string | null
           crop: string | null
           expected_harvest: string | null
+          homestead_id: string
           id: string
           last_watered_on: string | null
           name: string
@@ -988,6 +1191,7 @@ export type Database = {
           created_by?: string | null
           crop?: string | null
           expected_harvest?: string | null
+          homestead_id?: string
           id?: string
           last_watered_on?: string | null
           name: string
@@ -1002,6 +1206,7 @@ export type Database = {
           created_by?: string | null
           crop?: string | null
           expected_harvest?: string | null
+          homestead_id?: string
           id?: string
           last_watered_on?: string | null
           name?: string
@@ -1011,7 +1216,15 @@ export type Database = {
           updated_at?: string
           watering_interval_days?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "garden_plots_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       health_records: {
         Row: {
@@ -1023,6 +1236,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           dosage: string | null
+          homestead_id: string
           id: string
           notes: string | null
           product: string | null
@@ -1042,6 +1256,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           dosage?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           product?: string | null
@@ -1061,6 +1276,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           dosage?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           product?: string | null
@@ -1071,7 +1287,15 @@ export type Database = {
           withdrawal_meat_until?: string | null
           withdrawal_milk_until?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "health_records_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       heat_events: {
         Row: {
@@ -1079,6 +1303,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           event_date: string
+          homestead_id: string
           id: string
           notes: string | null
         }
@@ -1087,6 +1312,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           event_date: string
+          homestead_id?: string
           id?: string
           notes?: string | null
         }
@@ -1095,6 +1321,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           event_date?: string
+          homestead_id?: string
           id?: string
           notes?: string | null
         }
@@ -1106,7 +1333,111 @@ export type Database = {
             referencedRelation: "animals"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "heat_events_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      homestead_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          homestead_id: string
+          id: string
+          invited_by: string
+          role: Database["public"]["Enums"]["app_role"]
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          homestead_id: string
+          id?: string
+          invited_by: string
+          role?: Database["public"]["Enums"]["app_role"]
+          token?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          homestead_id?: string
+          id?: string
+          invited_by?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homestead_invitations_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      homestead_members: {
+        Row: {
+          created_at: string
+          homestead_id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          homestead_id: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          homestead_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homestead_members_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      homesteads: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       income_entries: {
         Row: {
@@ -1115,6 +1446,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           entry_date: string
+          homestead_id: string
           id: string
           link_id: string | null
           link_type: string | null
@@ -1128,6 +1460,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           entry_date?: string
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: string | null
@@ -1141,6 +1474,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           entry_date?: string
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: string | null
@@ -1148,7 +1482,15 @@ export type Database = {
           recurring?: boolean
           source?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "income_entries_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       incubations: {
         Row: {
@@ -1160,6 +1502,7 @@ export type Database = {
           expected_hatch: string | null
           fertile: boolean | null
           hatched_count: number | null
+          homestead_id: string
           id: string
           notes: string | null
           set_date: string
@@ -1175,6 +1518,7 @@ export type Database = {
           expected_hatch?: string | null
           fertile?: boolean | null
           hatched_count?: number | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           set_date?: string
@@ -1190,13 +1534,22 @@ export type Database = {
           expected_hatch?: string | null
           fertile?: boolean | null
           hatched_count?: number | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           set_date?: string
           species?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "incubations_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       litters: {
         Row: {
@@ -1205,6 +1558,7 @@ export type Database = {
           created_by: string | null
           father_id: string | null
           female_count: number
+          homestead_id: string
           id: string
           male_count: number
           mother_id: string | null
@@ -1218,6 +1572,7 @@ export type Database = {
           created_by?: string | null
           father_id?: string | null
           female_count?: number
+          homestead_id?: string
           id?: string
           male_count?: number
           mother_id?: string | null
@@ -1231,6 +1586,7 @@ export type Database = {
           created_by?: string | null
           father_id?: string | null
           female_count?: number
+          homestead_id?: string
           id?: string
           male_count?: number
           mother_id?: string | null
@@ -1238,7 +1594,15 @@ export type Database = {
           unknown_count?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "litters_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pens: {
         Row: {
@@ -1246,6 +1610,7 @@ export type Database = {
           capacity: number | null
           created_at: string
           created_by: string | null
+          homestead_id: string
           id: string
           location: string | null
           name: string
@@ -1258,6 +1623,7 @@ export type Database = {
           capacity?: number | null
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -1270,6 +1636,7 @@ export type Database = {
           capacity?: number | null
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           location?: string | null
           name?: string
@@ -1277,7 +1644,15 @@ export type Database = {
           species?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pens_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pregnancies: {
         Row: {
@@ -1291,6 +1666,7 @@ export type Database = {
           evidence: string | null
           expected_due: string | null
           female_born: number | null
+          homestead_id: string
           id: string
           male_born: number | null
           notes: string | null
@@ -1312,6 +1688,7 @@ export type Database = {
           evidence?: string | null
           expected_due?: string | null
           female_born?: number | null
+          homestead_id?: string
           id?: string
           male_born?: number | null
           notes?: string | null
@@ -1333,6 +1710,7 @@ export type Database = {
           evidence?: string | null
           expected_due?: string | null
           female_born?: number | null
+          homestead_id?: string
           id?: string
           male_born?: number | null
           notes?: string | null
@@ -1352,6 +1730,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pregnancies_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pregnancies_sire_id_fkey"
             columns: ["sire_id"]
             isOneToOne: false
@@ -1366,6 +1751,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           group_label: string | null
+          homestead_id: string
           id: string
           notes: string | null
           produced_on: string
@@ -1379,6 +1765,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           group_label?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           produced_on?: string
@@ -1392,6 +1779,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           group_label?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           produced_on?: string
@@ -1400,7 +1788,15 @@ export type Database = {
           unit?: string
           value_cents?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "production_logs_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -1506,6 +1902,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           due_date: string | null
+          homestead_id: string
           id: string
           link_id: string | null
           link_type: string | null
@@ -1520,6 +1917,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           due_date?: string | null
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: string | null
@@ -1534,6 +1932,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           due_date?: string | null
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: string | null
@@ -1541,7 +1940,41 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tasks_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_current_homestead: {
+        Row: {
+          homestead_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          homestead_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          homestead_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_current_homestead_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -1569,6 +2002,7 @@ export type Database = {
           animal_id: string
           created_at: string
           created_by: string | null
+          homestead_id: string
           id: string
           notes: string | null
           unit: string
@@ -1579,6 +2013,7 @@ export type Database = {
           animal_id: string
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           unit?: string
@@ -1589,6 +2024,7 @@ export type Database = {
           animal_id?: string
           created_at?: string
           created_by?: string | null
+          homestead_id?: string
           id?: string
           notes?: string | null
           unit?: string
@@ -1603,6 +2039,13 @@ export type Database = {
             referencedRelation: "animals"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "weight_logs_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -1610,7 +2053,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_homestead_invitation: { Args: { _token: string }; Returns: string }
+      can_admin_homestead: {
+        Args: { _hid: string; _uid: string }
+        Returns: boolean
+      }
       can_write_data: { Args: { _uid: string }; Returns: boolean }
+      can_write_homestead: {
+        Args: { _hid: string; _uid: string }
+        Returns: boolean
+      }
+      current_homestead_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1618,7 +2071,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      homestead_role: {
+        Args: { _hid: string; _uid: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
       is_approved_user: { Args: { _uid: string }; Returns: boolean }
+      is_homestead_member: {
+        Args: { _hid: string; _uid: string }
+        Returns: boolean
+      }
+      is_homestead_owner: {
+        Args: { _hid: string; _uid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       animal_sex: "female" | "male" | "unknown"

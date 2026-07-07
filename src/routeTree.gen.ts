@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcceptInviteTokenRouteImport } from './routes/accept-invite.$token'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
@@ -21,6 +22,7 @@ import { Route as AuthenticatedProductionRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPensRouteImport } from './routes/_authenticated/pens'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
 import { Route as AuthenticatedIncomeRouteImport } from './routes/_authenticated/income'
+import { Route as AuthenticatedHomesteadRouteImport } from './routes/_authenticated/homestead'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -51,6 +53,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcceptInviteTokenRoute = AcceptInviteTokenRouteImport.update({
+  id: '/accept-invite/$token',
+  path: '/accept-invite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
@@ -97,6 +104,11 @@ const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
 const AuthenticatedIncomeRoute = AuthenticatedIncomeRouteImport.update({
   id: '/income',
   path: '/income',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedHomesteadRoute = AuthenticatedHomesteadRouteImport.update({
+  id: '/homestead',
+  path: '/homestead',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
@@ -203,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/homestead': typeof AuthenticatedHomesteadRoute
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
@@ -212,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
+  '/accept-invite/$token': typeof AcceptInviteTokenRoute
   '/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -233,6 +247,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/homestead': typeof AuthenticatedHomesteadRoute
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
@@ -242,6 +257,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
+  '/accept-invite/$token': typeof AcceptInviteTokenRoute
   '/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -265,6 +281,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
+  '/_authenticated/homestead': typeof AuthenticatedHomesteadRoute
   '/_authenticated/income': typeof AuthenticatedIncomeRoute
   '/_authenticated/litters': typeof AuthenticatedLittersRoute
   '/_authenticated/pens': typeof AuthenticatedPensRoute
@@ -274,6 +291,7 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
+  '/accept-invite/$token': typeof AcceptInviteTokenRoute
   '/_authenticated/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/_authenticated/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -297,6 +315,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/homestead'
     | '/income'
     | '/litters'
     | '/pens'
@@ -306,6 +325,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/tasks'
+    | '/accept-invite/$token'
     | '/admin/backups'
     | '/admin/roles'
     | '/admin/users'
@@ -327,6 +347,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/homestead'
     | '/income'
     | '/litters'
     | '/pens'
@@ -336,6 +357,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/tasks'
+    | '/accept-invite/$token'
     | '/admin/backups'
     | '/admin/roles'
     | '/admin/users'
@@ -358,6 +380,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
     | '/_authenticated/garden'
+    | '/_authenticated/homestead'
     | '/_authenticated/income'
     | '/_authenticated/litters'
     | '/_authenticated/pens'
@@ -367,6 +390,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
+    | '/accept-invite/$token'
     | '/_authenticated/admin/backups'
     | '/_authenticated/admin/roles'
     | '/_authenticated/admin/users'
@@ -378,6 +402,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  AcceptInviteTokenRoute: typeof AcceptInviteTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -401,6 +426,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accept-invite/$token': {
+      id: '/accept-invite/$token'
+      path: '/accept-invite/$token'
+      fullPath: '/accept-invite/$token'
+      preLoaderRoute: typeof AcceptInviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/tasks': {
@@ -464,6 +496,13 @@ declare module '@tanstack/react-router' {
       path: '/income'
       fullPath: '/income'
       preLoaderRoute: typeof AuthenticatedIncomeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/homestead': {
+      id: '/_authenticated/homestead'
+      path: '/homestead'
+      fullPath: '/homestead'
+      preLoaderRoute: typeof AuthenticatedHomesteadRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/garden': {
@@ -601,6 +640,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
+  AuthenticatedHomesteadRoute: typeof AuthenticatedHomesteadRoute
   AuthenticatedIncomeRoute: typeof AuthenticatedIncomeRoute
   AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
   AuthenticatedPensRoute: typeof AuthenticatedPensRoute
@@ -630,6 +670,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
+  AuthenticatedHomesteadRoute: AuthenticatedHomesteadRoute,
   AuthenticatedIncomeRoute: AuthenticatedIncomeRoute,
   AuthenticatedLittersRoute: AuthenticatedLittersRoute,
   AuthenticatedPensRoute: AuthenticatedPensRoute,
@@ -654,17 +695,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  AcceptInviteTokenRoute: AcceptInviteTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

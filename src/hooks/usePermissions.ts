@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
+import { useHomestead } from "@/lib/homestead-context";
 import type { AppRole } from "@/lib/permissions";
+import { isDemoMode } from "@/lib/demo/mode";
 
 interface PermissionsData {
   roles: AppRole[];
@@ -12,10 +14,11 @@ interface PermissionsData {
 
 export function usePermissions() {
   const { user } = useAuth();
+  const { currentId, role: homesteadRole, isOwner } = useHomestead();
   const userId = user?.id;
   const qc = useQueryClient();
+  const demo = isDemoMode();
 
-  // Refetch permissions whenever auth state changes (sign in/out/refresh).
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange(() => {
       qc.invalidateQueries({ queryKey: ["my-permissions"] });
@@ -24,34 +27,30 @@ export function usePermissions() {
   }, [qc]);
 
   const query = useQuery<PermissionsData>({
-    queryKey: ["my-permissions", userId],
+    queryKey: ["my-permissions", userId, currentId, homesteadRole, demo],
     enabled: !!userId,
     staleTime: 30_000,
     refetchOnMount: "always",
     queryFn: async () => {
-      const { data: roleRows, error: rErr } = await supabase
-        .from("user_roles" as never)
-        .select("role")
-        .eq("user_id", userId!);
-      if (rErr) {
-        console.error("[usePermissions] user_roles query failed", rErr);
-        throw rErr;
+      // In demo mode, act as admin.
+      if (demo) {
+        return { roles: ["admin" as AppRole], permissions: new Set(["*"]), hasWildcard: true };
       }
-      const roles = ((roleRows ?? []) as { role: AppRole }[]).map((r) => r.role);
-
+      // Owner is always effectively admin; otherwise use the homestead role.
+      const roles: AppRole[] = [];
+      if (isOwner) roles.push("admin" as AppRole);
+      if (homesteadRole) roles.push(homesteadRole as AppRole);
       if (roles.length === 0) {
         return { roles: [], permissions: new Set(), hasWildcard: false };
       }
-
-      const { data: permRows, error: pErr } = await supabase
+      const { data: permRows, error } = await supabase
         .from("role_permissions" as never)
         .select("permission, role")
         .in("role", roles);
-      if (pErr) {
-        console.error("[usePermissions] role_permissions query failed", pErr);
-        throw pErr;
+      if (error) {
+        console.error("[usePermissions] role_permissions query failed", error);
+        throw error;
       }
-
       const perms = new Set<string>();
       let wildcard = false;
       for (const row of (permRows ?? []) as { permission: string }[]) {
