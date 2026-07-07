@@ -1,81 +1,72 @@
-# Demo Mode Plan
+# Multi-Homestead Support
 
-Full offline demo that swaps Supabase for a localStorage-backed mock, seeds months of realistic homestead data, and never touches the real backend.
+Convert the app from a single shared homestead to a multi-tenant model where every user owns or belongs to one or more independent homesteads. All data is scoped to a homestead, and access is enforced by RLS.
 
-## Architecture
+## User-visible changes
+
+- **Sign up is open.** Anyone can create an account. First sign-in creates a personal homestead automatically and makes them its owner.
+- **Homestead switcher** in the sidebar header shows the current homestead name and lets users switch between ones they belong to.
+- **New "Homestead" settings page** (owner-only):
+  - Rename homestead
+  - Invite people by email, assign a role (admin, manager, animal_care, helper, bookkeeper, viewer)
+  - See pending invitations, resend or revoke
+  - Remove members, change member roles
+  - Transfer ownership, delete homestead
+- **Invitations**: invitee gets an email link; opening it while signed in adds them to the homestead with the assigned role. If not signed in, they sign up first, then are auto-added.
+- **Every page** (animals, feed, finance, chores, reports, etc.) shows only the currently selected homestead's data. Switching homesteads reloads all queries.
+- Demo mode is unchanged and stays fully local.
+
+## Data model
+
+Add a `homesteads` table and a `homestead_members` join table. Move membership/roles off the global `user_roles` table and onto `homestead_members` so roles are per-homestead. Every existing data table gets a `homestead_id uuid not null` column with an index and RLS policies that require membership.
 
 ```text
-Login ──► [Try Demo Mode] ──► seed localStorage ──► set demo flag ──► /dashboard
-                                        │
-Every hook ──► supabase client ──► demo-aware proxy
-                                     ├── demo on  → LocalDB (localStorage)
-                                     └── demo off → real Supabase (unchanged)
+homesteads(id, name, owner_id, created_at, updated_at)
+homestead_members(homestead_id, user_id, role, created_at)   -- PK (homestead_id, user_id)
+homestead_invitations(id, homestead_id, email, role, token, invited_by, expires_at, accepted_at)
 ```
 
-**Key idea:** wrap the exported `supabase` client with a Proxy. When `localStorage["demo_mode"]==="1"`, `.from(table)` returns a fake query builder that reads/writes `localStorage["demo_db"]`. `.auth` returns a fake session for a demo user. Everything else in the app stays untouched — no per-hook branching, no risk of leaking demo writes to production.
+All existing per-user data tables (animals, pens, feed_*, bills, income_entries, tasks, chores, chore_*, contacts, barter_*, garden_plots, compost_entries, production_logs, health_records, heat_events, pregnancies, litters, breeding_decisions, incubations, weight_logs, animal_events, backups) get:
 
-## Scope
+- `homestead_id uuid not null references homesteads(id) on delete cascade`
+- index on `homestead_id`
+- RLS: `USING (public.is_homestead_member(homestead_id, auth.uid()))` for SELECT; write policies additionally check role via a `has_homestead_permission(homestead_id, permission)` security-definer function.
 
-### 1. Demo infrastructure (new files)
-- `src/lib/demo/localDb.ts` — in-memory + localStorage store keyed by table. CRUD helpers: `list`, `insert`, `update`, `delete`, with basic filter/order/limit matching what the app uses (`eq`, `in`, `gte`, `lte`, `order`, `limit`, `single`, `maybeSingle`).
-- `src/lib/demo/queryBuilder.ts` — Supabase-compatible chainable builder backed by LocalDB. Supports the subset of PostgREST the app calls (verified via ripgrep over hooks/routes).
-- `src/lib/demo/fakeAuth.ts` — fake `auth.getUser`, `getSession`, `onAuthStateChange`, `signOut` returning a static demo user.
-- `src/lib/demo/mode.ts` — `isDemoMode()`, `enterDemoMode()`, `exitDemoMode()`, `resetDemo()`. Enter seeds and reloads to `/dashboard`; exit clears keys and reloads to `/login`.
-- `src/lib/demo/seed.ts` — the seed dataset (see §3).
-- `src/integrations/supabase/client.ts` — wrap the exported client in a Proxy that routes to demo when the flag is set. (This file is normally auto-generated; the wrapper lives in a sibling module `client-with-demo.ts` re-exported as `supabase` from `client.ts` — or if the file is protected, we import through a new `@/lib/supabase` shim and change hook imports. I'll confirm on read.)
+`user_roles` and `role_permissions` are kept but repurposed as **role templates** (permission catalog per role name); actual grants live in `homestead_members.role`.
 
-### 2. UI changes
-- `src/routes/login.tsx` — add "Try Demo Mode" button below sign-in that calls `enterDemoMode()`.
-- New `src/components/DemoBanner.tsx` — sticky top banner "Demo Mode — changes are not saved" with "Reset Demo" and "Exit Demo" buttons. Mounted in `_authenticated.tsx` layout when demo flag is on.
-- `src/routes/_authenticated.tsx` — bypass real auth check when in demo mode.
+## Backfill
 
-### 3. Seed data (`seed.ts`)
-Realistic ~6 months of history for the Evergreen family:
+One migration moves all existing rows into a single "Legacy Homestead" per current owner (first admin user), assigns homestead_id on every row, and adds every current user to that homestead with their current role. Nothing is lost.
 
-- **species_catalog / breeds_catalog** — reuse existing static data (already in DB migrations; seed mirrors it).
-- **pens** — 6 pens: Goat Barn, Pig Pasture, Chicken Coop, Duck Pond, Rabbit Hutch, Quarantine.
-- **animals** — 22 total: 4 goats (2 does, 1 buck, 1 kid), 3 pigs, 8 chickens (1 rooster + 7 hens), 3 ducks, 2 dogs (LGDs), 2 cats (barn cats). Realistic names, birth dates, weights, tags.
-- **pregnancies** — 2 records: 1 delivered (linked to litter), 1 active (goat, due in 3 weeks).
-- **litters** — 1 kidding 2 months ago (2 kids), mother in `nursing` status with weaning countdown.
-- **health_records** — vaccinations, dewormings, hoof trims across last 6 months (~15 entries).
-- **heat_events / breeding_decisions** — a few for the goat doe.
-- **feed_items** — 6: Layer Pellets, Goat Grain, Pig Grower, Duck Crumble, Alfalfa Hay, Dog Kibble.
-- **feed_containers / feed_units / feed_container_stock** — 3 containers, standard units, stock rows.
-- **feed_purchases** — ~12 over 6 months.
-- **feed_logs** — ~120 daily entries across last 60 days.
-- **production_logs** — daily egg counts (chickens 4–7/day, ducks 1–3/day) for 90 days → nice chart.
-- **weight_logs** — monthly weigh-ins for pigs and goats.
-- **chores + chore_completions** — 8 recurring chores, completions over 30 days.
-- **tasks** — 6 open tasks, 10 completed.
-- **bills** — 8 months of feed/vet/utilities, mix of paid/unpaid.
-- **income_entries** — egg sales, kid sales, stud fees over 6 months.
-- **barter_items / barter_deals / barter_contacts** — 2 contacts, 3 items, 2 deals.
-- **contacts** — vet, feed store, neighbor.
-- **compost_entries** — weekly for 3 months.
-- **garden_plots** — 4 beds with plantings.
-- **incubations** — 1 active duck hatch, 1 completed chicken hatch.
-- **animal_events** — auto-generated from births, health records, weighings.
-- **profiles / user_roles** — demo user as admin.
+## Application changes
 
-All timestamps are relative to `Date.now()` at seed time so the data always looks current.
+- `src/lib/homestead-context.tsx`: React context holding `currentHomesteadId`, list of memberships, `setCurrent`, persisted in localStorage. Provider wraps `_authenticated`.
+- `src/lib/supabase.ts` proxy stays; adds a helper `withHomestead(query)` that auto-injects `.eq("homestead_id", currentId)` on selects and sets `homestead_id` on inserts. Applied at each call site (opt-in) to keep changes reviewable; RLS is the true guarantee.
+- `usePermissions` reads from `homestead_members` for the current homestead + `role_permissions` catalog.
+- New routes:
+  - `src/routes/_authenticated/homestead.tsx` — settings, members, invites
+  - `src/routes/accept-invite.$token.tsx` (public) — accepts invite, then redirects
+- Sidebar gets `<HomesteadSwitcher />`.
+- Sign-up flow (email/password + Google) is enabled on `/login`; on first sign-in a trigger auto-creates a homestead named "{display_name}'s Homestead" and adds the user as owner.
+- Every existing insert adds `homestead_id: currentHomesteadId`. Every list query filters by it. Queries invalidate on homestead switch.
 
-### 4. Reports & charts
-No code changes — existing Reports/Dashboard already read from these tables via TanStack Query. With the seed volume above, charts (egg trend, feed cost, income vs. bills) render meaningfully.
+## Security
 
-### 5. Guardrails
-- Demo mode check happens inside the Proxy — impossible for a stray call to hit real Supabase.
-- Server functions (createServerFn) are blocked in demo mode via a client-side check in `useServerFn` call sites for admin routes (or those routes hide themselves — simpler: the demo banner disables admin/backup pages).
-- Reset button: `resetDemo()` re-runs `seed.ts` and reloads.
-- Exit button: clears `demo_mode`, `demo_db`, navigates to `/login`.
+- RLS on every table; no `TO anon` grants on tenant data.
+- All membership/permission checks go through `security definer` functions to avoid recursive RLS.
+- Invitation tokens are random 32-byte, single-use, 7-day expiry; accept flow verifies invitee email matches the invite.
+- Owners cannot be removed; ownership transfer is an explicit action.
+- Service role only used from server functions that verify the caller is an owner/admin of the target homestead.
 
-## Non-goals / trade-offs
+## Rollout order
 
-- The mock query builder implements the subset of PostgREST features the app actually uses today. If a hook later uses an unsupported filter (`.contains`, `.rpc`, `.textSearch`), it'll need to be added — I'll grep first and cover what exists.
-- Realtime subscriptions are no-ops in demo.
-- Storage (signed image URLs) — demo animals reference a small set of placeholder public images shipped with the app rather than signed Storage URLs.
-- File edits to `src/integrations/supabase/client.ts` are normally forbidden. If confirmed protected, I'll add the Proxy in a new file and change the ~30 import sites to point at `@/lib/supabase`. I'll verify on the first read and adjust.
+1. Migration: create tables, add `homestead_id` everywhere, backfill, replace policies, add helper functions.
+2. Homestead context + switcher + first-login auto-create.
+3. Update every query/insert to scope by homestead.
+4. Homestead settings page + invitations + accept-invite route.
+5. Update `usePermissions` and admin pages to per-homestead roles.
+6. QA: verify a second account cannot see the first account's data.
 
-## Deliverable size
-~10 new files, ~1 modified route (login), ~1 modified layout (_authenticated), plus either 1 client wrapper edit or a bulk import rename. Estimated 1500–2000 LOC, most of it the seed dataset.
+## Scope note
 
-Confirm and I'll build it.
+This is a large change (~30 tables, ~40 files). It will be delivered in one migration + one code pass. Demo mode, PWA, and existing UX stay intact.
