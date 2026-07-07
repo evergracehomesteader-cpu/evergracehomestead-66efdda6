@@ -21,6 +21,7 @@ import { Route as AuthenticatedProductionRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPensRouteImport } from './routes/_authenticated/pens'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
 import { Route as AuthenticatedIncomeRouteImport } from './routes/_authenticated/income'
+import { Route as AuthenticatedHomesteadRouteImport } from './routes/_authenticated/homestead'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -97,6 +98,11 @@ const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
 const AuthenticatedIncomeRoute = AuthenticatedIncomeRouteImport.update({
   id: '/income',
   path: '/income',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedHomesteadRoute = AuthenticatedHomesteadRouteImport.update({
+  id: '/homestead',
+  path: '/homestead',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/homestead': typeof AuthenticatedHomesteadRoute
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
+  '/homestead': typeof AuthenticatedHomesteadRoute
   '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
+  '/_authenticated/homestead': typeof AuthenticatedHomesteadRoute
   '/_authenticated/income': typeof AuthenticatedIncomeRoute
   '/_authenticated/litters': typeof AuthenticatedLittersRoute
   '/_authenticated/pens': typeof AuthenticatedPensRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/homestead'
     | '/income'
     | '/litters'
     | '/pens'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/feed'
     | '/garden'
+    | '/homestead'
     | '/income'
     | '/litters'
     | '/pens'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
     | '/_authenticated/garden'
+    | '/_authenticated/homestead'
     | '/_authenticated/income'
     | '/_authenticated/litters'
     | '/_authenticated/pens'
@@ -464,6 +476,13 @@ declare module '@tanstack/react-router' {
       path: '/income'
       fullPath: '/income'
       preLoaderRoute: typeof AuthenticatedIncomeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/homestead': {
+      id: '/_authenticated/homestead'
+      path: '/homestead'
+      fullPath: '/homestead'
+      preLoaderRoute: typeof AuthenticatedHomesteadRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/garden': {
@@ -601,6 +620,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
+  AuthenticatedHomesteadRoute: typeof AuthenticatedHomesteadRoute
   AuthenticatedIncomeRoute: typeof AuthenticatedIncomeRoute
   AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
   AuthenticatedPensRoute: typeof AuthenticatedPensRoute
@@ -630,6 +650,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
+  AuthenticatedHomesteadRoute: AuthenticatedHomesteadRoute,
   AuthenticatedIncomeRoute: AuthenticatedIncomeRoute,
   AuthenticatedLittersRoute: AuthenticatedLittersRoute,
   AuthenticatedPensRoute: AuthenticatedPensRoute,
