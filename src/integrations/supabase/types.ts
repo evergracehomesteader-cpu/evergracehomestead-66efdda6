@@ -33,7 +33,7 @@ export type Database = {
           details?: Json | null
           event_date?: string
           event_type: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           title: string
         }
@@ -123,7 +123,7 @@ export type Database = {
           expected_sale_price_cents?: number
           father_id?: string | null
           front_photo_url?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           is_intact_male?: string
           life_stage?: string | null
@@ -242,7 +242,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           label: string
           notes?: string | null
@@ -288,7 +288,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -350,7 +350,7 @@ export type Database = {
           due_date?: string | null
           estimated_value_cents?: number
           given_summary?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           location?: string | null
           notes?: string | null
@@ -421,7 +421,7 @@ export type Database = {
           deal_id: string
           description: string
           direction: Database["public"]["Enums"]["barter_direction"]
-          homestead_id: string
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: Database["public"]["Enums"]["barter_link_type"]
@@ -481,7 +481,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           due_date?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           name: string
           notes?: string | null
@@ -532,7 +532,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           decision?: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           reason?: string | null
           target_date?: string | null
@@ -605,7 +605,7 @@ export type Database = {
         Insert: {
           chore_id: string
           created_at?: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           user_id: string
         }
@@ -647,7 +647,7 @@ export type Database = {
           chore_id: string
           completed_at?: string
           completed_by?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           instance_date: string
           notes?: string | null
@@ -705,7 +705,7 @@ export type Database = {
           days_of_week?: number[]
           due_time?: string | null
           end_date?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           recurrence?: string
@@ -757,7 +757,7 @@ export type Database = {
           created_by?: string | null
           entry_date?: string
           entry_type?: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           material?: string | null
           notes?: string | null
@@ -802,7 +802,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -846,7 +846,7 @@ export type Database = {
         Insert: {
           container_id: string
           feed_item_id: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           stock_lbs?: number
           updated_at?: string
@@ -887,7 +887,7 @@ export type Database = {
           capacity_lbs?: number | null
           created_at?: string
           created_by?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -936,7 +936,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           low_stock_threshold?: number
           name: string
@@ -1000,7 +1000,7 @@ export type Database = {
           created_by?: string | null
           fed_on?: string
           feed_item_id: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           quantity: number
@@ -1082,7 +1082,7 @@ export type Database = {
           custom_unit_id?: string | null
           custom_unit_qty?: number | null
           feed_item_id: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           price_cents: number
@@ -1143,7 +1143,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           is_system?: boolean
           lbs_per_unit?: number
@@ -1191,7 +1191,7 @@ export type Database = {
           created_by?: string | null
           crop?: string | null
           expected_harvest?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           last_watered_on?: string | null
           name: string
@@ -1256,7 +1256,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           dosage?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           product?: string | null
@@ -1312,7 +1312,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           event_date: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
         }
@@ -1460,7 +1460,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           entry_date?: string
-          homestead_id: string
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: string | null
@@ -1518,7 +1518,7 @@ export type Database = {
           expected_hatch?: string | null
           fertile?: boolean | null
           hatched_count?: number | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           set_date?: string
@@ -1572,7 +1572,7 @@ export type Database = {
           created_by?: string | null
           father_id?: string | null
           female_count?: number
-          homestead_id: string
+          homestead_id?: string
           id?: string
           male_count?: number
           mother_id?: string | null
@@ -1623,7 +1623,7 @@ export type Database = {
           capacity?: number | null
           created_at?: string
           created_by?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           location?: string | null
           name: string
@@ -1688,7 +1688,7 @@ export type Database = {
           evidence?: string | null
           expected_due?: string | null
           female_born?: number | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           male_born?: number | null
           notes?: string | null
@@ -1765,7 +1765,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           group_label?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           produced_on?: string
@@ -1917,7 +1917,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           due_date?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           link_id?: string | null
           link_type?: string | null
@@ -1943,6 +1943,32 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "tasks_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_current_homestead: {
+        Row: {
+          homestead_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          homestead_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          homestead_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_current_homestead_homestead_id_fkey"
             columns: ["homestead_id"]
             isOneToOne: false
             referencedRelation: "homesteads"
@@ -1987,7 +2013,7 @@ export type Database = {
           animal_id: string
           created_at?: string
           created_by?: string | null
-          homestead_id: string
+          homestead_id?: string
           id?: string
           notes?: string | null
           unit?: string
@@ -2037,6 +2063,7 @@ export type Database = {
         Args: { _hid: string; _uid: string }
         Returns: boolean
       }
+      current_homestead_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
