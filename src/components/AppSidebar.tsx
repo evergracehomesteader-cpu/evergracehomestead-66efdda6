@@ -42,6 +42,7 @@ const adminItems = [
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Roles", url: "/admin/roles", icon: Shield },
   { title: "Backups", url: "/admin/backups", icon: Database },
+  { title: "Suggestions", url: "/admin/suggestions", icon: ShieldAlert },
 ];
 
 export function AppSidebar() {
