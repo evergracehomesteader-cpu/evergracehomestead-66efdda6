@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as React from "react";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield, CalendarCheck, Database, Fence, Heart } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield, CalendarCheck, Database, Fence, Heart, Lightbulb, ShieldAlert } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -32,6 +32,7 @@ const plan = [
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
   { title: "Reminders", url: "/reminders", icon: Bell },
   { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Suggestions", url: "/suggestions", icon: Lightbulb },
   { title: "App Updates", url: "/app-updates", icon: Wrench },
   { title: "Homestead", url: "/homestead", icon: Home },
   { title: "Settings", url: "/settings", icon: Settings },
