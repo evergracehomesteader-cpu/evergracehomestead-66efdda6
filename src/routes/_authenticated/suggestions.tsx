@@ -142,11 +142,15 @@ function SuggestionCard({ row, canDelete, onDelete }: { row: Row; canDelete: boo
       )}
       {canDelete && (
         <div className="flex justify-end">
-          <ConfirmDelete onConfirm={onDelete} title="Delete this suggestion?">
-            <Button size="sm" variant="ghost" className="text-destructive">
-              <Trash2 className="h-4 w-4" /> Delete
-            </Button>
-          </ConfirmDelete>
+          <ConfirmDelete
+            onConfirm={onDelete}
+            title="Delete this suggestion?"
+            trigger={
+              <Button size="sm" variant="ghost" className="text-destructive">
+                <Trash2 className="h-4 w-4" /> Delete
+              </Button>
+            }
+          />
         </div>
       )}
     </Card>
