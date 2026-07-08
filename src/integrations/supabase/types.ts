@@ -1894,6 +1894,72 @@ export type Database = {
         }
         Relationships: []
       }
+      suggestions: {
+        Row: {
+          admin_notes: string | null
+          admin_reply: string | null
+          category: string
+          created_at: string
+          description: string
+          duplicate_of: string | null
+          homestead_id: string | null
+          id: string
+          is_public: boolean
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          admin_reply?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          duplicate_of?: string | null
+          homestead_id?: string | null
+          id?: string
+          is_public?: boolean
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          admin_reply?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          duplicate_of?: string | null
+          homestead_id?: string | null
+          id?: string
+          is_public?: boolean
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggestions_duplicate_of_fkey"
+            columns: ["duplicate_of"]
+            isOneToOne: false
+            referencedRelation: "suggestions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suggestions_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           category: string
