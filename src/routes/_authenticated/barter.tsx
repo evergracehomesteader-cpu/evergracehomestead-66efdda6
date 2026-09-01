@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { validateImageFile } from "@/lib/photo-storage";
 import { SignedImg } from "@/components/SignedImg";
+import { DescribePhotoButton } from "@/components/ai/DescribePhotoDialog";
 
 export const Route = createFileRoute("/_authenticated/barter")({ component: BarterPage });
 

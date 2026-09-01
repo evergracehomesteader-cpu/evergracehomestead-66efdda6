@@ -18,6 +18,7 @@ import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { cn } from "@/lib/utils";
 import { validateImageFile } from "@/lib/photo-storage";
 import { SignedImg } from "@/components/SignedImg";
+import { DescribePhotoButton } from "@/components/ai/DescribePhotoDialog";
 import {
   ANIMAL_STATUS_OPTIONS,
   BREED_TYPE_OPTIONS,
