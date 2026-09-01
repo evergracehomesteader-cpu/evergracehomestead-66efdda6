@@ -18,6 +18,7 @@ import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { cn } from "@/lib/utils";
 import { validateImageFile } from "@/lib/photo-storage";
 import { SignedImg } from "@/components/SignedImg";
+import { DescribePhotoButton } from "@/components/ai/DescribePhotoDialog";
 import {
   ANIMAL_STATUS_OPTIONS,
   BREED_TYPE_OPTIONS,
@@ -715,9 +716,21 @@ function AnimalForm({
           </div>
         </div>
 
-        <div><Label>Marking description (coat color, markings, distinguishing features)</Label>
+        <div>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <Label>Marking description (coat color, markings, distinguishing features)</Label>
+            <DescribePhotoButton
+              bucket="animal-photos"
+              path={form.front_photo_url ?? form.side_photo_url ?? form.photo_url ?? null}
+              kind="animal"
+              hint={[form.species, form.name].filter(Boolean).join(" — ")}
+              currentText={form.user_edited_description ?? ""}
+              onApply={(t) => set("user_edited_description", t)}
+            />
+          </div>
           <Textarea value={form.user_edited_description ?? ""} onChange={(e) => set("user_edited_description", e.target.value || null)} maxLength={2000} placeholder="Black with white star on forehead, white socks on hind legs…" />
         </div>
+
         <div><Label>Temperament tags (comma separated)</Label><Input value={tagsText} onChange={(e) => setTagsText(e.target.value)} placeholder="friendly, skittish, leader" /></div>
 
         <div className="grid grid-cols-2 gap-3">
