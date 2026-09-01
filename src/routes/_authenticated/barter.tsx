@@ -500,7 +500,21 @@ function DealForm({
             </label>
           </div>
         </div>
-        <div><Label>Notes</Label><Textarea value={f.notes ?? ""} onChange={(e) => setF({ ...f, notes: e.target.value })} maxLength={1000} /></div>
+        <div>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <Label>Notes</Label>
+            <DescribePhotoButton
+              bucket="barter-photos"
+              path={(f.photo_urls ?? [])[(f.photo_urls ?? []).length - 1] ?? null}
+              kind="general"
+              hint={f.title ?? undefined}
+              currentText={f.notes ?? ""}
+              onApply={(t) => setF((cur) => ({ ...cur, notes: t }))}
+            />
+          </div>
+          <Textarea value={f.notes ?? ""} onChange={(e) => setF({ ...f, notes: e.target.value })} maxLength={1000} />
+        </div>
+
         <DialogFooter><Button type="submit" disabled={submitting || uploading}>Save</Button></DialogFooter>
       </form>
     </DialogContent>
