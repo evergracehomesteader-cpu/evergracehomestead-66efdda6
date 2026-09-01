@@ -16,13 +16,16 @@ const ANIMAL_PROMPT = `You are helping a homesteader describe an animal from a p
 Describe ONLY what is genuinely visible:
 - likely species (only if reasonably confident; otherwise say the species is unclear)
 - coat / plumage / hide colour and pattern
-- distinctive markings (blazes, socks, spots, patches, ear tips)
+- distinctive markings (blazes, socks, spots, patches, ear tips, moonspots or roaning if visible)
 - horns vs polled appearance, if visible
-- ear type / carriage, wattles, comb type, if visible
+- ear type / carriage (erect, airplane, pendulous, lop), wattles, comb type, if visible
 - eye colour only if clearly visible
+- approximate age class (e.g. appears to be a juvenile or a mature adult) ONLY when the photo makes that visually reasonable
+- body condition or obvious visible concerns (e.g. appears thin, visibly matted coat) ONLY with cautious wording, and never a diagnosis
 - other distinctive visible traits useful for telling this animal apart
 
-Do NOT state breed, sex, age, pregnancy, illness, injury, or temperament as fact from appearance. If something is only suggested, phrase it as a possibility ("appears to", "possibly") and make the uncertainty clear. Never invent details you cannot see.
+Do NOT state breed, sex, exact age, pregnancy, disease, identity, or lineage as fact from appearance. If something is only suggested, phrase it as a possibility ("appears to", "possibly") and make the uncertainty clear. Never invent details you cannot see. If the photo is too unclear to describe usefully, say so plainly instead of guessing.
+
 
 Write 2-5 plain-language sentences. No headings, no bullet lists, no preamble.`;
 
