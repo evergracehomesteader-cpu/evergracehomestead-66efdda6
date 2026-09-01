@@ -747,22 +747,40 @@ function AnimalForm({
   );
 }
 
-function PhotoSlot({ label, url, uploading, onPick }: { label: string; url: string | null; uploading: boolean; onPick: (f: File) => void }) {
+function PhotoSlot({ label, url, uploading, onPick, describe }: {
+  label: string; url: string | null; uploading: boolean; onPick: (f: File) => void;
+  describe?: { hint?: string; currentText?: string | null; onApply: (t: string) => void };
+}) {
   return (
     <div>
       <Label>{label}</Label>
-      <div className="flex items-center gap-2 mt-1">
+      <div className="flex items-center gap-2 mt-1 flex-wrap">
         {url ? <SignedImg src={url} bucket="animal-photos" alt="" className="h-16 w-16 rounded-md object-cover" fallback={<div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>} /> : (
           <div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center"><PawPrint className="h-6 w-6 text-muted-foreground" /></div>
         )}
-        <label className="inline-flex items-center gap-1 px-2 py-1.5 rounded-md border cursor-pointer hover:bg-accent text-xs">
-          <ImagePlus className="h-3 w-3" /> {uploading ? "…" : url ? "Change" : "Add"}
-          <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(f); e.target.value = ""; }} />
-        </label>
+        <div className="flex flex-col gap-1">
+          <label className="inline-flex items-center gap-1 px-2 py-1.5 rounded-md border cursor-pointer hover:bg-accent text-xs">
+            <ImagePlus className="h-3 w-3" /> {uploading ? "…" : url ? "Change" : "Add"}
+            <input type="file" accept="image/*" capture="environment" className="hidden" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(f); e.target.value = ""; }} />
+          </label>
+          {describe && url && !uploading && (
+            <DescribePhotoButton
+              bucket="animal-photos"
+              path={url}
+              kind="animal"
+              label="AI description"
+              className="h-7 px-2 text-xs"
+              {...(describe.hint ? { hint: describe.hint } : {})}
+              currentText={describe.currentText ?? ""}
+              onApply={describe.onApply}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
 }
+
 
 // ---------- Quick Add Litter ----------
 
