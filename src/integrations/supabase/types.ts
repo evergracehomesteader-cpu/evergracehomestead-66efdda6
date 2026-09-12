@@ -2124,6 +2124,10 @@ export type Database = {
         Args: { _hid: string; _uid: string }
         Returns: boolean
       }
+      can_view_finances: {
+        Args: { _hid: string; _uid: string }
+        Returns: boolean
+      }
       can_write_data: { Args: { _uid: string }; Returns: boolean }
       can_write_homestead: {
         Args: { _hid: string; _uid: string }
