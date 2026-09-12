@@ -16,7 +16,15 @@ import { startOfMonth, endOfMonth, format, addMonths, subMonths, parseISO, isWit
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 
-export const Route = createFileRoute("/_authenticated/income")({ component: IncomePage });
+import { RequirePermission } from "@/components/RequirePermission";
+
+export const Route = createFileRoute("/_authenticated/income")({
+  component: () => (
+    <RequirePermission perm="finances.view">
+      <IncomePage />
+    </RequirePermission>
+  ),
+});
 
 type Income = {
   id: string;

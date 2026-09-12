@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Wheat, Egg, Sprout, Receipt, StickyNote, Baby, Zap } from "lucide-react";
 import { FeedingDialog, type FeedingPayload, type AnimalLite } from "@/components/feed/FeedingDialog";
 import type { ContainerLite, FeedItemLite, UnitLite } from "@/components/feed/PurchaseDialog";
+import { usePermissions } from "@/hooks/usePermissions";
 
 type ActionKey = "feed" | "eggs" | "water" | "expense" | "note" | "birth";
 
@@ -30,6 +31,8 @@ const ACTIONS: { key: ActionKey; label: string; icon: typeof Wheat; accent: stri
 
 export function QuickActions() {
   const [open, setOpen] = useState<ActionKey | null>(null);
+  const { can } = usePermissions();
+  const visibleActions = ACTIONS.filter((a) => a.key !== "expense" || can("finances.create"));
 
   return (
     <Card className="p-4">
@@ -38,7 +41,7 @@ export function QuickActions() {
         <h3 className="font-semibold">Quick actions</h3>
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {ACTIONS.map((a) => (
+        {visibleActions.map((a) => (
           <button
             key={a.key}
             onClick={() => setOpen(a.key)}
