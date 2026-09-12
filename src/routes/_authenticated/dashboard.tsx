@@ -12,6 +12,7 @@ import { QuickActions } from "@/components/QuickActions";
 import { statusBadgeClass } from "@/lib/homestead";
 import { cn } from "@/lib/utils";
 import { useState, type MouseEvent, type ElementType } from "react";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
@@ -63,6 +64,8 @@ function CountTile({ label, value, tone, onClick }: { label: string; value: numb
 
 function Dashboard() {
   const [activeOpen, setActiveOpen] = useState(false);
+  const { can } = usePermissions();
+  const canFinance = can("finances.view");
   const animals = useQuery({
     queryKey: ["dash-animals"],
     queryFn: async () => (await supabase.from("animals").select("id,name,sex,species,status").order("name")).data ?? [],
@@ -73,7 +76,7 @@ function Dashboard() {
     queryFn: async () => (await supabase.from("pregnancies").select("id, animal_id, status, expected_due, bred_date, animals!pregnancies_animal_id_fkey(name)").eq("status", "active")).data ?? [],
   });
   const feed = useQuery({ queryKey: ["dash-feed"], queryFn: async () => (await supabase.from("feed_items").select("id, name, stock_qty, low_stock_threshold")).data ?? [] });
-  const bills = useQuery({ queryKey: ["dash-bills"], queryFn: async () => (await supabase.from("bills").select("id, name, due_date, amount_cents, paid").eq("paid", false)).data ?? [] });
+  const bills = useQuery({ queryKey: ["dash-bills", canFinance], enabled: canFinance, queryFn: async () => (await supabase.from("bills").select("id, name, due_date, amount_cents, paid").eq("paid", false)).data ?? [] });
   const garden = useQuery({ queryKey: ["dash-garden"], queryFn: async () => (await supabase.from("garden_plots").select("*").neq("status", "harvested")).data ?? [] });
   const compost = useQuery({ queryKey: ["dash-compost"], queryFn: async () => (await supabase.from("compost_entries").select("id,entry_type,entry_date")).data ?? [] });
   const barter = useQuery({ queryKey: ["dash-barter"], queryFn: async () => (await supabase.from("barter_deals").select("id, title, person_name, status, due_date, trade_date, estimated_value_cents, created_at").order("created_at", { ascending: false })).data ?? [] });
@@ -93,7 +96,8 @@ function Dashboard() {
   });
   const purchases = useQuery({ queryKey: ["dash-pur"], queryFn: async () => (await supabase.from("feed_purchases").select("price_cents,purchased_on")).data ?? [] });
   const income = useQuery({
-    queryKey: ["dash-income"],
+    queryKey: ["dash-income", canFinance],
+    enabled: canFinance,
     queryFn: async () => {
       const c = supabase as never as { from: (t: string) => { select: (s: string) => Promise<{ data: { amount_cents: number; entry_date: string }[] }> } };
       return (await c.from("income_entries").select("amount_cents,entry_date")).data ?? [];
@@ -176,7 +180,7 @@ function Dashboard() {
         <Button asChild size="sm" variant="outline"><Link to="/animals"><PawPrint className="h-4 w-4" /> Add animal</Link></Button>
         <Button asChild size="sm" variant="outline"><Link to="/feed"><Wheat className="h-4 w-4" /> Buy feed</Link></Button>
         <Button asChild size="sm" variant="outline"><Link to="/tasks"><ListTodo className="h-4 w-4" /> New task</Link></Button>
-        <Button asChild size="sm" variant="outline"><Link to="/bills"><Receipt className="h-4 w-4" /> Add bill</Link></Button>
+        {canFinance && <Button asChild size="sm" variant="outline"><Link to="/bills"><Receipt className="h-4 w-4" /> Add bill</Link></Button>}
         <Button asChild size="sm" variant="outline"><Link to="/barter"><Handshake className="h-4 w-4" /> New trade</Link></Button>
       </div>
 
@@ -190,7 +194,7 @@ function Dashboard() {
         />
         <Stat icon={Wheat} label="Feed items" value={feed.data?.length ?? "—"} to="/feed" />
         <Stat icon={Sprout} label="Garden plots" value={garden.data?.length ?? "—"} to="/garden" />
-        <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />
+        {canFinance && <Stat icon={Receipt} label="Unpaid bills" value={bills.data?.length ?? "—"} to="/bills" accent="bg-accent/15 text-accent" />}
         <Stat icon={Handshake} label="Pending barter" value={pendingBarter.length} to="/barter" accent="bg-warning/15 text-warning" />
         <Stat icon={Bell} label="Reminders" value={reminders.length} to="/reminders" accent="bg-primary/10 text-primary" />
         <Stat icon={Egg} label="Eggs today" value={todayEggs || "—"} to="/production" accent="bg-success/15 text-success" />
@@ -316,6 +320,7 @@ function Dashboard() {
         </Card>
       </div>
 
+      {canFinance && (
       <Card className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <BarChart3 className="h-4 w-4 text-primary" />
@@ -337,6 +342,7 @@ function Dashboard() {
           </div>
         </div>
       </Card>
+      )}
     </div>
   );
 }
