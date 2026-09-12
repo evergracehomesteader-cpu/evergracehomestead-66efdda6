@@ -16,7 +16,15 @@ import { format, isBefore, startOfMonth, endOfMonth, isWithinInterval, parseISO 
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 
-export const Route = createFileRoute("/_authenticated/bills")({ component: BillsPage });
+import { RequirePermission } from "@/components/RequirePermission";
+
+export const Route = createFileRoute("/_authenticated/bills")({
+  component: () => (
+    <RequirePermission perm="finances.view">
+      <BillsPage />
+    </RequirePermission>
+  ),
+});
 
 type Bill = {
   id: string; name: string; category: string | null; amount_cents: number;

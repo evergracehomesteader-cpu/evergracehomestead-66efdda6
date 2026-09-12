@@ -10,7 +10,9 @@ import { usePermissions } from "@/hooks/usePermissions";
 import { Button } from "@/components/ui/button";
 import { APP_VERSION } from "@/lib/app-version";
 
-const manage = [
+type NavItem = { title: string; url: string; icon: typeof Home; perm?: string };
+
+const manage: NavItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Animals", url: "/animals", icon: PawPrint },
   { title: "Pens", url: "/pens", icon: Fence },
@@ -19,19 +21,19 @@ const manage = [
   { title: "Feed", url: "/feed", icon: Wheat },
   { title: "Garden", url: "/garden", icon: Sprout },
   { title: "Compost", url: "/compost", icon: Recycle },
-  { title: "Bills & Income", url: "/bills", icon: Receipt },
-  { title: "Income", url: "/income", icon: DollarSign },
+  { title: "Bills & Income", url: "/bills", icon: Receipt, perm: "finances.view" },
+  { title: "Income", url: "/income", icon: DollarSign, perm: "finances.view" },
   { title: "Barter", url: "/barter", icon: Handshake },
   { title: "Production", url: "/production", icon: Egg },
   { title: "Contacts", url: "/contacts", icon: UserRound },
 ];
 
-const plan = [
+const plan: NavItem[] = [
   { title: "Chores", url: "/chores", icon: CalendarCheck },
   { title: "Tasks", url: "/tasks", icon: ListTodo },
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
   { title: "Reminders", url: "/reminders", icon: Bell },
-  { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Reports", url: "/reports", icon: BarChart3, perm: "reports.view" },
   { title: "Suggestions", url: "/suggestions", icon: Lightbulb },
   { title: "App Updates", url: "/app-updates", icon: Wrench },
   { title: "Homestead", url: "/homestead", icon: Home },

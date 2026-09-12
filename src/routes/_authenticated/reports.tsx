@@ -14,7 +14,15 @@ import { startOfMonth, endOfMonth, format, addMonths, subMonths, parseISO, isWit
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 
-export const Route = createFileRoute("/_authenticated/reports")({ component: ReportsPage });
+import { RequirePermission } from "@/components/RequirePermission";
+
+export const Route = createFileRoute("/_authenticated/reports")({
+  component: () => (
+    <RequirePermission perm="reports.view">
+      <ReportsPage />
+    </RequirePermission>
+  ),
+});
 
 type Income = { id: string; source: string; category: string; amount_cents: number; entry_date: string; notes: string | null };
 
