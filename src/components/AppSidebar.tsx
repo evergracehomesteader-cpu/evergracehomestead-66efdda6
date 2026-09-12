@@ -50,7 +50,7 @@ const adminItems = [
 export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { user, signOut } = useAuth();
-  const { isAdmin } = usePermissions();
+  const { isAdmin, can } = usePermissions();
   const { isMobile, setOpenMobile } = useSidebar();
 
   // Close mobile menu on route change
@@ -62,8 +62,8 @@ export function AppSidebar() {
     if (isMobile) setOpenMobile(false);
   };
 
-  const renderItems = (items: { title: string; url: string; icon: typeof Home }[]) =>
-    items.map((item) => (
+  const renderItems = (items: NavItem[]) =>
+    items.filter((item) => !item.perm || can(item.perm)).map((item) => (
       <SidebarMenuItem key={item.url}>
         <SidebarMenuButton asChild isActive={path === item.url || path.startsWith(item.url + "/")}>
           <Link to={item.url} onClick={handleNav}>
