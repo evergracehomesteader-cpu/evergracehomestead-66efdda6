@@ -72,16 +72,50 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+// Blank-screen self-heal: if the app hasn't signalled that it mounted within
+// 12s (stale service-worker cache, failed chunk, old iOS Safari), wipe caches,
+// unregister the worker and reload once per session.
+const BOOT_WATCHDOG = `
+(function(){
+  try {
+    var KEY='boot-recovery-attempted';
+    window.__appBooted=false;
+    window.addEventListener('load',function(){
+      setTimeout(function(){
+        if (window.__appBooted) { try{sessionStorage.removeItem(KEY)}catch(e){} return; }
+        try { if (sessionStorage.getItem(KEY)==='1') return; sessionStorage.setItem(KEY,'1'); } catch(e){}
+        var done=function(){ var u=new URL(window.location.href); u.searchParams.set('_r',Date.now()); window.location.replace(u.toString()); };
+        var jobs=[];
+        try { if (window.caches) jobs.push(caches.keys().then(function(n){return Promise.all(n.map(function(x){return caches.delete(x)}))})); } catch(e){}
+        try { if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))})); } catch(e){}
+        Promise.all(jobs).then(done, done);
+      }, 12000);
+    });
+  } catch(e){}
+})();
+`;
+
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: BOOT_WATCHDOG }} />
+      </head>
       <body style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
         {children}
         <Scripts />
       </body>
     </html>
   );
+}
+
+function BootSignal() {
+  useEffect(() => {
+    (window as unknown as { __appBooted?: boolean }).__appBooted = true;
+    try { sessionStorage.removeItem("boot-recovery-attempted"); } catch { /* ignore */ }
+  }, []);
+  return null;
 }
 
 function RootComponent() {
