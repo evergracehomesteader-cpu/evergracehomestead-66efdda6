@@ -121,20 +121,30 @@ function AnimalsPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
+  // Animals that are no longer part of the working herd/flock.
+  const ARCHIVED_STATUSES = ["deceased", "missing", "archived", "sold", "butchered"];
+  const isArchived = (a: Animal) => ARCHIVED_STATUSES.includes(a.status);
+
+  const visibleAnimals = useMemo(
+    () => (animals ?? []).filter((a) => (showArchived ? isArchived(a) : !isArchived(a))),
+    [animals, showArchived]
+  );
+  const archivedCount = (animals ?? []).filter(isArchived).length;
+
   const allBreeds = useMemo(() => {
     const s = new Set<string>();
-    (animals ?? []).forEach((a) => { if (a.breed) s.add(a.breed); });
+    visibleAnimals.forEach((a) => { if (a.breed) s.add(a.breed); });
     return Array.from(s).sort();
-  }, [animals]);
+  }, [visibleAnimals]);
 
   const allSpecies = useMemo(() => {
     const s = new Set<string>();
-    (animals ?? []).forEach((a) => s.add(a.species));
+    visibleAnimals.forEach((a) => s.add(a.species));
     return Array.from(s).sort();
-  }, [animals]);
+  }, [visibleAnimals]);
 
   const q = search.trim().toLowerCase();
-  const filtered = (animals ?? []).filter((a) => {
+  const filtered = visibleAnimals.filter((a) => {
     if (breedFilter !== "__all__" && (a.breed ?? "") !== breedFilter) return false;
     if (speciesFilter !== "__all__" && a.species !== speciesFilter) return false;
     if (q && !(
@@ -148,7 +158,8 @@ function AnimalsPage() {
   const grouped = filtered.reduce<Record<string, Animal[]>>((acc, a) => {
     (acc[a.species] ||= []).push(a); return acc;
   }, {});
-  const totalCount = (animals ?? []).length;
+  const totalCount = visibleAnimals.length;
+
 
   return (
     <div className="space-y-4 pb-24 sm:pb-6">
