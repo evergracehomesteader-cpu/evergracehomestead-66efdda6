@@ -229,7 +229,7 @@ function AnimalsPage() {
               All <span className="ml-1 opacity-70">{totalCount}</span>
             </FilterPill>
             {allSpecies.map((sn) => {
-              const n = (animals ?? []).filter((a) => a.species === sn).length;
+              const n = visibleAnimals.filter((a) => a.species === sn).length;
               return (
                 <FilterPill key={sn} active={speciesFilter === sn} onClick={() => setSpeciesFilter(sn)}>
                   <span className="capitalize">{sn}</span> <span className="ml-1 opacity-70">{n}</span>
