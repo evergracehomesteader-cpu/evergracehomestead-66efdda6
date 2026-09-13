@@ -222,6 +222,18 @@ function AnimalsPage() {
         )}
       </div>
 
+      {/* Active / archived toggle */}
+      <div className="flex gap-2">
+        <FilterPill active={!showArchived} onClick={() => setShowArchived(false)}>
+          Active
+        </FilterPill>
+        <FilterPill active={showArchived} onClick={() => setShowArchived(true)}>
+          Archived <span className="ml-1 opacity-70">{archivedCount}</span>
+        </FilterPill>
+      </div>
+
+
+
       {/* Species filter pills (horizontal scroll on mobile) */}
       {allSpecies.length > 1 && (
         <div className="-mx-3 sm:mx-0 overflow-x-auto scrollbar-none">
