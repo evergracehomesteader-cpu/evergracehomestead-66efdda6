@@ -13,6 +13,10 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  vite: {
+    // Widen browser support so older iOS Safari versions can parse the bundle.
+    build: { target: ["es2020", "safari15"] },
+  },
   plugins: [
     VitePWA({
       strategies: "injectManifest",
@@ -24,7 +28,10 @@ export default defineConfig({
       manifest: false, // we ship public/manifest.webmanifest ourselves
       includeAssets: ["offline.html", "icon-192.png", "icon-512.png", "apple-touch-icon.png"],
       injectManifest: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff,woff2}"],
+        // Never precache HTML (except the offline fallback added via
+        // includeAssets): stale precached HTML points at deleted asset hashes
+        // and renders a blank page, which iOS Safari holds onto aggressively.
+        globPatterns: ["**/*.{js,css,ico,png,svg,webp,woff,woff2}"],
         // Cloudflare Workers + TanStack Start can produce large prerendered chunks.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       },
