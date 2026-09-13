@@ -42,7 +42,11 @@ self.addEventListener("activate", (event) => {
           return new URL(u, self.location.origin).pathname;
         }),
       );
-      const cacheNamesToScrub = ["static-assets", "html-pages"];
+      // A new build means any cached HTML is suspect (it can reference
+      // asset hashes that no longer exist) — drop it wholesale.
+      await caches.delete("html-pages").catch(() => false);
+
+      const cacheNamesToScrub = ["static-assets"];
       for (const name of cacheNamesToScrub) {
         const cache = await caches.open(name).catch(() => null);
         if (!cache) continue;
