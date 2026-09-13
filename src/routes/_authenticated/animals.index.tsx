@@ -528,8 +528,29 @@ function AnimalForm({
       >
         {/* Photos */}
         <div className="grid grid-cols-2 gap-3">
-          <PhotoSlot label="Front photo" url={form.front_photo_url ?? null} uploading={uploading === "front"} onPick={(f) => upload(f, "front")} />
-          <PhotoSlot label="Side photo" url={form.side_photo_url ?? null} uploading={uploading === "side"} onPick={(f) => upload(f, "side")} />
+          <PhotoSlot
+            label="Front photo"
+            url={form.front_photo_url ?? null}
+            uploading={uploading === "front"}
+            onPick={(f) => upload(f, "front")}
+            describe={{
+              hint: [form.species, form.name].filter(Boolean).join(" — "),
+              currentText: form.user_edited_description ?? "",
+              onApply: (t) => set("user_edited_description", t),
+            }}
+          />
+          <PhotoSlot
+            label="Side photo"
+            url={form.side_photo_url ?? null}
+            uploading={uploading === "side"}
+            onPick={(f) => upload(f, "side")}
+            describe={{
+              hint: [form.species, form.name].filter(Boolean).join(" — "),
+              currentText: form.user_edited_description ?? "",
+              onApply: (t) => set("user_edited_description", t),
+            }}
+          />
+
         </div>
 
         <div className="grid grid-cols-2 gap-3">
