@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet, createRootRouteWithContext, useRouter, HeadContent, Scripts, Link,
@@ -123,6 +124,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <BootSignal />
         <Outlet />
         <Toaster richColors position="top-right" />
         <PWAUpdatePrompt />
