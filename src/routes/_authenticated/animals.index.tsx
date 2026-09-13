@@ -168,8 +168,9 @@ function AnimalsPage() {
         <div className="min-w-0">
           <h1 className="text-2xl sm:text-3xl font-display font-semibold leading-tight">Animals</h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            {totalCount} {totalCount === 1 ? "animal" : "animals"} · heats, pregnancies, lineage
+            {totalCount} {showArchived ? (totalCount === 1 ? "archived animal" : "archived animals") : (totalCount === 1 ? "active animal" : "active animals")}
           </p>
+
         </div>
         {/* Desktop action buttons */}
         <div className="hidden sm:flex gap-2">
