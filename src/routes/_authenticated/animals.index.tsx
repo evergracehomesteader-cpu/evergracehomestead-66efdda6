@@ -57,6 +57,8 @@ function AnimalsPage() {
   const [editing, setEditing] = useState<Animal | null>(null);
   const [search, setSearch] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState<string>("__all__");
+  const [showArchived, setShowArchived] = useState(false);
+
 
   const { data: species = [] } = useSpeciesCatalog();
   const { data: breeds = [] } = useBreedsCatalog();
@@ -119,20 +121,30 @@ function AnimalsPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
+  // Animals that are no longer part of the working herd/flock.
+  const ARCHIVED_STATUSES = ["deceased", "missing", "archived", "sold", "butchered"];
+  const isArchived = (a: Animal) => ARCHIVED_STATUSES.includes(a.status);
+
+  const visibleAnimals = useMemo(
+    () => (animals ?? []).filter((a) => (showArchived ? isArchived(a) : !isArchived(a))),
+    [animals, showArchived]
+  );
+  const archivedCount = (animals ?? []).filter(isArchived).length;
+
   const allBreeds = useMemo(() => {
     const s = new Set<string>();
-    (animals ?? []).forEach((a) => { if (a.breed) s.add(a.breed); });
+    visibleAnimals.forEach((a) => { if (a.breed) s.add(a.breed); });
     return Array.from(s).sort();
-  }, [animals]);
+  }, [visibleAnimals]);
 
   const allSpecies = useMemo(() => {
     const s = new Set<string>();
-    (animals ?? []).forEach((a) => s.add(a.species));
+    visibleAnimals.forEach((a) => s.add(a.species));
     return Array.from(s).sort();
-  }, [animals]);
+  }, [visibleAnimals]);
 
   const q = search.trim().toLowerCase();
-  const filtered = (animals ?? []).filter((a) => {
+  const filtered = visibleAnimals.filter((a) => {
     if (breedFilter !== "__all__" && (a.breed ?? "") !== breedFilter) return false;
     if (speciesFilter !== "__all__" && a.species !== speciesFilter) return false;
     if (q && !(
@@ -146,7 +158,8 @@ function AnimalsPage() {
   const grouped = filtered.reduce<Record<string, Animal[]>>((acc, a) => {
     (acc[a.species] ||= []).push(a); return acc;
   }, {});
-  const totalCount = (animals ?? []).length;
+  const totalCount = visibleAnimals.length;
+
 
   return (
     <div className="space-y-4 pb-24 sm:pb-6">
@@ -155,8 +168,9 @@ function AnimalsPage() {
         <div className="min-w-0">
           <h1 className="text-2xl sm:text-3xl font-display font-semibold leading-tight">Animals</h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            {totalCount} {totalCount === 1 ? "animal" : "animals"} · heats, pregnancies, lineage
+            {totalCount} {showArchived ? (totalCount === 1 ? "archived animal" : "archived animals") : (totalCount === 1 ? "active animal" : "active animals")}
           </p>
+
         </div>
         {/* Desktop action buttons */}
         <div className="hidden sm:flex gap-2">
@@ -208,6 +222,18 @@ function AnimalsPage() {
         )}
       </div>
 
+      {/* Active / archived toggle */}
+      <div className="flex gap-2">
+        <FilterPill active={!showArchived} onClick={() => setShowArchived(false)}>
+          Active
+        </FilterPill>
+        <FilterPill active={showArchived} onClick={() => setShowArchived(true)}>
+          Archived <span className="ml-1 opacity-70">{archivedCount}</span>
+        </FilterPill>
+      </div>
+
+
+
       {/* Species filter pills (horizontal scroll on mobile) */}
       {allSpecies.length > 1 && (
         <div className="-mx-3 sm:mx-0 overflow-x-auto scrollbar-none">
@@ -216,7 +242,7 @@ function AnimalsPage() {
               All <span className="ml-1 opacity-70">{totalCount}</span>
             </FilterPill>
             {allSpecies.map((sn) => {
-              const n = (animals ?? []).filter((a) => a.species === sn).length;
+              const n = visibleAnimals.filter((a) => a.species === sn).length;
               return (
                 <FilterPill key={sn} active={speciesFilter === sn} onClick={() => setSpeciesFilter(sn)}>
                   <span className="capitalize">{sn}</span> <span className="ml-1 opacity-70">{n}</span>
