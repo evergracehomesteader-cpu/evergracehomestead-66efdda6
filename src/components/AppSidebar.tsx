@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as React from "react";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, ListTodo, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, DollarSign, Users, Shield, CalendarCheck, Database, Fence, Heart, Lightbulb, ShieldAlert } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, Users, Shield, CalendarCheck, Database, Fence, Heart, Lightbulb, ShieldAlert } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -16,13 +16,12 @@ const manage: NavItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Animals", url: "/animals", icon: PawPrint },
   { title: "Pens", url: "/pens", icon: Fence },
-  { title: "Breeding & Litters", url: "/litters", icon: Baby },
-  { title: "Breeding & Pregnancy", url: "/breeding", icon: Heart },
+  { title: "Litters", url: "/litters", icon: Baby },
+  { title: "Breeding", url: "/breeding", icon: Heart },
   { title: "Feed", url: "/feed", icon: Wheat },
   { title: "Garden", url: "/garden", icon: Sprout },
   { title: "Compost", url: "/compost", icon: Recycle },
   { title: "Bills & Income", url: "/bills", icon: Receipt, perm: "finances.view" },
-  { title: "Income", url: "/income", icon: DollarSign, perm: "finances.view" },
   { title: "Barter", url: "/barter", icon: Handshake },
   { title: "Production", url: "/production", icon: Egg },
   { title: "Contacts", url: "/contacts", icon: UserRound },
@@ -30,7 +29,6 @@ const manage: NavItem[] = [
 
 const plan: NavItem[] = [
   { title: "Chores", url: "/chores", icon: CalendarCheck },
-  { title: "Tasks", url: "/tasks", icon: ListTodo },
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
   { title: "Reminders", url: "/reminders", icon: Bell },
   { title: "Reports", url: "/reports", icon: BarChart3, perm: "reports.view" },
