@@ -65,7 +65,7 @@ function UsersPage() {
       {usersQ.error && <Card className="p-4 text-destructive">Failed to load: {(usersQ.error as Error).message}</Card>}
 
       <div className="grid gap-3">
-        {(usersQ.data ?? []).map((u) => (
+        {(Array.isArray(usersQ.data) ? usersQ.data : []).map((u) => (
           <UserCard key={u.id} user={u} onChanged={() => qc.invalidateQueries({ queryKey: ["admin-users"] })} />
         ))}
       </div>
@@ -119,7 +119,7 @@ function UserCard({ user, onChanged }: { user: AdminUserRow; onChanged: () => vo
           </div>
           <div className="flex flex-wrap gap-1 mt-2">
             {user.roles.length === 0 && <Badge variant="outline">No role</Badge>}
-            {user.roles.map((r) => <Badge key={r}>{ROLE_LABEL[r]}</Badge>)}
+            {(user.roles ?? []).map((r) => <Badge key={r}>{ROLE_LABEL[r]}</Badge>)}
           </div>
           {user.notes && <div className="text-xs text-muted-foreground mt-2 italic">{user.notes}</div>}
         </div>

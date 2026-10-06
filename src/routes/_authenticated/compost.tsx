@@ -18,6 +18,21 @@ export const Route = createFileRoute("/_authenticated/compost")({ component: Com
 
 type Entry = { id: string; entry_type: string; material: string | null; quantity: string | null; entry_date: string; notes: string | null };
 
+// Never crash on a bad/missing date — show a dash instead.
+function fmtEntryDate(v: string | null | undefined): string {
+  if (!v) return "—";
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? "—" : format(d, "MMM d, yyyy");
+}
+
+// Normalize any stored value to YYYY-MM-DD for <input type="date">.
+function toDateInputValue(v: string | null | undefined): string {
+  const fallback = new Date().toISOString().slice(0, 10);
+  if (!v) return fallback;
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? fallback : d.toISOString().slice(0, 10);
+}
+
 function CompostPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -80,7 +95,7 @@ function CompostPage() {
                   <Badge variant="outline" className="capitalize">{e.entry_type}</Badge>
                   <div className="min-w-0">
                     <div className="font-medium truncate">{e.material ?? "—"}{e.quantity ? ` · ${e.quantity}` : ""}</div>
-                    <div className="text-xs text-muted-foreground">{format(new Date(e.entry_date), "MMM d, yyyy")}{e.notes ? ` · ${e.notes}` : ""}</div>
+                    <div className="text-xs text-muted-foreground">{fmtEntryDate(e.entry_date)}{e.notes ? ` · ${e.notes}` : ""}</div>
                   </div>
                 </div>
                 <div className="flex gap-1">
@@ -107,7 +122,7 @@ function CompostForm({ initial, onSubmit, submitting }: { initial?: Entry; onSub
     entry_type: initial?.entry_type ?? "add",
     material: initial?.material ?? "",
     quantity: initial?.quantity ?? "",
-    entry_date: initial?.entry_date ?? new Date().toISOString().slice(0, 10),
+    entry_date: toDateInputValue(initial?.entry_date),
     notes: initial?.notes ?? "",
   });
   return (

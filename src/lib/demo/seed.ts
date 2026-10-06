@@ -292,7 +292,7 @@ export function buildSeed(): DB {
   // ── Compost, garden, incubations ────────────────────────────────────
   db.compost_entries = [];
   for (let w = 0; w < 12; w++) {
-    db.compost_entries.push({ id: id("cp"), material: pick(["straw","goat manure","kitchen scraps","chicken litter"]), quantity: rnd(20, 80), unit: "lb", added_on: daysAgo(w * 7 + 1), pile: pick(["Pile A","Pile B"]), notes: null, created_by: DEMO_USER_ID, created_at: now });
+    db.compost_entries.push({ id: id("cp"), entry_type: pick(["add","turn","harvest"]), material: pick(["straw","goat manure","kitchen scraps","chicken litter"]), quantity: `${rnd(20, 80)} lb`, entry_date: daysAgo(w * 7 + 1), notes: null, created_by: DEMO_USER_ID, created_at: now });
   }
   db.garden_plots = [
     { id: id("gp"), name: "Bed 1 — Tomatoes", size_sqft: 60, current_crop: "Cherokee Purple", planted_on: daysAgo(45), notes: "Trellised", created_by: DEMO_USER_ID, created_at: now, updated_at: now },
