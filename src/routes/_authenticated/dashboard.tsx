@@ -9,6 +9,7 @@ import { PawPrint, Wheat, Sprout, Receipt, AlertTriangle, Heart, Handshake, List
 import { format, addDays, isBefore, startOfMonth, endOfMonth, parseISO, isWithinInterval } from "date-fns";
 import { computeReminders, severityClass } from "@/lib/reminders";
 import { QuickActions } from "@/components/QuickActions";
+import { WeatherCard } from "@/components/WeatherCard";
 import { statusBadgeClass } from "@/lib/homestead";
 import { cn } from "@/lib/utils";
 import { useState, type MouseEvent, type ElementType } from "react";
@@ -153,7 +154,7 @@ function Dashboard() {
 
       <QuickActions />
 
-
+      <WeatherCard />
 
       {urgent.length > 0 && (
         <Card className="p-4 border-warning/50 bg-warning/5">
