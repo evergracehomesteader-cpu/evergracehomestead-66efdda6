@@ -11,26 +11,57 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
+import { OneTimeTasksPanel } from "@/components/OneTimeTasks";
 import { Plus, CalendarCheck, Trash2, Pencil, Users as UsersIcon } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useAuth } from "@/lib/auth-context";
 
-export const Route = createFileRoute("/_authenticated/chores")({ component: ChoresPage });
+export const Route = createFileRoute("/_authenticated/chores")({
+  component: ChoresPage,
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab: search.tab === "one-time" ? ("one-time" as const) : undefined,
+  }),
+});
 
 type Chore = {
-  id: string; title: string; notes: string | null; category: string;
+  id: string;
+  title: string;
+  notes: string | null;
+  category: string;
   recurrence: "daily" | "weekly" | "monthly";
-  days_of_week: number[]; day_of_month: number | null;
-  due_time: string | null; start_date: string; end_date: string | null;
+  days_of_week: number[];
+  day_of_month: number | null;
+  due_time: string | null;
+  start_date: string;
+  end_date: string | null;
   active: boolean;
 };
 type Assignment = { id: string; chore_id: string; user_id: string };
-type Completion = { id: string; chore_id: string; instance_date: string; completed_by: string | null; completed_at: string };
+type Completion = {
+  id: string;
+  chore_id: string;
+  instance_date: string;
+  completed_by: string | null;
+  completed_at: string;
+};
 type Profile = { id: string; display_name: string | null };
 
 const CATEGORIES = ["general", "animal", "feed", "garden", "compost", "kitchen", "maintenance"];
@@ -40,7 +71,10 @@ const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const db = supabase as unknown as {
   from: (t: string) => {
     select: (s: string) => {
-      order?: (c: string, o: { ascending: boolean }) => Promise<{ data: unknown[] | null; error: Error | null }>;
+      order?: (
+        c: string,
+        o: { ascending: boolean },
+      ) => Promise<{ data: unknown[] | null; error: Error | null }>;
       eq?: (c: string, v: unknown) => Promise<{ data: unknown[] | null; error: Error | null }>;
     } & Promise<{ data: unknown[] | null; error: Error | null }>;
     insert: (r: unknown) => Promise<{ error: Error | null }>;
@@ -51,6 +85,7 @@ const db = supabase as unknown as {
 
 function ChoresPage() {
   const { user } = useAuth();
+  const { tab } = Route.useSearch();
   const { can } = usePermissions();
   const canEdit = can("chores.create") || can("chores.edit");
   const canComplete = can("chores.complete");
@@ -80,8 +115,21 @@ function ChoresPage() {
   const todayCompQ = useQuery({
     queryKey: ["chore_completions", today],
     queryFn: async () => {
-      const { data, error } = await (supabase as unknown as { from: (t: string) => { select: (s: string) => { eq: (c: string, v: string) => Promise<{ data: unknown[] | null; error: Error | null }> } } })
-        .from("chore_completions").select("*").eq("instance_date", today);
+      const { data, error } = await (
+        supabase as unknown as {
+          from: (t: string) => {
+            select: (s: string) => {
+              eq: (
+                c: string,
+                v: string,
+              ) => Promise<{ data: unknown[] | null; error: Error | null }>;
+            };
+          };
+        }
+      )
+        .from("chore_completions")
+        .select("*")
+        .eq("instance_date", today);
       if (error) throw error;
       return (data ?? []) as Completion[];
     },
@@ -127,7 +175,9 @@ function ChoresPage() {
         if (error) throw error;
       } else {
         const { error } = await db.from("chore_completions").insert({
-          chore_id: chore.id, instance_date: today, completed_by: user?.id,
+          chore_id: chore.id,
+          instance_date: today,
+          completed_by: user?.id,
         });
         if (error) throw error;
       }
@@ -145,15 +195,29 @@ function ChoresPage() {
         if (error) throw error;
       } else {
         const insertPayload = { ...p.chore, created_by: user?.id };
-        const { data, error } = await (supabase as unknown as { from: (t: string) => { insert: (r: unknown) => { select: (s: string) => { single: () => Promise<{ data: { id: string } | null; error: Error | null }> } } } })
-          .from("chores").insert(insertPayload).select("id").single();
+        const { data, error } = await (
+          supabase as unknown as {
+            from: (t: string) => {
+              insert: (r: unknown) => {
+                select: (s: string) => {
+                  single: () => Promise<{ data: { id: string } | null; error: Error | null }>;
+                };
+              };
+            };
+          }
+        )
+          .from("chores")
+          .insert(insertPayload)
+          .select("id")
+          .single();
         if (error) throw error;
         id = data!.id;
       }
       // Replace assignments
       await db.from("chore_assignments").delete().eq("chore_id", id!);
       if (p.assignees.length > 0) {
-        const { error } = await db.from("chore_assignments")
+        const { error } = await db
+          .from("chore_assignments")
           .insert(p.assignees.map((uid) => ({ chore_id: id, user_id: uid })));
         if (error) throw error;
       }
@@ -161,7 +225,8 @@ function ChoresPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["chores"] });
       qc.invalidateQueries({ queryKey: ["chore_assignments"] });
-      setOpen(false); setEditing(null);
+      setOpen(false);
+      setEditing(null);
       toast.success("Saved");
     },
     onError: (e) => toast.error((e as Error).message),
@@ -174,128 +239,202 @@ function ChoresPage() {
       const { error } = await db.from("chores").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["chores"] }); toast.success("Deleted"); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["chores"] });
+      toast.success("Deleted");
+    },
   });
 
   const recurrenceLabel = (c: Chore) => {
     if (c.recurrence === "daily") return "Every day";
-    if (c.recurrence === "weekly") return `Weekly · ${(c.days_of_week ?? []).map((d) => DAY_LABELS[d]).join(", ") || "—"}`;
+    if (c.recurrence === "weekly")
+      return `Weekly · ${(c.days_of_week ?? []).map((d) => DAY_LABELS[d]).join(", ") || "—"}`;
     if (c.recurrence === "monthly") return `Monthly · day ${c.day_of_month ?? "?"}`;
     return c.recurrence;
   };
 
   return (
     <div className="space-y-4 pb-20">
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-display font-semibold">Chores</h1>
-          <p className="text-muted-foreground">Recurring daily, weekly, and monthly homestead chores.</p>
-        </div>
-        {canEdit && (
-          <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setEditing(null); }}>
-            <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> New chore</Button></DialogTrigger>
-            <ChoreForm
-              initial={editing ?? undefined}
-              profiles={profilesQ.data ?? []}
-              initialAssignees={editing ? assigneesFor(editing.id) : []}
-              submitting={saveChore.isPending}
-              onSubmit={(chore, assignees) => saveChore.mutate({ chore: editing ? { ...chore, id: editing.id } : chore, assignees })}
-            />
-          </Dialog>
-        )}
+      <div>
+        <h1 className="text-3xl font-display font-semibold">Chores</h1>
+        <p className="text-muted-foreground">
+          Recurring chores and one-time tasks, all in one place.
+        </p>
       </div>
 
-      <Tabs defaultValue="today">
+      <Tabs defaultValue={tab ?? "recurring"}>
         <TabsList>
-          <TabsTrigger value="today">Today</TabsTrigger>
-          <TabsTrigger value="all">All chores</TabsTrigger>
+          <TabsTrigger value="recurring">Recurring</TabsTrigger>
+          <TabsTrigger value="one-time">One-time</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="today" className="space-y-2 mt-3">
-          {todayChores.length === 0 ? (
-            <Card className="p-10 text-center">
-              <CalendarCheck className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
-              <p className="text-muted-foreground">No chores scheduled for today.</p>
-            </Card>
-          ) : (
-            <Card>
-              <ul className="divide-y">
-                {todayChores.map((c) => {
-                  const comp = completion(c.id);
-                  const assignees = assigneesFor(c.id);
-                  return (
-                    <li key={c.id} className="px-4 py-3 flex items-start gap-3">
-                      <Checkbox
-                        checked={!!comp}
-                        disabled={!canComplete || complete.isPending}
-                        onCheckedChange={() => complete.mutate(c)}
-                        className="mt-1"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className={`font-medium ${comp ? "line-through text-muted-foreground" : ""}`}>{c.title}</div>
-                        {c.notes && <div className="text-xs text-muted-foreground mt-0.5">{c.notes}</div>}
-                        <div className="flex gap-1.5 mt-1 flex-wrap">
-                          <Badge variant="outline" className="text-[10px]">{c.category}</Badge>
-                          {c.due_time && <Badge variant="outline" className="text-[10px]">{c.due_time.slice(0, 5)}</Badge>}
-                          {assignees.length === 0
-                            ? <Badge variant="outline" className="text-[10px]">Unassigned</Badge>
-                            : assignees.map((uid) => (
-                                <Badge key={uid} variant="secondary" className="text-[10px]">
-                                  {profileMap.get(uid) ?? "user"}
+        <TabsContent value="recurring" className="space-y-4 mt-3">
+          <div className="flex items-center justify-end gap-3 flex-wrap">
+            {canEdit && (
+              <Dialog
+                open={open}
+                onOpenChange={(o) => {
+                  setOpen(o);
+                  if (!o) setEditing(null);
+                }}
+              >
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4" /> New chore
+                  </Button>
+                </DialogTrigger>
+                <ChoreForm
+                  initial={editing ?? undefined}
+                  profiles={profilesQ.data ?? []}
+                  initialAssignees={editing ? assigneesFor(editing.id) : []}
+                  submitting={saveChore.isPending}
+                  onSubmit={(chore, assignees) =>
+                    saveChore.mutate({
+                      chore: editing ? { ...chore, id: editing.id } : chore,
+                      assignees,
+                    })
+                  }
+                />
+              </Dialog>
+            )}
+          </div>
+
+          <Tabs defaultValue="today">
+            <TabsList>
+              <TabsTrigger value="today">Today</TabsTrigger>
+              <TabsTrigger value="all">All chores</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="today" className="space-y-2 mt-3">
+              {todayChores.length === 0 ? (
+                <Card className="p-10 text-center">
+                  <CalendarCheck className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+                  <p className="text-muted-foreground">No chores scheduled for today.</p>
+                </Card>
+              ) : (
+                <Card>
+                  <ul className="divide-y">
+                    {todayChores.map((c) => {
+                      const comp = completion(c.id);
+                      const assignees = assigneesFor(c.id);
+                      return (
+                        <li key={c.id} className="px-4 py-3 flex items-start gap-3">
+                          <Checkbox
+                            checked={!!comp}
+                            disabled={!canComplete || complete.isPending}
+                            onCheckedChange={() => complete.mutate(c)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div
+                              className={`font-medium ${comp ? "line-through text-muted-foreground" : ""}`}
+                            >
+                              {c.title}
+                            </div>
+                            {c.notes && (
+                              <div className="text-xs text-muted-foreground mt-0.5">{c.notes}</div>
+                            )}
+                            <div className="flex gap-1.5 mt-1 flex-wrap">
+                              <Badge variant="outline" className="text-[10px]">
+                                {c.category}
+                              </Badge>
+                              {c.due_time && (
+                                <Badge variant="outline" className="text-[10px]">
+                                  {c.due_time.slice(0, 5)}
                                 </Badge>
-                              ))}
-                          {comp && <Badge className="text-[10px]">Done</Badge>}
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </Card>
-          )}
+                              )}
+                              {assignees.length === 0 ? (
+                                <Badge variant="outline" className="text-[10px]">
+                                  Unassigned
+                                </Badge>
+                              ) : (
+                                assignees.map((uid) => (
+                                  <Badge key={uid} variant="secondary" className="text-[10px]">
+                                    {profileMap.get(uid) ?? "user"}
+                                  </Badge>
+                                ))
+                              )}
+                              {comp && <Badge className="text-[10px]">Done</Badge>}
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="all" className="space-y-2 mt-3">
+              {(choresQ.data ?? []).length === 0 ? (
+                <Card className="p-10 text-center text-muted-foreground">No chores yet.</Card>
+              ) : (
+                <Card>
+                  <ul className="divide-y">
+                    {(choresQ.data ?? []).map((c) => {
+                      const assignees = assigneesFor(c.id);
+                      return (
+                        <li key={c.id} className="px-4 py-3 flex items-start gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium flex items-center gap-2">
+                              {c.title}
+                              {!c.active && (
+                                <Badge variant="outline" className="text-[10px]">
+                                  Inactive
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-0.5">
+                              {recurrenceLabel(c)}
+                            </div>
+                            <div className="flex gap-1.5 mt-1 flex-wrap">
+                              <Badge variant="outline" className="text-[10px]">
+                                {c.category}
+                              </Badge>
+                              <Badge variant="outline" className="text-[10px]">
+                                <UsersIcon className="h-3 w-3 mr-0.5" />
+                                {assignees.length === 0
+                                  ? "Unassigned"
+                                  : `${assignees.length} assigned`}
+                              </Badge>
+                            </div>
+                          </div>
+                          {canEdit && (
+                            <>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8"
+                                onClick={() => {
+                                  setEditing(c);
+                                  setOpen(true);
+                                }}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <ConfirmDelete
+                                trigger={
+                                  <Button size="icon" variant="ghost" className="h-8 w-8">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                }
+                                title={`Delete "${c.title}"?`}
+                                onConfirm={() => delChore.mutate(c.id)}
+                              />
+                            </>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
-        <TabsContent value="all" className="space-y-2 mt-3">
-          {(choresQ.data ?? []).length === 0 ? (
-            <Card className="p-10 text-center text-muted-foreground">No chores yet.</Card>
-          ) : (
-            <Card>
-              <ul className="divide-y">
-                {(choresQ.data ?? []).map((c) => {
-                  const assignees = assigneesFor(c.id);
-                  return (
-                    <li key={c.id} className="px-4 py-3 flex items-start gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium flex items-center gap-2">
-                          {c.title}
-                          {!c.active && <Badge variant="outline" className="text-[10px]">Inactive</Badge>}
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-0.5">{recurrenceLabel(c)}</div>
-                        <div className="flex gap-1.5 mt-1 flex-wrap">
-                          <Badge variant="outline" className="text-[10px]">{c.category}</Badge>
-                          <Badge variant="outline" className="text-[10px]"><UsersIcon className="h-3 w-3 mr-0.5" />
-                            {assignees.length === 0 ? "Unassigned" : `${assignees.length} assigned`}
-                          </Badge>
-                        </div>
-                      </div>
-                      {canEdit && (
-                        <>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setEditing(c); setOpen(true); }}>
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <ConfirmDelete
-                            trigger={<Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>}
-                            title={`Delete "${c.title}"?`}
-                            onConfirm={() => delChore.mutate(c.id)}
-                          />
-                        </>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </Card>
-          )}
+        <TabsContent value="one-time" className="mt-3">
+          <OneTimeTasksPanel />
         </TabsContent>
       </Tabs>
     </div>
@@ -303,57 +442,107 @@ function ChoresPage() {
 }
 
 function ChoreForm({
-  initial, profiles, initialAssignees, submitting, onSubmit,
+  initial,
+  profiles,
+  initialAssignees,
+  submitting,
+  onSubmit,
 }: {
-  initial?: Chore; profiles: Profile[]; initialAssignees: string[]; submitting: boolean;
+  initial?: Chore;
+  profiles: Profile[];
+  initialAssignees: string[];
+  submitting: boolean;
   onSubmit: (chore: Partial<Chore>, assignees: string[]) => void;
 }) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [category, setCategory] = useState(initial?.category ?? "general");
-  const [recurrence, setRecurrence] = useState<"daily" | "weekly" | "monthly">(initial?.recurrence ?? "daily");
+  const [recurrence, setRecurrence] = useState<"daily" | "weekly" | "monthly">(
+    initial?.recurrence ?? "daily",
+  );
   const [daysOfWeek, setDaysOfWeek] = useState<number[]>(initial?.days_of_week ?? []);
   const [dayOfMonth, setDayOfMonth] = useState<number>(initial?.day_of_month ?? 1);
   const [dueTime, setDueTime] = useState(initial?.due_time ?? "");
-  const [startDate, setStartDate] = useState(initial?.start_date ?? format(new Date(), "yyyy-MM-dd"));
+  const [startDate, setStartDate] = useState(
+    initial?.start_date ?? format(new Date(), "yyyy-MM-dd"),
+  );
   const [endDate, setEndDate] = useState(initial?.end_date ?? "");
   const [active, setActive] = useState(initial?.active ?? true);
   const [assignees, setAssignees] = useState<string[]>(initialAssignees);
 
-  const toggleDay = (d: number) => setDaysOfWeek((cur) => cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].sort());
-  const toggleAssignee = (uid: string) => setAssignees((cur) => cur.includes(uid) ? cur.filter((x) => x !== uid) : [...cur, uid]);
+  const toggleDay = (d: number) =>
+    setDaysOfWeek((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].sort()));
+  const toggleAssignee = (uid: string) =>
+    setAssignees((cur) => (cur.includes(uid) ? cur.filter((x) => x !== uid) : [...cur, uid]));
 
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto">
-      <DialogHeader><DialogTitle>{initial ? "Edit chore" : "New chore"}</DialogTitle></DialogHeader>
+      <DialogHeader>
+        <DialogTitle>{initial ? "Edit chore" : "New chore"}</DialogTitle>
+      </DialogHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!title.trim()) { toast.error("Title required"); return; }
-          if (recurrence === "weekly" && daysOfWeek.length === 0) { toast.error("Pick at least one day"); return; }
-          onSubmit({
-            title: title.trim(), notes: notes || null, category, recurrence,
-            days_of_week: recurrence === "weekly" ? daysOfWeek : [],
-            day_of_month: recurrence === "monthly" ? dayOfMonth : null,
-            due_time: dueTime || null,
-            start_date: startDate, end_date: endDate || null, active,
-          }, assignees);
+          if (!title.trim()) {
+            toast.error("Title required");
+            return;
+          }
+          if (recurrence === "weekly" && daysOfWeek.length === 0) {
+            toast.error("Pick at least one day");
+            return;
+          }
+          onSubmit(
+            {
+              title: title.trim(),
+              notes: notes || null,
+              category,
+              recurrence,
+              days_of_week: recurrence === "weekly" ? daysOfWeek : [],
+              day_of_month: recurrence === "monthly" ? dayOfMonth : null,
+              due_time: dueTime || null,
+              start_date: startDate,
+              end_date: endDate || null,
+              active,
+            },
+            assignees,
+          );
         }}
         className="space-y-3"
       >
-        <div><Label>Title *</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={200} /></div>
+        <div>
+          <Label>Title *</Label>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            maxLength={200}
+          />
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label>Category</Label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </div>
           <div>
             <Label>Recurrence</Label>
-            <Select value={recurrence} onValueChange={(v) => setRecurrence(v as "daily" | "weekly" | "monthly")}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+            <Select
+              value={recurrence}
+              onValueChange={(v) => setRecurrence(v as "daily" | "weekly" | "monthly")}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="daily">Daily</SelectItem>
                 <SelectItem value="weekly">Weekly</SelectItem>
@@ -369,9 +558,13 @@ function ChoreForm({
             <div className="flex gap-1 mt-1 flex-wrap">
               {DAY_LABELS.map((label, idx) => (
                 <button
-                  type="button" key={idx} onClick={() => toggleDay(idx)}
+                  type="button"
+                  key={idx}
+                  onClick={() => toggleDay(idx)}
                   className={`px-2.5 py-1 rounded border text-xs ${daysOfWeek.includes(idx) ? "border-primary bg-primary/10" : "border-border"}`}
-                >{label}</button>
+                >
+                  {label}
+                </button>
               ))}
             </div>
           </div>
@@ -380,14 +573,29 @@ function ChoreForm({
         {recurrence === "monthly" && (
           <div>
             <Label>Day of month (1–31)</Label>
-            <Input type="number" min={1} max={31} value={dayOfMonth} onChange={(e) => setDayOfMonth(Number(e.target.value))} />
+            <Input
+              type="number"
+              min={1}
+              max={31}
+              value={dayOfMonth}
+              onChange={(e) => setDayOfMonth(Number(e.target.value))}
+            />
           </div>
         )}
 
         <div className="grid grid-cols-3 gap-3">
-          <div><Label>Due time</Label><Input type="time" value={dueTime} onChange={(e) => setDueTime(e.target.value)} /></div>
-          <div><Label>Starts</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></div>
-          <div><Label>Ends</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></div>
+          <div>
+            <Label>Due time</Label>
+            <Input type="time" value={dueTime} onChange={(e) => setDueTime(e.target.value)} />
+          </div>
+          <div>
+            <Label>Starts</Label>
+            <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+          </div>
+          <div>
+            <Label>Ends</Label>
+            <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+          </div>
         </div>
 
         <div>
@@ -397,8 +605,14 @@ function ChoreForm({
           ) : (
             <div className="border rounded-md p-2 space-y-1 max-h-40 overflow-y-auto mt-1">
               {profiles.map((p) => (
-                <label key={p.id} className="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-muted">
-                  <Checkbox checked={assignees.includes(p.id)} onCheckedChange={() => toggleAssignee(p.id)} />
+                <label
+                  key={p.id}
+                  className="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-muted"
+                >
+                  <Checkbox
+                    checked={assignees.includes(p.id)}
+                    onCheckedChange={() => toggleAssignee(p.id)}
+                  />
                   <span className="text-sm">{p.display_name ?? p.id.slice(0, 8)}</span>
                 </label>
               ))}
@@ -412,8 +626,15 @@ function ChoreForm({
           <Label>Active</Label>
         </div>
 
-        <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} /></div>
-        <DialogFooter><Button type="submit" disabled={submitting}>{submitting ? "Saving…" : "Save"}</Button></DialogFooter>
+        <div>
+          <Label>Notes</Label>
+          <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} />
+        </div>
+        <DialogFooter>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Saving…" : "Save"}
+          </Button>
+        </DialogFooter>
       </form>
     </DialogContent>
   );

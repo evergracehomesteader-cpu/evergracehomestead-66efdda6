@@ -3,26 +3,65 @@ import { addDays, differenceInDays, isBefore, parseISO } from "date-fns";
 export type Severity = "info" | "warning" | "urgent";
 export type Reminder = {
   id: string;
-  kind: "heat" | "breeding" | "pregnancy" | "due" | "feed" | "task" | "compost" | "garden" | "bill" | "barter" | "hatch";
+  kind:
+    | "heat"
+    | "breeding"
+    | "pregnancy"
+    | "due"
+    | "feed"
+    | "task"
+    | "compost"
+    | "garden"
+    | "bill"
+    | "barter"
+    | "hatch";
   severity: Severity;
   title: string;
   subtitle: string;
   date?: string; // ISO
-  link: { to: string; params?: Record<string, string> };
+  link: { to: string; params?: Record<string, string>; search?: Record<string, string> };
 };
 
 type AnimalRow = { id: string; name: string; sex: string; species: string; status: string };
 type HeatRow = { id: string; animal_id: string; event_date: string };
-type PregRow = { id: string; animal_id: string; status: string; expected_due: string | null; bred_date: string };
+type PregRow = {
+  id: string;
+  animal_id: string;
+  status: string;
+  expected_due: string | null;
+  bred_date: string;
+};
 type FeedRow = { id: string; name: string; stock_qty: number; low_stock_threshold: number };
 type BillRow = { id: string; name: string; due_date: string | null; paid: boolean };
 type TaskRow = { id: string; title: string; due_date: string | null; completed: boolean };
-type GardenRow = { id: string; name: string; crop: string | null; status: string; last_watered_on: string | null; watering_interval_days: number | null; expected_harvest: string | null };
+type GardenRow = {
+  id: string;
+  name: string;
+  crop: string | null;
+  status: string;
+  last_watered_on: string | null;
+  watering_interval_days: number | null;
+  expected_harvest: string | null;
+};
 type CompostRow = { id: string; entry_type: string; entry_date: string };
 type BarterRow = { id: string; title: string; status: string; due_date: string | null };
-type IncubationRow = { id: string; animal_id: string | null; species: string; expected_hatch: string | null; actual_hatch: string | null };
+type IncubationRow = {
+  id: string;
+  animal_id: string | null;
+  species: string;
+  expected_hatch: string | null;
+  actual_hatch: string | null;
+};
 
-const HEAT_CYCLE_DAYS: Record<string, number> = { goat: 21, sheep: 17, cow: 21, pig: 21, dog: 180, cat: 14, rabbit: 16 };
+const HEAT_CYCLE_DAYS: Record<string, number> = {
+  goat: 21,
+  sheep: 17,
+  cow: 21,
+  pig: 21,
+  dog: 180,
+  cat: 14,
+  rabbit: 16,
+};
 
 export function computeReminders(input: {
   animals?: AnimalRow[];
@@ -113,11 +152,12 @@ export function computeReminders(input: {
         title: `${target?.name ?? i.species} eggs hatching`,
         subtitle: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Today" : `In ${days}d`,
         date: due.toISOString(),
-        link: i.animal_id ? { to: "/animals/$animalId", params: { animalId: i.animal_id } } : { to: "/animals" },
+        link: i.animal_id
+          ? { to: "/animals/$animalId", params: { animalId: i.animal_id } }
+          : { to: "/animals" },
       });
     }
   });
-
 
   // Feed restock
   (input.feed ?? []).forEach((f) => {
@@ -143,7 +183,8 @@ export function computeReminders(input: {
         kind: "bill",
         severity: days < 0 ? "urgent" : days <= 3 ? "warning" : "info",
         title: `Bill: ${b.name}`,
-        subtitle: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Due today" : `Due in ${days}d`,
+        subtitle:
+          days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Due today" : `Due in ${days}d`,
         date: b.due_date,
         link: { to: "/bills" },
       });
@@ -162,13 +203,16 @@ export function computeReminders(input: {
         title: t.title,
         subtitle: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? "Today" : `In ${days}d`,
         date: t.due_date,
-        link: { to: "/tasks" },
+        link: { to: "/chores", search: { tab: "one-time" } },
       });
     }
   });
 
   // Compost — last turn > 7d ago
-  const turns = (input.compost ?? []).filter((c) => c.entry_type === "turn").map((c) => c.entry_date).sort();
+  const turns = (input.compost ?? [])
+    .filter((c) => c.entry_type === "turn")
+    .map((c) => c.entry_date)
+    .sort();
   if (turns.length > 0) {
     const last = turns[turns.length - 1];
     const days = differenceInDays(today, parseISO(last));
