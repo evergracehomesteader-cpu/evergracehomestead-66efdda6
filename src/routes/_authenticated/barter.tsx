@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { validateImageFile } from "@/lib/photo-storage";
 import { SignedImg } from "@/components/SignedImg";
 import { DescribePhotoButton } from "@/components/ai/DescribePhotoDialog";
+import { parseDateOnly, todayLocal } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/barter")({ component: BarterPage });
 
@@ -285,8 +286,8 @@ function BarterPage() {
                 <ValueComparison given={given} received={received} />
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>{fmt(d.estimated_value_cents)}</span>
-                  {d.due_date && d.status === "pending" && <span>due {format(new Date(d.due_date), "MMM d")}</span>}
-                  {d.trade_date && d.status !== "pending" && <span>{format(new Date(d.trade_date), "MMM d, yyyy")}</span>}
+                  {d.due_date && d.status === "pending" && <span>due {format(parseDateOnly(d.due_date), "MMM d")}</span>}
+                  {d.trade_date && d.status !== "pending" && <span>{format(parseDateOnly(d.trade_date), "MMM d, yyyy")}</span>}
                 </div>
                 {d.location && <div className="text-xs text-muted-foreground flex items-center gap-1"><MapPin className="h-3 w-3" /> {d.location}</div>}
                 {d.tags.length > 0 && (
@@ -375,7 +376,7 @@ function DealForm({
   const [f, setF] = useState<Partial<Deal>>(initial ?? {
     title: "", person_name: "", contact_info: "", given_summary: "", received_summary: "",
     status: "pending", category: "other", tags: [], photo_urls: [], estimated_value_cents: 0,
-    trade_date: new Date().toISOString().slice(0, 10),
+    trade_date: todayLocal(),
   });
   const [items, setItems] = useState<Item[]>(initialItems ?? []);
   const [valueDollars, setValueDollars] = useState(initial ? ((initial.estimated_value_cents ?? 0) / 100).toFixed(2) : "");

@@ -18,6 +18,7 @@ import { Heart, Plus, Pencil, Trash2, AlertCircle, Baby, ExternalLink } from "lu
 import { addDays, differenceInDays, format, parseISO } from "date-fns";
 import { toast } from "sonner";
 import { gestationFor, prettyStatus, statusBadgeClass } from "@/lib/homestead";
+import { todayLocal } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/breeding")({
   component: BreedingPage,
@@ -338,7 +339,7 @@ function PregnancyDialog({
   const initialDam = existing ? females.find((f) => f.id === existing.animal_id) : undefined;
   const [animalId, setAnimalId] = useState(existing?.animal_id ?? "");
   const [species, setSpecies] = useState(initialDam?.species ?? "");
-  const [bredDate, setBredDate] = useState(existing?.bred_date ?? new Date().toISOString().slice(0, 10));
+  const [bredDate, setBredDate] = useState(existing?.bred_date ?? todayLocal());
   const [sireId, setSireId] = useState(existing?.sire_id ?? "none");
   const [status, setStatus] = useState(existing?.status ?? "suspected");
   const [evidence, setEvidence] = useState(existing?.evidence ?? "observed_breeding");

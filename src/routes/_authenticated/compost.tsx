@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Recycle, Trash2, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { parseDateOnly } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/compost")({ component: CompostPage });
 
@@ -21,16 +22,18 @@ type Entry = { id: string; entry_type: string; material: string | null; quantity
 // Never crash on a bad/missing date — show a dash instead.
 function fmtEntryDate(v: string | null | undefined): string {
   if (!v) return "—";
-  const d = new Date(v);
+  const d = parseDateOnly(v);
   return Number.isNaN(d.getTime()) ? "—" : format(d, "MMM d, yyyy");
 }
 
-// Normalize any stored value to YYYY-MM-DD for <input type="date">.
+// Normalize any stored value to YYYY-MM-DD for <input type="date"> (local calendar date).
 function toDateInputValue(v: string | null | undefined): string {
-  const fallback = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const fallback = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   if (!v) return fallback;
-  const d = new Date(v);
-  return Number.isNaN(d.getTime()) ? fallback : d.toISOString().slice(0, 10);
+  const d = parseDateOnly(v);
+  if (Number.isNaN(d.getTime())) return fallback;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function CompostPage() {
