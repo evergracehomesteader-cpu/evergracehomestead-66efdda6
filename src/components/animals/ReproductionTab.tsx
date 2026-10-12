@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { Plus, Egg, Baby, Trash2, Heart, AlertCircle } from "lucide-react";
 import { addDays, differenceInDays, format } from "date-fns";
 import { toast } from "sonner";
@@ -291,7 +292,12 @@ function PregnancyCard({
           )}
           {preg.notes && <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{preg.notes}</p>}
         </div>
-        <Button size="sm" variant="ghost" onClick={onDelete}><Trash2 className="h-4 w-4" /></Button>
+        <ConfirmDelete
+          trigger={<Button size="sm" variant="ghost"><Trash2 className="h-4 w-4" /></Button>}
+          title="Delete this breeding record?"
+          description="This cannot be undone."
+          onConfirm={onDelete}
+        />
       </div>
       {isActive && (
         <div className="mt-3 flex gap-2 flex-wrap">
@@ -642,7 +648,12 @@ function IncubationCard({ inc, onUpdate, onDelete }: { inc: Incubation; onUpdate
           )}
           {inc.notes && <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{inc.notes}</p>}
         </div>
-        <Button size="sm" variant="ghost" onClick={onDelete}><Trash2 className="h-4 w-4" /></Button>
+        <ConfirmDelete
+          trigger={<Button size="sm" variant="ghost"><Trash2 className="h-4 w-4" /></Button>}
+          title="Delete this incubation record?"
+          description="This cannot be undone."
+          onConfirm={onDelete}
+        />
       </div>
       {!done && (
         <div className="mt-3 flex gap-2 flex-wrap">
