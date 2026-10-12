@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import type { ContainerLite, FeedItemLite, UnitLite } from "./PurchaseDialog";
+import { todayLocal } from "@/lib/dates";
 
 export type AnimalLite = { id: string; name: string; species: string; breed: string | null; current_pen: string | null };
 
@@ -49,7 +50,7 @@ export function FeedingDialog({
   const [unitMode, setUnitMode] = useState<"lbs" | "unit">("unit");
   const [unitId, setUnitId] = useState<string>(units[0]?.id ?? "");
   const [qty, setQty] = useState("1");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   const [notes, setNotes] = useState("");
 
   const [targetType, setTargetType] = useState<FeedingPayload["target_type"]>("animal");

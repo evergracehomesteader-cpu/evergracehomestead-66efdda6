@@ -7,7 +7,11 @@ const DEMO_USER_ID = "demo-user-0000-0000-0000-000000000000";
 const daysAgo = (n: number): string => {
   const d = new Date();
   d.setDate(d.getDate() - n);
-  return d.toISOString().slice(0, 10);
+  // Local calendar date (toISOString is UTC and shifts a day in the evening).
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 };
 const daysAgoTs = (n: number): string => {
   const d = new Date();

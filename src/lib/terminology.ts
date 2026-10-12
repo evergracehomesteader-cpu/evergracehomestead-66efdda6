@@ -1,3 +1,4 @@
+import { parseDateOnly } from "@/lib/dates";
 // Beginner-friendly livestock terminology + life stage rules.
 // Reads from species_catalog seeded in the DB.
 
@@ -20,7 +21,7 @@ export type LifeStage = "baby" | "juvenile" | "adult" | "unknown";
 
 export function ageInMonths(birthdate: string | null | undefined): number | null {
   if (!birthdate) return null;
-  const b = new Date(birthdate);
+  const b = parseDateOnly(birthdate);
   if (Number.isNaN(b.getTime())) return null;
   const now = new Date();
   return (now.getFullYear() - b.getFullYear()) * 12 + (now.getMonth() - b.getMonth());
