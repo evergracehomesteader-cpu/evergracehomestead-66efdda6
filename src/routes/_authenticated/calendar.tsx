@@ -15,10 +15,18 @@ type Event = {
   date: Date;
   kind: "heat" | "breeding" | "due" | "birth" | "bill" | "task" | "barter";
   label: string;
-  link: { to: string; params?: Record<string, string> };
+  link: { to: string; params?: Record<string, string>; search?: Record<string, string> };
 };
 
-const HEAT_CYCLE: Record<string, number> = { goat: 21, sheep: 17, cow: 21, pig: 21, dog: 180, cat: 14, rabbit: 16 };
+const HEAT_CYCLE: Record<string, number> = {
+  goat: 21,
+  sheep: 17,
+  cow: 21,
+  pig: 21,
+  dog: 180,
+  cat: 14,
+  rabbit: 16,
+};
 
 function CalendarPage() {
   const [month, setMonth] = useState<Date>(new Date());
@@ -26,7 +34,8 @@ function CalendarPage() {
 
   const { data: animals } = useQuery({
     queryKey: ["cal-animals"],
-    queryFn: async () => (await supabase.from("animals").select("id,name,sex,species,status")).data ?? [],
+    queryFn: async () =>
+      (await supabase.from("animals").select("id,name,sex,species,status")).data ?? [],
   });
   const { data: heats } = useQuery({
     queryKey: ["cal-heats"],
@@ -43,13 +52,25 @@ function CalendarPage() {
   const { data: tasks } = useQuery({
     queryKey: ["cal-tasks"],
     queryFn: async () => {
-      const c = supabase as never as { from: (t: string) => { select: (s: string) => { eq: (c: string, v: boolean) => Promise<{ data: { id: string; title: string; due_date: string | null; completed: boolean }[] }> } } };
+      const c = supabase as never as {
+        from: (t: string) => {
+          select: (s: string) => {
+            eq: (
+              c: string,
+              v: boolean,
+            ) => Promise<{
+              data: { id: string; title: string; due_date: string | null; completed: boolean }[];
+            }>;
+          };
+        };
+      };
       return (await c.from("tasks").select("*").eq("completed", false)).data ?? [];
     },
   });
   const { data: barter } = useQuery({
     queryKey: ["cal-barter"],
-    queryFn: async () => (await supabase.from("barter_deals").select("*").eq("status", "pending")).data ?? [],
+    queryFn: async () =>
+      (await supabase.from("barter_deals").select("*").eq("status", "pending")).data ?? [],
   });
 
   const events: Event[] = useMemo(() => {
@@ -61,7 +82,8 @@ function CalendarPage() {
       const a = animById.get(h.animal_id);
       if (!a) return;
       out.push({
-        date: parseISO(h.event_date), kind: "heat",
+        date: parseISO(h.event_date),
+        kind: "heat",
         label: `${a.name} heat`,
         link: { to: "/animals/$animalId", params: { animalId: a.id } },
       });
@@ -80,7 +102,8 @@ function CalendarPage() {
       const cycle = HEAT_CYCLE[a.species.toLowerCase()] ?? 21;
       const next = addDays(parseISO(last), cycle);
       out.push({
-        date: next, kind: "heat",
+        date: next,
+        kind: "heat",
         label: `${a.name} heat (predicted)`,
         link: { to: "/animals/$animalId", params: { animalId: a.id } },
       });
@@ -91,27 +114,31 @@ function CalendarPage() {
       const a = animById.get(p.animal_id);
       if (!a) return;
       out.push({
-        date: parseISO(p.bred_date), kind: "breeding",
+        date: parseISO(p.bred_date),
+        kind: "breeding",
         label: `${a.name} bred`,
         link: { to: "/animals/$animalId", params: { animalId: a.id } },
       });
       if (p.expected_due) {
         out.push({
-          date: parseISO(p.expected_due), kind: "due",
+          date: parseISO(p.expected_due),
+          kind: "due",
           label: `${a.name} due`,
           link: { to: "/animals/$animalId", params: { animalId: a.id } },
         });
       } else if (p.bred_date) {
         const due = addDays(parseISO(p.bred_date), gestationFor(a.species));
         out.push({
-          date: due, kind: "due",
+          date: due,
+          kind: "due",
           label: `${a.name} estimated due`,
           link: { to: "/animals/$animalId", params: { animalId: a.id } },
         });
       }
       if (p.actual_birth) {
         out.push({
-          date: parseISO(p.actual_birth), kind: "birth",
+          date: parseISO(p.actual_birth),
+          kind: "birth",
           label: `${a.name} delivered${p.offspring_count != null ? ` ${p.offspring_count}` : ""}`,
           link: { to: "/animals/$animalId", params: { animalId: a.id } },
         });
@@ -120,15 +147,30 @@ function CalendarPage() {
 
     (bills ?? []).forEach((b) => {
       if (!b.due_date) return;
-      out.push({ date: parseISO(b.due_date), kind: "bill", label: `Bill: ${b.name}`, link: { to: "/bills" } });
+      out.push({
+        date: parseISO(b.due_date),
+        kind: "bill",
+        label: `Bill: ${b.name}`,
+        link: { to: "/bills" },
+      });
     });
     (tasks ?? []).forEach((t) => {
       if (!t.due_date) return;
-      out.push({ date: parseISO(t.due_date), kind: "task", label: t.title, link: { to: "/tasks" } });
+      out.push({
+        date: parseISO(t.due_date),
+        kind: "task",
+        label: t.title,
+        link: { to: "/chores", search: { tab: "one-time" } },
+      });
     });
     (barter ?? []).forEach((b) => {
       if (!b.due_date) return;
-      out.push({ date: parseISO(b.due_date), kind: "barter", label: `Trade: ${b.title}`, link: { to: "/barter" } });
+      out.push({
+        date: parseISO(b.due_date),
+        kind: "barter",
+        label: `Trade: ${b.title}`,
+        link: { to: "/barter" },
+      });
     });
 
     return out;
@@ -192,7 +234,12 @@ function CalendarPage() {
             <ul className="space-y-2">
               {dayEvents.map((e, i) => (
                 <li key={i}>
-                  <Link to={e.link.to} params={e.link.params as never} className="flex items-start gap-2 text-sm hover:bg-accent rounded-md p-2 -m-2">
+                  <Link
+                    to={e.link.to}
+                    params={e.link.params as never}
+                    search={e.link.search as never}
+                    className="flex items-start gap-2 text-sm hover:bg-accent rounded-md p-2 -m-2"
+                  >
                     <EventIcon kind={e.kind} />
                     <span className="flex-1">{e.label}</span>
                   </Link>

@@ -25,7 +25,6 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedHomesteadRouteImport } from './routes/_authenticated/homestead'
-import { Route as AuthenticatedIncomeRouteImport } from './routes/_authenticated/income'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
 import { Route as AuthenticatedPensRouteImport } from './routes/_authenticated/pens'
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
@@ -120,11 +119,6 @@ const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
 const AuthenticatedHomesteadRoute = AuthenticatedHomesteadRouteImport.update({
   id: '/homestead',
   path: '/homestead',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedIncomeRoute = AuthenticatedIncomeRouteImport.update({
-  id: '/income',
-  path: '/income',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
@@ -230,7 +224,6 @@ export interface FileRoutesByFullPath {
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
   '/homestead': typeof AuthenticatedHomesteadRoute
-  '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
   '/production': typeof AuthenticatedProductionRoute
@@ -264,7 +257,6 @@ export interface FileRoutesByTo {
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
   '/homestead': typeof AuthenticatedHomesteadRoute
-  '/income': typeof AuthenticatedIncomeRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
   '/production': typeof AuthenticatedProductionRoute
@@ -300,7 +292,6 @@ export interface FileRoutesById {
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
   '/_authenticated/homestead': typeof AuthenticatedHomesteadRoute
-  '/_authenticated/income': typeof AuthenticatedIncomeRoute
   '/_authenticated/litters': typeof AuthenticatedLittersRoute
   '/_authenticated/pens': typeof AuthenticatedPensRoute
   '/_authenticated/production': typeof AuthenticatedProductionRoute
@@ -336,7 +327,6 @@ export interface FileRouteTypes {
     | '/feed'
     | '/garden'
     | '/homestead'
-    | '/income'
     | '/litters'
     | '/pens'
     | '/production'
@@ -370,7 +360,6 @@ export interface FileRouteTypes {
     | '/feed'
     | '/garden'
     | '/homestead'
-    | '/income'
     | '/litters'
     | '/pens'
     | '/production'
@@ -405,7 +394,6 @@ export interface FileRouteTypes {
     | '/_authenticated/feed'
     | '/_authenticated/garden'
     | '/_authenticated/homestead'
-    | '/_authenticated/income'
     | '/_authenticated/litters'
     | '/_authenticated/pens'
     | '/_authenticated/production'
@@ -545,13 +533,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHomesteadRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/income': {
-      id: '/_authenticated/income'
-      path: '/income'
-      fullPath: '/income'
-      preLoaderRoute: typeof AuthenticatedIncomeRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/litters': {
       id: '/_authenticated/litters'
       path: '/litters'
@@ -681,7 +662,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
   AuthenticatedHomesteadRoute: typeof AuthenticatedHomesteadRoute
-  AuthenticatedIncomeRoute: typeof AuthenticatedIncomeRoute
   AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
   AuthenticatedPensRoute: typeof AuthenticatedPensRoute
   AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
@@ -713,7 +693,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
   AuthenticatedHomesteadRoute: AuthenticatedHomesteadRoute,
-  AuthenticatedIncomeRoute: AuthenticatedIncomeRoute,
   AuthenticatedLittersRoute: AuthenticatedLittersRoute,
   AuthenticatedPensRoute: AuthenticatedPensRoute,
   AuthenticatedProductionRoute: AuthenticatedProductionRoute,
