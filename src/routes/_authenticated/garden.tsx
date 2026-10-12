@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Sprout, Trash2, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { parseDateOnly } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/garden")({ component: GardenPage });
 
@@ -86,8 +87,8 @@ function GardenPage() {
                 <Badge variant={p.status === "harvested" ? "secondary" : "default"}>{p.status}</Badge>
               </div>
               <div className="text-xs text-muted-foreground space-y-0.5">
-                {p.planted_on && <div>Planted: {format(new Date(p.planted_on), "MMM d, yyyy")}</div>}
-                {p.expected_harvest && <div>Harvest: {format(new Date(p.expected_harvest), "MMM d, yyyy")}</div>}
+                {p.planted_on && <div>Planted: {format(parseDateOnly(p.planted_on), "MMM d, yyyy")}</div>}
+                {p.expected_harvest && <div>Harvest: {format(parseDateOnly(p.expected_harvest), "MMM d, yyyy")}</div>}
               </div>
               {p.notes && <p className="text-sm">{p.notes}</p>}
               <div className="flex gap-1 pt-1">

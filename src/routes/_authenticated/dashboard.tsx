@@ -43,6 +43,7 @@ import { statusBadgeClass } from "@/lib/homestead";
 import { cn } from "@/lib/utils";
 import { useState, type MouseEvent, type ElementType } from "react";
 import { usePermissions } from "@/hooks/usePermissions";
+import { parseDateOnly } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
@@ -606,7 +607,7 @@ function Dashboard() {
                   <li key={p.id} className="flex justify-between">
                     <span>{a?.name ?? "—"}</span>
                     <span className="text-muted-foreground">
-                      {p.expected_due ? format(new Date(p.expected_due), "MMM d") : "—"}
+                      {p.expected_due ? format(parseDateOnly(p.expected_due), "MMM d") : "—"}
                     </span>
                   </li>
                 );
