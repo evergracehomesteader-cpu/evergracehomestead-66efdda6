@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 
 import { RequirePermission } from "@/components/RequirePermission";
+import { todayLocal } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/reports")({
   component: () => (
@@ -239,7 +240,7 @@ function IncomeForm({ onSubmit, submitting }: { onSubmit: (p: Omit<Income, "id">
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("sale");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   const [notes, setNotes] = useState("");
   return (
     <DialogContent>

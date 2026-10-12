@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format, parseISO, subDays } from "date-fns";
+import { todayLocal, toISODateOnly } from "@/lib/dates";
 
 type Log = {
   id: string; feed_item_id: string; container_id: string | null;
@@ -19,7 +20,7 @@ export function FeedReportsTab() {
   const { data: logs = [] } = useQuery({
     queryKey: ["feed-logs-all"],
     queryFn: async () => {
-      const since = subDays(new Date(), 90).toISOString().slice(0, 10);
+      const since = toISODateOnly(subDays(new Date(), 90));
       const { data } = await supabase.from("feed_logs").select("*").gte("fed_on", since).order("fed_on", { ascending: false });
       return (data ?? []) as unknown as Log[];
     },

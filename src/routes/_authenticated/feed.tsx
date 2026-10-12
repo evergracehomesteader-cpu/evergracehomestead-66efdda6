@@ -20,6 +20,7 @@ import { FeedingDialog, type FeedingPayload, type AnimalLite } from "@/component
 import { ContainersTab } from "@/components/feed/ContainersTab";
 import { UnitsTab } from "@/components/feed/UnitsTab";
 import { FeedReportsTab } from "@/components/feed/FeedReportsTab";
+import { parseDateOnly } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/feed")({ component: FeedPage });
 
@@ -239,7 +240,7 @@ function FeedPage() {
                         <div>
                           <div className="font-medium">{item?.name ?? "—"}</div>
                           <div className="text-xs text-muted-foreground">
-                            {format(new Date(p.purchased_on), "MMM d, yyyy")} · {p.store ?? "—"}
+                            {format(parseDateOnly(p.purchased_on), "MMM d, yyyy")} · {p.store ?? "—"}
                             {container ? ` · → ${container.name}` : ""}
                           </div>
                         </div>

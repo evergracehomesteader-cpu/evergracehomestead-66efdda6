@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { todayLocal } from "@/lib/dates";
 
 export type FeedItemLite = { id: string; name: string; store: string | null; price_cents: number | null };
 export type ContainerLite = { id: string; name: string };
@@ -40,7 +41,7 @@ export function PurchaseDialog({
   const [mode, setMode] = useState<"bag" | "lbs" | "custom_unit">("bag");
   const [containerId, setContainerId] = useState<string>(containers[0]?.id ?? "");
   const [store, setStore] = useState(item.store ?? "");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   const [notes, setNotes] = useState("");
 
   // bag mode

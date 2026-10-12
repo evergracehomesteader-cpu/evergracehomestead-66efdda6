@@ -24,6 +24,7 @@ import {
   statusBadgeClass,
 } from "@/lib/homestead";
 import { findCommonAncestors } from "@/lib/lineage";
+import { parseDateOnly, todayLocal } from "@/lib/dates";
 
 type Animal = {
   id: string;
@@ -234,8 +235,8 @@ function PregnancyCard({
   onDelete: () => void;
 }) {
   const today = new Date();
-  const due = preg.expected_due ? new Date(preg.expected_due) : null;
-  const bred = new Date(preg.bred_date);
+  const due = preg.expected_due ? parseDateOnly(preg.expected_due) : null;
+  const bred = parseDateOnly(preg.bred_date);
   const daysPregnant = differenceInDays(today, bred);
   const daysUntilDue = due ? differenceInDays(due, today) : null;
   const isActive = !["delivered", "born", "lost"].includes(preg.status);
@@ -274,7 +275,7 @@ function PregnancyCard({
           )}
           {preg.actual_birth && (
             <div className="text-sm mt-2">
-              Born {format(new Date(preg.actual_birth), "MMM d, yyyy")}
+              Born {format(parseDateOnly(preg.actual_birth), "MMM d, yyyy")}
               {preg.offspring_count != null && ` · ${preg.offspring_count} born`}
               {preg.survived_count != null && `, ${preg.survived_count} alive`}
               {preg.stillborn_count != null && preg.stillborn_count > 0 && `, ${preg.stillborn_count} stillborn`}
@@ -320,7 +321,7 @@ function BreedingEventDialog({
   onAdd: (p: Partial<Pregnancy>) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [bred, setBred] = useState(new Date().toISOString().slice(0, 10));
+  const [bred, setBred] = useState(todayLocal());
   const [sire, setSire] = useState("none");
   const [method, setMethod] = useState<string>("natural");
   const [evidence, setEvidence] = useState<string>("observed_breeding");
@@ -329,7 +330,7 @@ function BreedingEventDialog({
   const [notes, setNotes] = useState("");
   const [warning, setWarning] = useState<string | null>(null);
 
-  const due = bred ? format(addDays(new Date(bred), Number(gestation) || 0), "yyyy-MM-dd") : null;
+  const due = bred ? format(addDays(parseDateOnly(bred), Number(gestation) || 0), "yyyy-MM-dd") : null;
 
   const checkSire = async (sireId: string) => {
     setSire(sireId);
@@ -410,7 +411,7 @@ function BreedingEventDialog({
             <Input type="number" value={gestation} onChange={(e) => setGestation(e.target.value)} />
             <p className="text-xs text-muted-foreground mt-1">
               Default for {species}: {gestationFor(species)} days.{" "}
-              {due && <>Expected due: <strong>{format(new Date(due), "MMM d, yyyy")}</strong></>}
+              {due && <>Expected due: <strong>{format(parseDateOnly(due), "MMM d, yyyy")}</strong></>}
             </p>
           </div>
           <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} /></div>
@@ -432,7 +433,7 @@ function BirthDialog({
 }) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   const [alive, setAlive] = useState("");
   const [still, setStill] = useState("0");
   const [male, setMale] = useState("");
@@ -594,9 +595,9 @@ function BirdSection({ animal }: { animal: Animal }) {
 
 function IncubationCard({ inc, onUpdate, onDelete }: { inc: Incubation; onUpdate: (p: Partial<Incubation>) => void; onDelete: () => void }) {
   const today = new Date();
-  const set = new Date(inc.set_date);
+  const set = parseDateOnly(inc.set_date);
   const daysIn = differenceInDays(today, set);
-  const hatch = inc.expected_hatch ? new Date(inc.expected_hatch) : null;
+  const hatch = inc.expected_hatch ? parseDateOnly(inc.expected_hatch) : null;
   const daysLeft = hatch ? differenceInDays(hatch, today) : null;
   const done = !!inc.actual_hatch;
 
@@ -630,7 +631,7 @@ function IncubationCard({ inc, onUpdate, onDelete }: { inc: Incubation; onUpdate
           )}
           {done && (
             <div className="text-sm mt-2">
-              Hatched {format(new Date(inc.actual_hatch!), "MMM d, yyyy")}
+              Hatched {format(parseDateOnly(inc.actual_hatch!), "MMM d, yyyy")}
               {inc.hatched_count != null && ` · ${inc.hatched_count} chicks`}
             </div>
           )}
@@ -646,7 +647,7 @@ function IncubationCard({ inc, onUpdate, onDelete }: { inc: Incubation; onUpdate
       {!done && (
         <div className="mt-3 flex gap-2 flex-wrap">
           <Button size="sm" variant="outline" onClick={() => {
-            const d = prompt("Hatch date (YYYY-MM-DD)?", new Date().toISOString().slice(0, 10));
+            const d = prompt("Hatch date (YYYY-MM-DD)?", todayLocal());
             if (!d) return;
             const c = prompt("Number hatched?", String(inc.egg_count));
             onUpdate({ actual_hatch: d, hatched_count: c ? Number(c) : null });
@@ -659,14 +660,14 @@ function IncubationCard({ inc, onUpdate, onDelete }: { inc: Incubation; onUpdate
 
 function IncubationDialog({ species, onAdd }: { species: string; onAdd: (p: Partial<Incubation>) => void }) {
   const [open, setOpen] = useState(false);
-  const [setDate, setSetDate] = useState(new Date().toISOString().slice(0, 10));
+  const [setDate, setSetDate] = useState(todayLocal());
   const [eggs, setEggs] = useState("");
   const [fertile, setFertile] = useState<string>("unknown");
   const [days, setDays] = useState(String(incubationFor(species)));
   const [notes, setNotes] = useState("");
 
   const expected = useMemo(
-    () => (setDate ? format(addDays(new Date(setDate), Number(days) || 0), "yyyy-MM-dd") : null),
+    () => (setDate ? format(addDays(parseDateOnly(setDate), Number(days) || 0), "yyyy-MM-dd") : null),
     [setDate, days],
   );
 
@@ -712,7 +713,7 @@ function IncubationDialog({ species, onAdd }: { species: string; onAdd: (p: Part
           </div>
           <p className="text-xs text-muted-foreground">
             Default for {species}: {incubationFor(species)} days.{" "}
-            {expected && <>Expected hatch: <strong>{format(new Date(expected), "MMM d, yyyy")}</strong></>}
+            {expected && <>Expected hatch: <strong>{format(parseDateOnly(expected), "MMM d, yyyy")}</strong></>}
           </p>
           <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} /></div>
           <DialogFooter><Button type="submit">Start</Button></DialogFooter>

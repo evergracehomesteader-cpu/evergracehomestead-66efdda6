@@ -14,6 +14,7 @@ import { format, parseISO, startOfMonth, endOfMonth, isWithinInterval, subDays }
 import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { todayLocal } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/production")({ component: ProductionPage });
 
@@ -199,7 +200,7 @@ function ProductionForm({ initial, defaultType, animals, onSubmit, submitting }:
   const [type, setType] = useState(initial?.product_type ?? defaultType);
   const [qty, setQty] = useState(initial ? String(initial.quantity) : "");
   const [unit, setUnit] = useState<string>(initial?.unit ?? TYPES.find((t) => t.v === defaultType)?.unit ?? "ea");
-  const [date, setDate] = useState(initial?.produced_on ?? new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(initial?.produced_on ?? todayLocal());
   const [animal, setAnimal] = useState(initial?.animal_id ?? "none");
   const [group, setGroup] = useState(initial?.group_label ?? "");
   const [value, setValue] = useState(initial && initial.value_cents > 0 ? (initial.value_cents / 100).toFixed(2) : "");

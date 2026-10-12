@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 
 import { RequirePermission } from "@/components/RequirePermission";
+import { parseDateOnly, todayLocal } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/bills")({
   component: () => (
@@ -155,7 +156,7 @@ function BillsSection({ bills, qc }: { bills: Bill[]; qc: ReturnType<typeof useQ
 
   const togglePaid = useMutation({
     mutationFn: async ({ id, paid }: { id: string; paid: boolean }) => {
-      const { error } = await supabase.from("bills").update({ paid, paid_on: paid ? new Date().toISOString().slice(0, 10) : null }).eq("id", id);
+      const { error } = await supabase.from("bills").update({ paid, paid_on: paid ? todayLocal() : null }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["bills"] }),
@@ -195,8 +196,8 @@ function BillsSection({ bills, qc }: { bills: Bill[]; qc: ReturnType<typeof useQ
                       {overdue && <Badge variant="destructive">overdue</Badge>}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {b.due_date ? `Due ${format(new Date(b.due_date), "MMM d, yyyy")}` : "No due date"}
-                      {b.paid && b.paid_on && ` · Paid ${format(new Date(b.paid_on), "MMM d")}`}
+                      {b.due_date ? `Due ${format(parseDateOnly(b.due_date), "MMM d, yyyy")}` : "No due date"}
+                      {b.paid && b.paid_on && ` · Paid ${format(parseDateOnly(b.paid_on), "MMM d")}`}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -335,7 +336,7 @@ function IncomeSection({ income, qc }: { income: Income[]; qc: ReturnType<typeof
 function IncomeForm({ onSubmit, submitting }: { onSubmit: (p: Record<string, unknown>) => void; submitting: boolean }) {
   const [f, setF] = useState({
     source: "", category: "sale", amount: "",
-    entry_date: new Date().toISOString().slice(0, 10), notes: "",
+    entry_date: todayLocal(), notes: "",
   });
   return (
     <DialogContent>
