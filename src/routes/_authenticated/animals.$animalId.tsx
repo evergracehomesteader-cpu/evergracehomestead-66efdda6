@@ -22,6 +22,7 @@ import { SignedImg } from "@/components/SignedImg";
 import { findCommonAncestors } from "@/lib/lineage";
 import { ReproductionTab } from "@/components/animals/ReproductionTab";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { parseDateOnly, todayLocal } from "@/lib/dates";
 
 type SbAny = {
   from: (t: string) => {
@@ -248,7 +249,7 @@ function AnimalDetail() {
         </Card>
         <Card className="p-4">
           <div className="text-xs text-muted-foreground uppercase tracking-wide">Born</div>
-          <div className="font-medium">{animal.date_of_birth ? format(new Date(animal.date_of_birth), "MMM d, yyyy") : "—"}</div>
+          <div className="font-medium">{animal.date_of_birth ? format(parseDateOnly(animal.date_of_birth), "MMM d, yyyy") : "—"}</div>
         </Card>
         <Card className="p-4">
           <div className="text-xs text-muted-foreground uppercase tracking-wide">Lineage</div>
@@ -284,7 +285,7 @@ function AnimalDetail() {
               <ul className="divide-y">
                 {timeline.map((e, i) => (
                   <li key={i} className="px-4 py-3 flex items-start gap-3">
-                    <div className="text-xs text-muted-foreground w-24 flex-shrink-0">{format(new Date(e.date), "MMM d, yyyy")}</div>
+                    <div className="text-xs text-muted-foreground w-24 flex-shrink-0">{format(parseDateOnly(e.date), "MMM d, yyyy")}</div>
                     <div className="text-sm">{e.label}</div>
                   </li>
                 ))}
@@ -300,7 +301,7 @@ function AnimalDetail() {
               <ul className="divide-y">
                 {heats?.map((h) => (
                   <li key={h.id} className="px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2"><Heart className="h-4 w-4 text-accent" />{format(new Date(h.event_date), "MMM d, yyyy")}</div>
+                    <div className="flex items-center gap-2"><Heart className="h-4 w-4 text-accent" />{format(parseDateOnly(h.event_date), "MMM d, yyyy")}</div>
                     <Button size="sm" variant="ghost" onClick={() => delHeat.mutate(h.id)}><Trash2 className="h-4 w-4" /></Button>
                   </li>
                 ))}
@@ -321,7 +322,7 @@ function AnimalDetail() {
               <div className="text-xs font-medium text-muted-foreground mb-2">Growth chart</div>
               <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={[...(weights ?? [])].reverse().map((w) => ({ date: format(new Date(w.weighed_on), "M/d"), weight: Number(w.weight) }))}>
+                  <LineChart data={[...(weights ?? [])].reverse().map((w) => ({ date: format(parseDateOnly(w.weighed_on), "M/d"), weight: Number(w.weight) }))}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                     <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                     <YAxis tick={{ fontSize: 10 }} />
@@ -339,7 +340,7 @@ function AnimalDetail() {
                   <li key={w.id} className="px-4 py-3 flex items-center justify-between">
                     <div>
                       <div className="font-medium">{w.weight} {w.unit}</div>
-                      <div className="text-xs text-muted-foreground">{format(new Date(w.weighed_on), "MMM d, yyyy")}{w.notes ? ` · ${w.notes}` : ""}</div>
+                      <div className="text-xs text-muted-foreground">{format(parseDateOnly(w.weighed_on), "MMM d, yyyy")}{w.notes ? ` · ${w.notes}` : ""}</div>
                     </div>
                     <Button size="sm" variant="ghost" onClick={() => delWeight.mutate(w.id)}><Trash2 className="h-4 w-4" /></Button>
                   </li>
@@ -363,15 +364,15 @@ function AnimalDetail() {
                         {h.cost_cents > 0 && <span className="text-xs text-muted-foreground">${(h.cost_cents / 100).toFixed(2)}</span>}
                       </div>
                       <div className="text-xs text-muted-foreground mt-1">
-                        {format(new Date(h.administered_on), "MMM d, yyyy")}
+                        {format(parseDateOnly(h.administered_on), "MMM d, yyyy")}
                         {h.dosage && ` · ${h.dosage}`}
                         {h.body_condition_score != null && ` · BCS ${h.body_condition_score}`}
                       </div>
                       {(h.withdrawal_meat_until || h.withdrawal_milk_until || h.withdrawal_eggs_until) && (
                         <div className="text-xs mt-1 flex flex-wrap gap-1">
-                          {h.withdrawal_meat_until && <Badge variant="destructive" className="text-[10px]">meat → {format(new Date(h.withdrawal_meat_until), "MMM d")}</Badge>}
-                          {h.withdrawal_milk_until && <Badge variant="destructive" className="text-[10px]">milk → {format(new Date(h.withdrawal_milk_until), "MMM d")}</Badge>}
-                          {h.withdrawal_eggs_until && <Badge variant="destructive" className="text-[10px]">eggs → {format(new Date(h.withdrawal_eggs_until), "MMM d")}</Badge>}
+                          {h.withdrawal_meat_until && <Badge variant="destructive" className="text-[10px]">meat → {format(parseDateOnly(h.withdrawal_meat_until), "MMM d")}</Badge>}
+                          {h.withdrawal_milk_until && <Badge variant="destructive" className="text-[10px]">milk → {format(parseDateOnly(h.withdrawal_milk_until), "MMM d")}</Badge>}
+                          {h.withdrawal_eggs_until && <Badge variant="destructive" className="text-[10px]">eggs → {format(parseDateOnly(h.withdrawal_eggs_until), "MMM d")}</Badge>}
                         </div>
                       )}
                       {h.notes && <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{h.notes}</p>}
@@ -423,7 +424,7 @@ function AnimalDetail() {
                 <Link key={o.id} to="/animals/$animalId" params={{ animalId: o.id }}>
                   <Card className="p-4 hover:shadow-md transition-shadow">
                     <div className="font-medium">{o.name}</div>
-                    <div className="text-sm text-muted-foreground">{o.sex} · {o.date_of_birth ? format(new Date(o.date_of_birth), "MMM d, yyyy") : "—"}</div>
+                    <div className="text-sm text-muted-foreground">{o.sex} · {o.date_of_birth ? format(parseDateOnly(o.date_of_birth), "MMM d, yyyy") : "—"}</div>
                   </Card>
                 </Link>
               ))}
@@ -440,7 +441,7 @@ function AnimalDetail() {
 }
 
 function HeatAdd({ onAdd }: { onAdd: (d: string) => void }) {
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   return (
     <form onSubmit={(e) => { e.preventDefault(); onAdd(date); }} className="flex gap-2">
       <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="max-w-[200px]" />
@@ -452,7 +453,7 @@ function HeatAdd({ onAdd }: { onAdd: (d: string) => void }) {
 function WeightAdd({ onAdd }: { onAdd: (p: { weight: number; unit: string; weighed_on: string; notes: string | null }) => void }) {
   const [weight, setWeight] = useState("");
   const [unit, setUnit] = useState("lb");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   const [notes, setNotes] = useState("");
   return (
     <form
@@ -476,7 +477,7 @@ function WeightAdd({ onAdd }: { onAdd: (p: { weight: number; unit: string; weigh
 
 function PregAdd({ damId, species, males, onAdd }: { damId: string; species: string; males: { id: string; name: string }[]; onAdd: (p: { bred_date: string; sire_id: string | null; expected_due: string | null; notes: string | null; status: string }) => void }) {
   const [open, setOpen] = useState(false);
-  const [bred, setBred] = useState(new Date().toISOString().slice(0, 10));
+  const [bred, setBred] = useState(todayLocal());
   const [sire, setSire] = useState<string>("none");
   const defaultGest = String(gestationFor(species));
   const [gestation, setGestation] = useState(defaultGest);
@@ -484,7 +485,7 @@ function PregAdd({ damId, species, males, onAdd }: { damId: string; species: str
   const [notes, setNotes] = useState("");
   const [warning, setWarning] = useState<string | null>(null);
 
-  const due = bred ? format(addDays(new Date(bred), Number(gestation) || 0), "yyyy-MM-dd") : null;
+  const due = bred ? format(addDays(parseDateOnly(bred), Number(gestation) || 0), "yyyy-MM-dd") : null;
 
   const checkSire = async (sireId: string) => {
     setSire(sireId);
@@ -525,7 +526,7 @@ function PregAdd({ damId, species, males, onAdd }: { damId: string; species: str
             <Label>Gestation (days)</Label>
             <Input type="number" value={gestation} onChange={(e) => setGestation(e.target.value)} />
             <p className="text-xs text-muted-foreground mt-1">Default for {species || "species"}: {defaultGest} days. Pig 114 · Goat 150 · Cow 283 · Rabbit 31 · Chicken 21 · Dog/Cat 63</p>
-            {due && <p className="text-xs text-muted-foreground mt-1">Expected due: <strong>{format(new Date(due), "MMM d, yyyy")}</strong></p>}
+            {due && <p className="text-xs text-muted-foreground mt-1">Expected due: <strong>{format(parseDateOnly(due), "MMM d, yyyy")}</strong></p>}
           </div>
           <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} /></div>
           <DialogFooter><Button type="submit">Save</Button></DialogFooter>
@@ -542,7 +543,7 @@ function HealthAdd({ onAdd }: { onAdd: (p: { record_type: string; product: strin
   const [type, setType] = useState("vaccination");
   const [product, setProduct] = useState("");
   const [dosage, setDosage] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   const [meat, setMeat] = useState("");
   const [milk, setMilk] = useState("");
   const [eggs, setEggs] = useState("");
@@ -620,7 +621,7 @@ function DecisionCard({ decisions, onAdd, onDelete }: { decisions: DecisionRow[]
         {latest && (
           <Badge className={DECISION_TYPES.find((d) => d.v === latest.decision)?.color ?? ""}>{latest.decision}</Badge>
         )}
-        {latest?.target_date && <span className="text-xs text-muted-foreground">by {format(new Date(latest.target_date), "MMM d, yyyy")}</span>}
+        {latest?.target_date && <span className="text-xs text-muted-foreground">by {format(parseDateOnly(latest.target_date), "MMM d, yyyy")}</span>}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="sm" variant="outline" className="ml-auto"><Plus className="h-3 w-3" /> Decision</Button></DialogTrigger>
           <DialogContent>

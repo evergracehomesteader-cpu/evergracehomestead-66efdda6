@@ -29,6 +29,7 @@ import {
   type SpeciesRow,
 } from "@/lib/terminology";
 import { useSpeciesCatalog, useBreedsCatalog, type BreedRow } from "@/hooks/useSpeciesCatalog";
+import { todayLocal } from "@/lib/dates";
 
 export const Route = createFileRoute("/_authenticated/animals/")({ component: AnimalsPage });
 
@@ -847,7 +848,7 @@ function QuickLitterForm({ animals, speciesByName, onDone }: { animals: Animal[]
   });
   const [motherId, setMotherId] = useState<string>("");
   const [fatherId, setFatherId] = useState<string>("");
-  const [birthDate, setBirthDate] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [birthDate, setBirthDate] = useState<string>(todayLocal());
   const [maleCount, setMaleCount] = useState<number>(0);
   const [femaleCount, setFemaleCount] = useState<number>(0);
   const [unknownCount, setUnknownCount] = useState<number>(0);
