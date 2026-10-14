@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useHomesteadWeather } from "@/lib/use-homestead-weather";
+import { relativeTime } from "@/lib/weather-cache";
 import {
   Sun,
   Moon,
@@ -13,35 +14,8 @@ import {
   Droplets,
   Wind,
   Thermometer,
-  Snowflake,
-  AlertTriangle,
   type LucideIcon,
 } from "lucide-react";
-
-// Heritage Bend Tract 33 homestead GPS (Protem, MO). Weather follows the homestead,
-// not the phone's location, so it stays correct even when she's off the property.
-const HOMESTEAD_LAT = 36.52878;
-const HOMESTEAD_LON = -92.8847;
-// Freeze-risk threshold (°F) — tuned for newborn goat kids, not adult stock.
-const FREEZE_RISK_F = 36;
-
-interface OpenMeteoResponse {
-  current: {
-    temperature_2m: number;
-    apparent_temperature: number;
-    relative_humidity_2m: number;
-    weather_code: number;
-    wind_speed_10m: number;
-    is_day: number;
-  };
-  daily: {
-    time: string[];
-    weather_code: number[];
-    temperature_2m_max: number[];
-    temperature_2m_min: number[];
-    precipitation_probability_max: number[];
-  };
-}
 
 function weatherIcon(code: number, isDay: boolean): LucideIcon {
   if (code === 0) return isDay ? Sun : Moon;
@@ -72,21 +46,10 @@ function weatherLabel(code: number): string {
 const round = (n: number) => Math.round(n);
 
 export function WeatherCard() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["homestead-weather"],
-    staleTime: 30 * 60 * 1000,
-    retry: 1,
-    queryFn: async (): Promise<OpenMeteoResponse> => {
-      const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${HOMESTEAD_LAT}&longitude=${HOMESTEAD_LON}` +
-        `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,is_day` +
-        `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
-        `&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago&forecast_days=3`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`weather fetch failed: ${res.status}`);
-      return res.json();
-    },
-  });
+  // Shared hook: same forecast the alerts surface uses, with an offline
+  // fallback to the last cached fetch. The old inline freeze banner was
+  // removed — the WeatherAlerts component below this card owns all alerts now.
+  const { data, isLoading, isError, isStale, fetchedAt } = useHomesteadWeather();
 
   if (isLoading) {
     return (
@@ -109,7 +72,6 @@ export function WeatherCard() {
   const { current, daily } = data;
   const isDay = current.is_day === 1;
   const MainIcon = weatherIcon(current.weather_code, isDay);
-  const freezeRisk = daily.temperature_2m_min.some((t) => t <= FREEZE_RISK_F);
   const todayHigh = round(daily.temperature_2m_max[0]);
   const todayLow = round(daily.temperature_2m_min[0]);
   const rainChance = daily.precipitation_probability_max[0] ?? 0;
@@ -124,18 +86,12 @@ export function WeatherCard() {
       <div className="flex items-center gap-2 mb-4">
         <MainIcon className="h-4 w-4 text-primary" />
         <h3 className="font-semibold">Homestead weather</h3>
-        <span className="ml-auto text-xs text-muted-foreground">Protem, MO</span>
+        <span className="ml-auto text-xs text-muted-foreground">
+          {isStale && fetchedAt
+            ? `Offline — last update ${relativeTime(fetchedAt.toISOString())}`
+            : "Protem, MO"}
+        </span>
       </div>
-
-      {freezeRisk && (
-        <div className="flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/5 p-2.5 mb-4">
-          <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
-          <p className="text-xs font-medium">
-            <Snowflake className="h-3 w-3 inline mr-1" />
-            Freeze risk in the 3-day outlook — protect newborns and lock up warm.
-          </p>
-        </div>
-      )}
 
       <div className="flex items-center gap-4 mb-4">
         <div className="flex items-center gap-3">

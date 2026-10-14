@@ -39,6 +39,7 @@ import {
 import { computeReminders, severityClass } from "@/lib/reminders";
 import { QuickActions } from "@/components/QuickActions";
 import { WeatherCard } from "@/components/WeatherCard";
+import { WeatherAlerts } from "@/components/WeatherAlerts";
 import { statusBadgeClass } from "@/lib/homestead";
 import { cn } from "@/lib/utils";
 import { useState, type MouseEvent, type ElementType } from "react";
@@ -367,6 +368,8 @@ function Dashboard() {
       <QuickActions />
 
       <WeatherCard />
+
+      <WeatherAlerts />
 
       {urgent.length > 0 && (
         <Card className="p-4 border-warning/50 bg-warning/5">
