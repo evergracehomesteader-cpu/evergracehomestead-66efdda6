@@ -37,6 +37,10 @@ export const SYNCED_TABLES = [
   "compost_entries",
   "garden_plots",
   "pens",
+  "power_generators",
+  "power_generator_logs",
+  "power_propane_tanks",
+  "power_propane_logs",
 ] as const;
 
 export type SyncedTable = (typeof SYNCED_TABLES)[number];
@@ -56,6 +60,8 @@ export const WATERMARK_COL: Record<SyncedTable, string> = {
   tasks: "updated_at",
   garden_plots: "updated_at",
   pens: "updated_at",
+  power_generators: "updated_at",
+  power_propane_tanks: "updated_at",
   animal_events: "created_at",
   weight_logs: "created_at",
   chore_assignments: "created_at",
@@ -63,6 +69,8 @@ export const WATERMARK_COL: Record<SyncedTable, string> = {
   feed_purchases: "created_at",
   production_logs: "created_at",
   compost_entries: "created_at",
+  power_generator_logs: "created_at",
+  power_propane_logs: "created_at",
   chore_completions: "completed_at",
 };
 
@@ -85,11 +93,15 @@ export const TABLE_PRIORITY: Record<SyncedTable, number> = {
   compost_entries: 0,
   litters: 0,
   pregnancies: 0,
+  power_generators: 0,
+  power_propane_tanks: 0,
   health_records: 1,
   animal_events: 1,
   weight_logs: 1,
   chore_assignments: 1,
   chore_completions: 1,
+  power_generator_logs: 1,
+  power_propane_logs: 1,
 };
 
 export type OutboxOp = "insert" | "update" | "delete";
@@ -131,6 +143,14 @@ class OfflineDb extends Dexie {
       // and the engine drain in FIFO order without full scans.
       outbox: "++id,table,rowId,createdAt",
       sync_meta: "table",
+    });
+    // v2: Power section (generator + propane tracking). New stores only —
+    // Dexie migrates existing v1 data in place.
+    this.version(2).stores({
+      power_generators: "id",
+      power_generator_logs: "id",
+      power_propane_tanks: "id",
+      power_propane_logs: "id",
     });
     // Dynamic per-table accessors (typed loosely; rows are untyped mirrors).
     for (const t of SYNCED_TABLES) {
