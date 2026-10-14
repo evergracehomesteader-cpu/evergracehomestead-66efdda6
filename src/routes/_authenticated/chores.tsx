@@ -33,6 +33,7 @@ import { OneTimeTasksPanel } from "@/components/OneTimeTasks";
 import { Plus, CalendarCheck, Trash2, Pencil, Users as UsersIcon } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useAuth } from "@/lib/auth-context";
+import { isChoreScheduledOn } from "@/lib/task-notifications";
 
 export const Route = createFileRoute("/_authenticated/chores")({
   component: ChoresPage,
@@ -93,8 +94,6 @@ function ChoresPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Chore | null>(null);
   const today = format(new Date(), "yyyy-MM-dd");
-  const dow = new Date().getDay();
-  const dom = new Date().getDate();
 
   const choresQ = useQuery({
     queryKey: ["chores"],
@@ -150,16 +149,8 @@ function ChoresPage() {
   }, [profilesQ.data]);
 
   const todayChores = useMemo(() => {
-    return (choresQ.data ?? []).filter((c) => {
-      if (!c.active) return false;
-      if (c.start_date > today) return false;
-      if (c.end_date && c.end_date < today) return false;
-      if (c.recurrence === "daily") return true;
-      if (c.recurrence === "weekly") return (c.days_of_week ?? []).includes(dow);
-      if (c.recurrence === "monthly") return c.day_of_month === dom;
-      return false;
-    });
-  }, [choresQ.data, today, dow, dom]);
+    return (choresQ.data ?? []).filter((c) => isChoreScheduledOn(c, today));
+  }, [choresQ.data, today]);
 
   const assigneesFor = (choreId: string) =>
     (assignQ.data ?? []).filter((a) => a.chore_id === choreId).map((a) => a.user_id);

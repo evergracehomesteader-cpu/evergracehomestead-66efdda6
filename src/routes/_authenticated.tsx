@@ -5,6 +5,7 @@ import { MobileTabBar } from "@/components/MobileTabBar";
 import { DemoBanner } from "@/components/DemoBanner";
 import { HomesteadSwitcher } from "@/components/HomesteadSwitcher";
 import { SyncStatus } from "@/lib/offline/SyncStatus";
+import { NotificationBell } from "@/components/NotificationBell";
 import { HomesteadProvider } from "@/lib/homestead-context";
 import { useAuth } from "@/lib/auth-context";
 import { APP_VERSION } from "@/lib/app-version";
@@ -34,6 +35,7 @@ function AuthLayout() {
               <div className="font-display font-semibold text-base md:text-base truncate">Homestead Hub</div>
               <div className="ml-auto flex items-center gap-2">
                 <SyncStatus />
+                <NotificationBell />
                 <HomesteadSwitcher />
               </div>
             </header>
