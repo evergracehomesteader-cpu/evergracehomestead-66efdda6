@@ -394,7 +394,8 @@ function DealForm({
     setUploading(true);
     try {
       const ext = (file.type.split("/")[1] ?? "jpg").toLowerCase();
-      const path = `${crypto.randomUUID()}.${ext}`;
+      const { data: { user: upUser } } = await supabase.auth.getUser();
+      const path = `${upUser?.id ?? "anon"}/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from("barter-photos").upload(path, file, { contentType: file.type });
       if (error) throw error;
       setF((cur) => ({ ...cur, photo_urls: [...(cur.photo_urls ?? []), path] }));

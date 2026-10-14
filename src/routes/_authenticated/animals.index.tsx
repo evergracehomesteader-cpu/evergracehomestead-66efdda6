@@ -519,7 +519,8 @@ function AnimalForm({
     setUploading(slot);
     try {
       const ext = (file.type.split("/")[1] ?? "jpg").toLowerCase();
-      const path = `${crypto.randomUUID()}.${ext}`;
+      const { data: { user: upUser } } = await supabase.auth.getUser();
+      const path = `${upUser?.id ?? "anon"}/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from("animal-photos").upload(path, file, { contentType: file.type });
       if (error) throw error;
       if (slot === "front") set("front_photo_url", path);
