@@ -1,1 +1,136 @@
-aW1wb3J0IHsgZGVzY3JpYmUsIGl0LCBleHBlY3QgfSBmcm9tICJ2aXRlc3QiOwppbXBvcnQgeyBzZWFyY2hQdXJjaGFzZXMsIGZpbmREdXBsaWNhdGVQdXJjaGFzZSwgdHlwZSBSZWNlaXB0UHVyY2hhc2UgfSBmcm9tICIuLi9yZWNlaXB0cyI7Cgpjb25zdCBiYXNlOiBSZWNlaXB0UHVyY2hhc2UgPSB7CiAgaWQ6ICIxIiwKICBmZWVkX2l0ZW1faWQ6ICJmMSIsCiAgc3RvcmU6ICJUcmFjdG9yIFN1cHBseSIsCiAgcHJpY2VfY2VudHM6IDI0OTksCiAgcXVhbnRpdHk6IDUwLAogIHRvdGFsX2xiczogNTAsCiAgcHVyY2hhc2VkX29uOiAiMjAyNi0xMC0xNCIsCiAgbm90ZXM6ICJsYXllciBmZWVkIGZvciBoZW5zIiwKICByZWNlaXB0X3Bob3RvX3BhdGg6IG51bGwsCiAgaXRlbV9uYW1lOiAiTGF5ZXIgUGVsbGV0cyIsCn07Cgpjb25zdCBwdXJjaGFzZXM6IFJlY2VpcHRQdXJjaGFzZVtdID0gWwogIGJhc2UsCiAgewogICAgLi4uYmFzZSwKICAgIGlkOiAiMiIsCiAgICBzdG9yZTogIk9yc2NoZWxuIiwKICAgIHByaWNlX2NlbnRzOiAxODUwLAogICAgcHVyY2hhc2VkX29uOiAiMjAyNi0xMC0wMSIsCiAgICBub3RlczogbnVsbCwKICAgIGl0ZW1fbmFtZTogIkdvYXQgRmVlZCIsCiAgfSwKICB7CiAgICAuLi5iYXNlLAogICAgaWQ6ICIzIiwKICAgIHN0b3JlOiBudWxsLAogICAgcHJpY2VfY2VudHM6IDUwMCwKICAgIHB1cmNoYXNlZF9vbjogIjIwMjYtMDktMjAiLAogICAgbm90ZXM6ICJjYXNoIGZyb20gbmVpZ2hib3IiLAogICAgaXRlbV9uYW1lOiAiSGF5IEJhbGUiLAogIH0sCl07CgpkZXNjcmliZSgic2VhcmNoUHVyY2hhc2VzIiwgKCkgPT4gewogIGl0KCJyZXR1cm5zIGV2ZXJ5dGhpbmcgb24gZW1wdHkgcXVlcnkiLCAoKSA9PiB7CiAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgIiIpKS50b0hhdmVMZW5ndGgoMyk7CiAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgIiAgICIpKS50b0hhdmVMZW5ndGgoMyk7CiAgfSk7CgogIGl0KCJtYXRjaGVzIHZlbmRvciBuYW1lIGNhc2UtaW5zZW5zaXRpdmVseSBhbmQgcGFydGlhbGx5IiwgKCkgPT4gewogICAgZXhwZWN0KHNlYXJjaFB1cmNoYXNlcyhwdXJjaGFzZXMsICJ0cmFjdG9yIikpLnRvSGF2ZUxlbmd0aCgxKTsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAiVFJBQ1RPUiBTVVBQTFkiKSkudG9IYXZlTGVuZ3RoKDEpOwogICAgZXhwZWN0KHNlYXJjaFB1cmNoYXNlcyhwdXJjaGFzZXMsICJvcnNjaCIpKS50b0hhdmVMZW5ndGgoMSk7CiAgfSk7CgogIGl0KCJtYXRjaGVzIGFtb3VudCBpbiBtdWx0aXBsZSBmb3JtcyIsICgpID0+IHsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAiMjQuOTkiKS5tYXAoKHApID0+IHAuaWQpKS50b0VxdWFsKFsiMSJdKTsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAiJDI0Ljk5IikubWFwKChwKSA9PiBwLmlkKSkudG9FcXVhbChbIjEiXSk7CiAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgIjI0OTkiKS5tYXAoKHApID0+IHAuaWQpKS50b0VxdWFsKFsiMSJdKTsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAiMTguNTAiKS5tYXAoKHApID0+IHAuaWQpKS50b0VxdWFsKFsiMiJdKTsKICB9KTsKCiAgaXQoIm1hdGNoZXMgZGF0ZXMgaW4gbXVsdGlwbGUgZm9ybXMiLCAoKSA9PiB7CiAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgIjIwMjYtMTAtMTQiKS5tYXAoKHApID0+IHAuaWQpKS50b0VxdWFsKFsiMSJdKTsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAiMTAvMTQvMjAyNiIpLm1hcCgocCkgPT4gcC5pZCkpLnRvRXF1YWwoWyIxIl0pOwogICAgZXhwZWN0KHNlYXJjaFB1cmNoYXNlcyhwdXJjaGFzZXMsICJvY3QgMTQiKS5tYXAoKHApID0+IHAuaWQpKS50b0VxdWFsKFsiMSJdKTsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAib2N0b2JlciAxNCAyMDI2IikubWFwKChwKSA9PiBwLmlkKSkudG9FcXVhbChbIjEiXSk7CiAgfSk7CgogIGl0KCJtYXRjaGVzIG5vdGVzIGFuZCBpdGVtIG5hbWUiLCAoKSA9PiB7CiAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgIm5laWdoYm9yIikubWFwKChwKSA9PiBwLmlkKSkudG9FcXVhbChbIjMiXSk7CiAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgImdvYXQgZmVlZCIpLm1hcCgocCkgPT4gcC5pZCkpLnRvRXF1YWwoWyIyIl0pOwogICAgZXhwZWN0KHNlYXJjaFB1cmNoYXNlcyhwdXJjaGFzZXMsICJsYXllciIpKS50b0hhdmVMZW5ndGgoMSk7CiAgfSk7CgogIGl0KCJyZXF1aXJlcyBldmVyeSB0b2tlbiB0byBtYXRjaCAoQU5EIHNlbWFudGljcykiLCAoKSA9PiB7CiAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgInRyYWN0b3IgMjQuOTkiKS5tYXAoKHApID0+IHAuaWQpKS50b0VxdWFsKFsiMSJdKTsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAidHJhY3RvciAxOC41MCIpKS50b0hhdmVMZW5ndGgoMCk7CiAgfSk7CgogIGl0KCJuZXZlciByZXR1cm5zIGJsYW5rIHdoZW4gYSBtYXRjaCBleGlzdHMgKEZhcm1icml0ZSByZWdyZXNzaW9uKSIsICgpID0+IHsKICAgIC8vIFBhcnRpYWwgdmVuZG9yICsgcGFydGlhbCBhbW91bnQgdHlwZWQgZmFzdCwgYXMgYSB1c2VyIHdvdWxkLgogICAgZm9yIChjb25zdCBxIG9mIFsidCIsICJ0ciIsICJ0cmEiLCAidHJhYyIsICJ0cmFjdCIsICJ0cmFjdG8iLCAidHJhY3RvciJdKSB7CiAgICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCBxKS5sZW5ndGgpLnRvQmVHcmVhdGVyVGhhbigwKTsKICAgIH0KICAgIGZvciAoY29uc3QgcSBvZiBbIjIiLCAiMjQiLCAiMjQuIiwgIjI0LjkiLCAiMjQuOTkiXSkgewogICAgICBleHBlY3Qoc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlcywgcSkubGVuZ3RoKS50b0JlR3JlYXRlclRoYW4oMCk7CiAgICB9CiAgfSk7CgogIGl0KCJoYW5kbGVzIG51bGwgc3RvcmUvbm90ZXMgd2l0aG91dCBjcmFzaGluZyIsICgpID0+IHsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAiaGF5IikpLnRvSGF2ZUxlbmd0aCgxKTsKICAgIGV4cGVjdChzZWFyY2hQdXJjaGFzZXMocHVyY2hhc2VzLCAienp6LW5vLW1hdGNoIikpLnRvSGF2ZUxlbmd0aCgwKTsKICB9KTsKfSk7CgpkZXNjcmliZSgiZmluZER1cGxpY2F0ZVB1cmNoYXNlIiwgKCkgPT4gewogIGl0KCJmaW5kcyBzYW1lIHZlbmRvciArIGFtb3VudCArIGRhdGUiLCAoKSA9PiB7CiAgICBjb25zdCBkdXAgPSBmaW5kRHVwbGljYXRlUHVyY2hhc2UocHVyY2hhc2VzLCB7CiAgICAgIHN0b3JlOiAiVHJhY3RvciBTdXBwbHkiLAogICAgICBwcmljZV9jZW50czogMjQ5OSwKICAgICAgcHVyY2hhc2VkX29uOiAiMjAyNi0xMC0xNCIsCiAgICB9KTsKICAgIGV4cGVjdChkdXA/LmlkKS50b0JlKCIxIik7CiAgfSk7CgogIGl0KCJpcyBjYXNlLSBhbmQgd2hpdGVzcGFjZS1pbnNlbnNpdGl2ZSBvbiB2ZW5kb3IiLCAoKSA9PiB7CiAgICBjb25zdCBkdXAgPSBmaW5kRHVwbGljYXRlUHVyY2hhc2UocHVyY2hhc2VzLCB7CiAgICAgIHN0b3JlOiAiICB0cmFjdG9yIHN1cHBseSAiLAogICAgICBwcmljZV9jZW50czogMjQ5OSwKICAgICAgcHVyY2hhc2VkX29uOiAiMjAyNi0xMC0xNCIsCiAgICB9KTsKICAgIGV4cGVjdChkdXA/LmlkKS50b0JlKCIxIik7CiAgfSk7CgogIGl0KCJyZXR1cm5zIG51bGwgd2hlbiBhbW91bnQgb3IgZGF0ZSBkaWZmZXJzIiwgKCkgPT4gewogICAgZXhwZWN0KAogICAgICBmaW5kRHVwbGljYXRlUHVyY2hhc2UocHVyY2hhc2VzLCB7CiAgICAgICAgc3RvcmU6ICJUcmFjdG9yIFN1cHBseSIsCiAgICAgICAgcHJpY2VfY2VudHM6IDI1MDAsCiAgICAgICAgcHVyY2hhc2VkX29uOiAiMjAyNi0xMC0xNCIsCiAgICAgIH0pLAogICAgKS50b0JlTnVsbCgpOwogICAgZXhwZWN0KAogICAgICBmaW5kRHVwbGljYXRlUHVyY2hhc2UocHVyY2hhc2VzLCB7CiAgICAgICAgc3RvcmU6ICJUcmFjdG9yIFN1cHBseSIsCiAgICAgICAgcHJpY2VfY2VudHM6IDI0OTksCiAgICAgICAgcHVyY2hhc2VkX29uOiAiMjAyNi0xMC0xMyIsCiAgICAgIH0pLAogICAgKS50b0JlTnVsbCgpOwogIH0pOwoKICBpdCgibWF0Y2hlcyBudWxsIHZlbmRvcnMgYWdhaW5zdCBlYWNoIG90aGVyIiwgKCkgPT4gewogICAgY29uc3QgZHVwID0gZmluZER1cGxpY2F0ZVB1cmNoYXNlKHB1cmNoYXNlcywgewogICAgICBzdG9yZTogbnVsbCwKICAgICAgcHJpY2VfY2VudHM6IDUwMCwKICAgICAgcHVyY2hhc2VkX29uOiAiMjAyNi0wOS0yMCIsCiAgICB9KTsKICAgIGV4cGVjdChkdXA/LmlkKS50b0JlKCIzIik7CiAgfSk7Cn0pOwo=
+import { describe, it, expect } from "vitest";
+import { searchPurchases, findDuplicatePurchase, type ReceiptPurchase } from "../receipts";
+
+const base: ReceiptPurchase = {
+  id: "1",
+  feed_item_id: "f1",
+  store: "Tractor Supply",
+  price_cents: 2499,
+  quantity: 50,
+  total_lbs: 50,
+  purchased_on: "2026-10-14",
+  notes: "layer feed for hens",
+  receipt_photo_path: null,
+  item_name: "Layer Pellets",
+};
+
+const purchases: ReceiptPurchase[] = [
+  base,
+  {
+    ...base,
+    id: "2",
+    store: "Orscheln",
+    price_cents: 1850,
+    purchased_on: "2026-10-01",
+    notes: null,
+    item_name: "Goat Feed",
+  },
+  {
+    ...base,
+    id: "3",
+    store: null,
+    price_cents: 500,
+    purchased_on: "2026-09-20",
+    notes: "cash from neighbor",
+    item_name: "Hay Bale",
+  },
+];
+
+describe("searchPurchases", () => {
+  it("returns everything on empty query", () => {
+    expect(searchPurchases(purchases, "")).toHaveLength(3);
+    expect(searchPurchases(purchases, "   ")).toHaveLength(3);
+  });
+
+  it("matches vendor name case-insensitively and partially", () => {
+    expect(searchPurchases(purchases, "tractor")).toHaveLength(1);
+    expect(searchPurchases(purchases, "TRACTOR SUPPLY")).toHaveLength(1);
+    expect(searchPurchases(purchases, "orsch")).toHaveLength(1);
+  });
+
+  it("matches amount in multiple forms", () => {
+    expect(searchPurchases(purchases, "24.99").map((p) => p.id)).toEqual(["1"]);
+    expect(searchPurchases(purchases, "$24.99").map((p) => p.id)).toEqual(["1"]);
+    expect(searchPurchases(purchases, "2499").map((p) => p.id)).toEqual(["1"]);
+    expect(searchPurchases(purchases, "18.50").map((p) => p.id)).toEqual(["2"]);
+  });
+
+  it("matches dates in multiple forms", () => {
+    expect(searchPurchases(purchases, "2026-10-14").map((p) => p.id)).toEqual(["1"]);
+    expect(searchPurchases(purchases, "10/14/2026").map((p) => p.id)).toEqual(["1"]);
+    expect(searchPurchases(purchases, "oct 14").map((p) => p.id)).toEqual(["1"]);
+    expect(searchPurchases(purchases, "october 14 2026").map((p) => p.id)).toEqual(["1"]);
+  });
+
+  it("matches notes and item name", () => {
+    expect(searchPurchases(purchases, "neighbor").map((p) => p.id)).toEqual(["3"]);
+    expect(searchPurchases(purchases, "goat feed").map((p) => p.id)).toEqual(["2"]);
+    expect(searchPurchases(purchases, "layer")).toHaveLength(1);
+  });
+
+  it("requires every token to match (AND semantics)", () => {
+    expect(searchPurchases(purchases, "tractor 24.99").map((p) => p.id)).toEqual(["1"]);
+    expect(searchPurchases(purchases, "tractor 18.50")).toHaveLength(0);
+  });
+
+  it("never returns blank when a match exists (Farmbrite regression)", () => {
+    // Partial vendor + partial amount typed fast, as a user would.
+    for (const q of ["t", "tr", "tra", "trac", "tract", "tracto", "tractor"]) {
+      expect(searchPurchases(purchases, q).length).toBeGreaterThan(0);
+    }
+    for (const q of ["2", "24", "24.", "24.9", "24.99"]) {
+      expect(searchPurchases(purchases, q).length).toBeGreaterThan(0);
+    }
+  });
+
+  it("handles null store/notes without crashing", () => {
+    expect(searchPurchases(purchases, "hay")).toHaveLength(1);
+    expect(searchPurchases(purchases, "zzz-no-match")).toHaveLength(0);
+  });
+});
+
+describe("findDuplicatePurchase", () => {
+  it("finds same vendor + amount + date", () => {
+    const dup = findDuplicatePurchase(purchases, {
+      store: "Tractor Supply",
+      price_cents: 2499,
+      purchased_on: "2026-10-14",
+    });
+    expect(dup?.id).toBe("1");
+  });
+
+  it("is case- and whitespace-insensitive on vendor", () => {
+    const dup = findDuplicatePurchase(purchases, {
+      store: "  tractor supply ",
+      price_cents: 2499,
+      purchased_on: "2026-10-14",
+    });
+    expect(dup?.id).toBe("1");
+  });
+
+  it("returns null when amount or date differs", () => {
+    expect(
+      findDuplicatePurchase(purchases, {
+        store: "Tractor Supply",
+        price_cents: 2500,
+        purchased_on: "2026-10-14",
+      }),
+    ).toBeNull();
+    expect(
+      findDuplicatePurchase(purchases, {
+        store: "Tractor Supply",
+        price_cents: 2499,
+        purchased_on: "2026-10-13",
+      }),
+    ).toBeNull();
+  });
+
+  it("matches null vendors against each other", () => {
+    const dup = findDuplicatePurchase(purchases, {
+      store: null,
+      price_cents: 500,
+      purchased_on: "2026-09-20",
+    });
+    expect(dup?.id).toBe("3");
+  });
+});

@@ -1,1 +1,165 @@
-Ly8gUmVjZWlwdCBwaG90byBjYXB0dXJlLCBvZmZsaW5lIHF1ZXVlaW5nLCBhbmQgZHJhaW4uCi8vCi8vIEZsb3c6Ci8vIC0gT25saW5lOiBwaG90byB1cGxvYWRzIHN0cmFpZ2h0IHRvIHRoZSBwcml2YXRlIGByZWNlaXB0LXBob3Rvc2AgYnVja2V0IGFuZAovLyAgIHRoZSBzdG9yYWdlIHBhdGggaXMgc2F2ZWQgb24gdGhlIGZlZWRfcHVyY2hhc2VzIHJvdy4KLy8gLSBPZmZsaW5lOiB0aGUgcGhvdG8gYmxvYiBpcyBjYWNoZWQgaW4gdGhlIERleGllIGBwZW5kaW5nX3Bob3Rvc2Agc3RvcmUKLy8gICBrZXllZCBieSB0aGUgKGxvY2FsbHkgZ2VuZXJhdGVkKSBwdXJjaGFzZSBpZC4gV2hlbiBjb25uZWN0aXZpdHkgcmV0dXJucywKLy8gICBgZHJhaW5QZW5kaW5nUGhvdG9zYCB1cGxvYWRzIGVhY2ggYmxvYiBhbmQgcGF0Y2hlcyB0aGUgcHVyY2hhc2Ugcm93IHZpYQovLyAgIHRoZSBvZmZsaW5lLWZpcnN0IHF1ZXVlZCBjbGllbnQgKEZJRk8gb3V0Ym94IGtlZXBzIGluc2VydC1iZWZvcmUtdXBkYXRlCi8vICAgb3JkZXJpbmcgZXZlbiBpZiB0aGUgcHVyY2hhc2UgaXRzZWxmIGhhc24ndCBwdXNoZWQgeWV0KS4KaW1wb3J0IHsgc3VwYWJhc2UgfSBmcm9tICJAL2xpYi9zdXBhYmFzZSI7CmltcG9ydCB7IGdldERiLCBub3dJU08sIHR5cGUgUGVuZGluZ1Bob3RvIH0gZnJvbSAiQC9saWIvb2ZmbGluZS9kYiI7CmltcG9ydCB7IHZhbGlkYXRlSW1hZ2VGaWxlIH0gZnJvbSAiQC9saWIvcGhvdG8tc3RvcmFnZSI7CgpleHBvcnQgY29uc3QgUkVDRUlQVF9CVUNLRVQgPSAicmVjZWlwdC1waG90b3MiOwoKY29uc3QgaXNPbmxpbmUgPSAoKTogYm9vbGVhbiA9PgogIHR5cGVvZiBuYXZpZ2F0b3IgPT09ICJ1bmRlZmluZWQiID8gdHJ1ZSA6IG5hdmlnYXRvci5vbkxpbmUgIT09IGZhbHNlOwoKZnVuY3Rpb24gZXh0Rm9yKGZpbGU6IEZpbGUpOiBzdHJpbmcgewogIGNvbnN0IGZyb21OYW1lID0gZmlsZS5uYW1lLnNwbGl0KCIuIikucG9wKCk/LnRvTG93ZXJDYXNlKCk7CiAgaWYgKGZyb21OYW1lICYmIC9eW2EtejAtOV17Miw0fSQvLnRlc3QoZnJvbU5hbWUpKSByZXR1cm4gZnJvbU5hbWU7CiAgY29uc3QgbWFwOiBSZWNvcmQ8c3RyaW5nLCBzdHJpbmc+ID0gewogICAgImltYWdlL2pwZWciOiAianBnIiwKICAgICJpbWFnZS9wbmciOiAicG5nIiwKICAgICJpbWFnZS93ZWJwIjogIndlYnAiLAogICAgImltYWdlL2dpZiI6ICJnaWYiLAogIH07CiAgcmV0dXJuIG1hcFtmaWxlLnR5cGVdID8/ICJqcGciOwp9CgovKioKICogVXBsb2FkIGEgcmVjZWlwdCBwaG90byByaWdodCBub3cuIFJldHVybnMgdGhlIHN0b3JhZ2UgcGF0aCB0byBzYXZlIG9uIHRoZQogKiBwdXJjaGFzZSByb3cuIFRocm93cyBvbiB2YWxpZGF0aW9uIG9yIHVwbG9hZCBmYWlsdXJlLgogKi8KZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIHVwbG9hZFJlY2VpcHRQaG90byhmaWxlOiBGaWxlLCB1c2VySWQ6IHN0cmluZyk6IFByb21pc2U8c3RyaW5nPiB7CiAgY29uc3QgcHJvYmxlbSA9IHZhbGlkYXRlSW1hZ2VGaWxlKGZpbGUpOwogIGlmIChwcm9ibGVtKSB0aHJvdyBuZXcgRXJyb3IocHJvYmxlbSk7CiAgY29uc3QgcGF0aCA9IGAke3VzZXJJZH0vJHtjcnlwdG8ucmFuZG9tVVVJRCgpfS4ke2V4dEZvcihmaWxlKX1gOwogIGNvbnN0IHsgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlLnN0b3JhZ2UuZnJvbShSRUNFSVBUX0JVQ0tFVCkudXBsb2FkKHBhdGgsIGZpbGUsIHsKICAgIGNvbnRlbnRUeXBlOiBmaWxlLnR5cGUsCiAgfSk7CiAgaWYgKGVycm9yKSB0aHJvdyBlcnJvcjsKICByZXR1cm4gcGF0aDsKfQoKLyoqIENhY2hlIGEgcmVjZWlwdCBwaG90byBibG9iIGxvY2FsbHkgdW50aWwgY29ubmVjdGl2aXR5IHJldHVybnMuICovCmV4cG9ydCBhc3luYyBmdW5jdGlvbiBxdWV1ZVJlY2VpcHRQaG90byhwdXJjaGFzZUlkOiBzdHJpbmcsIGZpbGU6IEZpbGUpOiBQcm9taXNlPG51bWJlcj4gewogIGNvbnN0IHByb2JsZW0gPSB2YWxpZGF0ZUltYWdlRmlsZShmaWxlKTsKICBpZiAocHJvYmxlbSkgdGhyb3cgbmV3IEVycm9yKHByb2JsZW0pOwogIGNvbnN0IGVudHJ5OiBQZW5kaW5nUGhvdG8gPSB7CiAgICBwdXJjaGFzZUlkLAogICAgYmxvYjogZmlsZSwKICAgIGZpbGVOYW1lOiBmaWxlLm5hbWUgfHwgInJlY2VpcHQuanBnIiwKICAgIGNvbnRlbnRUeXBlOiBmaWxlLnR5cGUsCiAgICBjcmVhdGVkQXQ6IG5vd0lTTygpLAogIH07CiAgcmV0dXJuIGdldERiKCkucGVuZGluZ19waG90b3MuYWRkKGVudHJ5KTsKfQoKLyoqIE9iamVjdCBVUkxzIGZvciBvZmZsaW5lLWNhcHR1cmVkIHBob3RvcyAocmV2b2tlIHdoZW4gZG9uZSB2aWEgcmV2b2tlUGVuZGluZ1Bob3RvVXJsKS4gKi8KY29uc3Qgb2JqZWN0VXJsQ2FjaGUgPSBuZXcgTWFwPG51bWJlciwgc3RyaW5nPigpOwoKLyoqIExvY2FsIHByZXZpZXcgVVJMIGZvciBhIHBlbmRpbmcgcGhvdG8gYmVsb25naW5nIHRvIGEgcHVyY2hhc2UsIGlmIGFueS4gKi8KZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGdldFBlbmRpbmdQaG90b1VybChwdXJjaGFzZUlkOiBzdHJpbmcpOiBQcm9taXNlPHN0cmluZyB8IG51bGw+IHsKICBjb25zdCByZWMgPSBhd2FpdCBnZXREYigpLnBlbmRpbmdfcGhvdG9zLndoZXJlKCJwdXJjaGFzZUlkIikuZXF1YWxzKHB1cmNoYXNlSWQpLmZpcnN0KCk7CiAgaWYgKCFyZWMgfHwgcmVjLmlkID09IG51bGwpIHJldHVybiBudWxsOwogIGxldCB1cmwgPSBvYmplY3RVcmxDYWNoZS5nZXQocmVjLmlkKTsKICBpZiAoIXVybCkgewogICAgdXJsID0gVVJMLmNyZWF0ZU9iamVjdFVSTChyZWMuYmxvYik7CiAgICBvYmplY3RVcmxDYWNoZS5zZXQocmVjLmlkLCB1cmwpOwogIH0KICByZXR1cm4gdXJsOwp9CgpleHBvcnQgZnVuY3Rpb24gcmV2b2tlUGVuZGluZ1Bob3RvVXJsKHB1cmNoYXNlSWQ6IHN0cmluZyk6IHZvaWQgewogIC8vIEJlc3QtZWZmb3J0IGNsZWFudXA7IHN0YWxlIGVudHJpZXMgYXJlIGhhcm1sZXNzIChwYWdlLWxpZmV0aW1lIGNhY2hlKS4KICB2b2lkIGdldERiKCkKICAgIC5wZW5kaW5nX3Bob3Rvcy53aGVyZSgicHVyY2hhc2VJZCIpCiAgICAuZXF1YWxzKHB1cmNoYXNlSWQpCiAgICAuZmlyc3QoKQogICAgLnRoZW4oKHJlYykgPT4gewogICAgICBpZiAocmVjPy5pZCAhPSBudWxsKSB7CiAgICAgICAgY29uc3QgdXJsID0gb2JqZWN0VXJsQ2FjaGUuZ2V0KHJlYy5pZCk7CiAgICAgICAgaWYgKHVybCkgewogICAgICAgICAgVVJMLnJldm9rZU9iamVjdFVSTCh1cmwpOwogICAgICAgICAgb2JqZWN0VXJsQ2FjaGUuZGVsZXRlKHJlYy5pZCk7CiAgICAgICAgfQogICAgICB9CiAgICB9KTsKfQoKLyoqCiAqIFVwbG9hZCBldmVyeSBxdWV1ZWQgb2ZmbGluZSByZWNlaXB0IHBob3RvIGFuZCBwYXRjaCBpdHMgcHVyY2hhc2Ugcm93IHdpdGgKICogdGhlIHN0b3JhZ2UgcGF0aC4gU2FmZSB0byBjYWxsIGFueSB0aW1lOyBuby1vcHMgd2hlbiBvZmZsaW5lIG9yIGVtcHR5LgogKiBGYWlsdXJlcyBhcmUgbGVmdCBxdWV1ZWQgZm9yIHRoZSBuZXh0IGRyYWluLgogKi8KZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGRyYWluUGVuZGluZ1Bob3RvcygpOiBQcm9taXNlPHsgdXBsb2FkZWQ6IG51bWJlcjsgZmFpbGVkOiBudW1iZXIgfT4gewogIGxldCB1cGxvYWRlZCA9IDA7CiAgbGV0IGZhaWxlZCA9IDA7CiAgaWYgKCFpc09ubGluZSgpKSByZXR1cm4geyB1cGxvYWRlZCwgZmFpbGVkIH07CiAgbGV0IHBlbmRpbmc6IFBlbmRpbmdQaG90b1tdOwogIHRyeSB7CiAgICBwZW5kaW5nID0gYXdhaXQgZ2V0RGIoKS5wZW5kaW5nX3Bob3Rvcy5vcmRlckJ5KCJjcmVhdGVkQXQiKS50b0FycmF5KCk7CiAgfSBjYXRjaCB7CiAgICByZXR1cm4geyB1cGxvYWRlZCwgZmFpbGVkIH07CiAgfQogIGlmIChwZW5kaW5nLmxlbmd0aCA9PT0gMCkgcmV0dXJuIHsgdXBsb2FkZWQsIGZhaWxlZCB9OwoKICBjb25zdCB7IGRhdGE6IGF1dGggfSA9IGF3YWl0IHN1cGFiYXNlLmF1dGguZ2V0VXNlcigpOwogIGNvbnN0IHVzZXJJZCA9IGF1dGgudXNlcj8uaWQgPz8gImFub24iOwoKICBmb3IgKGNvbnN0IHJlYyBvZiBwZW5kaW5nKSB7CiAgICBpZiAocmVjLmlkID09IG51bGwpIGNvbnRpbnVlOwogICAgdHJ5IHsKICAgICAgY29uc3QgZmlsZSA9IG5ldyBGaWxlKFtyZWMuYmxvYl0sIHJlYy5maWxlTmFtZSwgeyB0eXBlOiByZWMuY29udGVudFR5cGUgfSk7CiAgICAgIGNvbnN0IHBhdGggPSBhd2FpdCB1cGxvYWRSZWNlaXB0UGhvdG8oZmlsZSwgdXNlcklkKTsKICAgICAgLy8gUXVldWVkIGNsaWVudDogbG9jYWwtZmlyc3QgdXBkYXRlICsgb3V0Ym94IGVudHJ5LCBGSUZPIGFmdGVyIHRoZSBpbnNlcnQuCiAgICAgIGNvbnN0IHsgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlCiAgICAgICAgLmZyb20oImZlZWRfcHVyY2hhc2VzIikKICAgICAgICAudXBkYXRlKHsgcmVjZWlwdF9waG90b19wYXRoOiBwYXRoIH0gYXMgbmV2ZXIpCiAgICAgICAgLmVxKCJpZCIsIHJlYy5wdXJjaGFzZUlkKTsKICAgICAgaWYgKGVycm9yKSB0aHJvdyBlcnJvcjsKICAgICAgYXdhaXQgZ2V0RGIoKS5wZW5kaW5nX3Bob3Rvcy5kZWxldGUocmVjLmlkKTsKICAgICAgY29uc3QgdXJsID0gb2JqZWN0VXJsQ2FjaGUuZ2V0KHJlYy5pZCk7CiAgICAgIGlmICh1cmwpIHsKICAgICAgICBVUkwucmV2b2tlT2JqZWN0VVJMKHVybCk7CiAgICAgICAgb2JqZWN0VXJsQ2FjaGUuZGVsZXRlKHJlYy5pZCk7CiAgICAgIH0KICAgICAgdXBsb2FkZWQrKzsKICAgIH0gY2F0Y2ggewogICAgICBmYWlsZWQrKzsKICAgIH0KICB9CiAgcmV0dXJuIHsgdXBsb2FkZWQsIGZhaWxlZCB9Owp9CgpsZXQgZHJhaW5Jbml0ID0gZmFsc2U7CgovKioKICogU3RhcnQgYmFja2dyb3VuZCBkcmFpbmluZyBvZiBvZmZsaW5lIHJlY2VpcHQgcGhvdG9zLiBDYWxsIG9uY2UgZnJvbSBhcHAKICogYm9vdCAoYnJvd3Nlci1vbmx5KS4gRHJhaW5zIG9uIGluaXQsIG9uICdvbmxpbmUnLCBhbmQgd2hlbiB0aGUgdGFiIGJlY29tZXMKICogdmlzaWJsZS4KICovCmV4cG9ydCBmdW5jdGlvbiBpbml0UmVjZWlwdFBob3RvRHJhaW4oKTogdm9pZCB7CiAgaWYgKGRyYWluSW5pdCB8fCB0eXBlb2Ygd2luZG93ID09PSAidW5kZWZpbmVkIikgcmV0dXJuOwogIGRyYWluSW5pdCA9IHRydWU7CiAgY29uc3Qga2ljayA9ICgpID0+IHsKICAgIHZvaWQgZHJhaW5QZW5kaW5nUGhvdG9zKCkuY2F0Y2goKCkgPT4ge30pOwogIH07CiAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoIm9ubGluZSIsIGtpY2spOwogIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoInZpc2liaWxpdHljaGFuZ2UiLCAoKSA9PiB7CiAgICBpZiAoZG9jdW1lbnQudmlzaWJpbGl0eVN0YXRlID09PSAidmlzaWJsZSIpIGtpY2soKTsKICB9KTsKICBzZXRUaW1lb3V0KGtpY2ssIDUwMDApOwp9CgovKiogVHJ1ZSB3aGVuIHRoZXJlIGFyZSBvZmZsaW5lIHJlY2VpcHQgcGhvdG9zIHN0aWxsIHdhaXRpbmcgdG8gdXBsb2FkLiAqLwpleHBvcnQgYXN5bmMgZnVuY3Rpb24gcGVuZGluZ1Bob3RvQ291bnQoKTogUHJvbWlzZTxudW1iZXI+IHsKICB0cnkgewogICAgcmV0dXJuIGF3YWl0IGdldERiKCkucGVuZGluZ19waG90b3MuY291bnQoKTsKICB9IGNhdGNoIHsKICAgIHJldHVybiAwOwogIH0KfQo=
+// Receipt photo capture, offline queueing, and drain.
+//
+// Flow:
+// - Online: photo uploads straight to the private `receipt-photos` bucket and
+//   the storage path is saved on the feed_purchases row.
+// - Offline: the photo blob is cached in the Dexie `pending_photos` store
+//   keyed by the (locally generated) purchase id. When connectivity returns,
+//   `drainPendingPhotos` uploads each blob and patches the purchase row via
+//   the offline-first queued client (FIFO outbox keeps insert-before-update
+//   ordering even if the purchase itself hasn't pushed yet).
+import { supabase } from "@/lib/supabase";
+import { getDb, nowISO, type PendingPhoto } from "@/lib/offline/db";
+import { validateImageFile } from "@/lib/photo-storage";
+
+export const RECEIPT_BUCKET = "receipt-photos";
+
+const isOnline = (): boolean =>
+  typeof navigator === "undefined" ? true : navigator.onLine !== false;
+
+function extFor(file: File): string {
+  const fromName = file.name.split(".").pop()?.toLowerCase();
+  if (fromName && /^[a-z0-9]{2,4}$/.test(fromName)) return fromName;
+  const map: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/gif": "gif",
+  };
+  return map[file.type] ?? "jpg";
+}
+
+/**
+ * Upload a receipt photo right now. Returns the storage path to save on the
+ * purchase row. Throws on validation or upload failure.
+ */
+export async function uploadReceiptPhoto(file: File, userId: string): Promise<string> {
+  const problem = validateImageFile(file);
+  if (problem) throw new Error(problem);
+  const path = `${userId}/${crypto.randomUUID()}.${extFor(file)}`;
+  const { error } = await supabase.storage.from(RECEIPT_BUCKET).upload(path, file, {
+    contentType: file.type,
+  });
+  if (error) throw error;
+  return path;
+}
+
+/** Cache a receipt photo blob locally until connectivity returns. */
+export async function queueReceiptPhoto(purchaseId: string, file: File): Promise<number> {
+  const problem = validateImageFile(file);
+  if (problem) throw new Error(problem);
+  const entry: PendingPhoto = {
+    purchaseId,
+    blob: file,
+    fileName: file.name || "receipt.jpg",
+    contentType: file.type,
+    createdAt: nowISO(),
+  };
+  return getDb().pending_photos.add(entry);
+}
+
+/** Object URLs for offline-captured photos (revoke when done via revokePendingPhotoUrl). */
+const objectUrlCache = new Map<number, string>();
+
+/** Local preview URL for a pending photo belonging to a purchase, if any. */
+export async function getPendingPhotoUrl(purchaseId: string): Promise<string | null> {
+  const rec = await getDb().pending_photos.where("purchaseId").equals(purchaseId).first();
+  if (!rec || rec.id == null) return null;
+  let url = objectUrlCache.get(rec.id);
+  if (!url) {
+    url = URL.createObjectURL(rec.blob);
+    objectUrlCache.set(rec.id, url);
+  }
+  return url;
+}
+
+export function revokePendingPhotoUrl(purchaseId: string): void {
+  // Best-effort cleanup; stale entries are harmless (page-lifetime cache).
+  void getDb()
+    .pending_photos.where("purchaseId")
+    .equals(purchaseId)
+    .first()
+    .then((rec) => {
+      if (rec?.id != null) {
+        const url = objectUrlCache.get(rec.id);
+        if (url) {
+          URL.revokeObjectURL(url);
+          objectUrlCache.delete(rec.id);
+        }
+      }
+    });
+}
+
+/**
+ * Upload every queued offline receipt photo and patch its purchase row with
+ * the storage path. Safe to call any time; no-ops when offline or empty.
+ * Failures are left queued for the next drain.
+ */
+export async function drainPendingPhotos(): Promise<{ uploaded: number; failed: number }> {
+  let uploaded = 0;
+  let failed = 0;
+  if (!isOnline()) return { uploaded, failed };
+  let pending: PendingPhoto[];
+  try {
+    pending = await getDb().pending_photos.orderBy("createdAt").toArray();
+  } catch {
+    return { uploaded, failed };
+  }
+  if (pending.length === 0) return { uploaded, failed };
+
+  const { data: auth } = await supabase.auth.getUser();
+  const userId = auth.user?.id ?? "anon";
+
+  for (const rec of pending) {
+    if (rec.id == null) continue;
+    try {
+      const file = new File([rec.blob], rec.fileName, { type: rec.contentType });
+      const path = await uploadReceiptPhoto(file, userId);
+      // Queued client: local-first update + outbox entry, FIFO after the insert.
+      const { error } = await supabase
+        .from("feed_purchases")
+        .update({ receipt_photo_path: path } as never)
+        .eq("id", rec.purchaseId);
+      if (error) throw error;
+      await getDb().pending_photos.delete(rec.id);
+      const url = objectUrlCache.get(rec.id);
+      if (url) {
+        URL.revokeObjectURL(url);
+        objectUrlCache.delete(rec.id);
+      }
+      uploaded++;
+    } catch {
+      failed++;
+    }
+  }
+  return { uploaded, failed };
+}
+
+let drainInit = false;
+
+/**
+ * Start background draining of offline receipt photos. Call once from app
+ * boot (browser-only). Drains on init, on 'online', and when the tab becomes
+ * visible.
+ */
+export function initReceiptPhotoDrain(): void {
+  if (drainInit || typeof window === "undefined") return;
+  drainInit = true;
+  const kick = () => {
+    void drainPendingPhotos().catch(() => {});
+  };
+  window.addEventListener("online", kick);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") kick();
+  });
+  setTimeout(kick, 5000);
+}
+
+/** True when there are offline receipt photos still waiting to upload. */
+export async function pendingPhotoCount(): Promise<number> {
+  try {
+    return await getDb().pending_photos.count();
+  } catch {
+    return 0;
+  }
+}
