@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   applyFuelAdd,
   applyRuntime,
+  actualBurnRateGph,
   clampPct,
   daysSincePropaneRefill,
   generatorFuelPct,
@@ -14,6 +15,7 @@ import {
   propaneGallonsOnHand,
   propaneUsageGalPerDay,
   runtimeRemainingHrs,
+  type GeneratorLog,
   type PowerGenerator,
   type PropaneLog,
   type PropaneTank,
@@ -203,5 +205,55 @@ describe("thresholds", () => {
   it("are sane", () => {
     expect(LOW_FUEL_PCT).toBe(25);
     expect(LOW_PROPANE_PCT).toBe(20);
+  });
+});
+
+const glog = (overrides: Partial<GeneratorLog> = {}): GeneratorLog => ({
+  id: "l1",
+  generator_id: "g1",
+  logged_at: "2026-10-01T12:00:00Z",
+  kind: "fuel_add",
+  fuel_gallons: null,
+  fuel_cost_cents: null,
+  runtime_hours: null,
+  maintenance_type: null,
+  notes: null,
+  ...overrides,
+});
+
+describe("actualBurnRateGph", () => {
+  it("returns null with no logs", () => {
+    expect(actualBurnRateGph([])).toBeNull();
+  });
+  it("returns null with only fuel logs", () => {
+    expect(actualBurnRateGph([glog({ fuel_gallons: 4.3 })])).toBeNull();
+  });
+  it("returns null with only runtime logs", () => {
+    expect(actualBurnRateGph([glog({ kind: "runtime", runtime_hours: 13 })])).toBeNull();
+  });
+  it("computes total fuel ÷ total runtime", () => {
+    const logs = [
+      glog({ id: "a", fuel_gallons: 4.3 }),
+      glog({ id: "b", kind: "runtime", runtime_hours: 13 }),
+    ];
+    expect(actualBurnRateGph(logs)).toBeCloseTo(4.3 / 13, 4);
+  });
+  it("sums across multiple entries", () => {
+    const logs = [
+      glog({ id: "a", fuel_gallons: 2 }),
+      glog({ id: "b", fuel_gallons: 2.3 }),
+      glog({ id: "c", kind: "runtime", runtime_hours: 6 }),
+      glog({ id: "d", kind: "runtime", runtime_hours: 7 }),
+    ];
+    expect(actualBurnRateGph(logs)).toBeCloseTo(4.3 / 13, 4);
+  });
+  it("ignores maintenance and note logs", () => {
+    const logs = [
+      glog({ id: "a", fuel_gallons: 4.3 }),
+      glog({ id: "b", kind: "runtime", runtime_hours: 13 }),
+      glog({ id: "c", kind: "maintenance", maintenance_type: "Oil change" }),
+      glog({ id: "d", kind: "note", notes: "hello" }),
+    ];
+    expect(actualBurnRateGph(logs)).toBeCloseTo(4.3 / 13, 4);
   });
 });

@@ -143,6 +143,22 @@ export function applyRuntime(
   };
 }
 
+/**
+ * Actual measured burn rate (gal/hr) from logged history:
+ * total fuel added ÷ total runtime logged. Null until the user has logged
+ * at least one fuel add AND at least one runtime entry.
+ */
+export function actualBurnRateGph(logs: GeneratorLog[]): number | null {
+  const fuel = logs
+    .filter((l) => l.kind === "fuel_add")
+    .reduce((s, l) => s + num(l.fuel_gallons), 0);
+  const hrs = logs
+    .filter((l) => l.kind === "runtime")
+    .reduce((s, l) => s + num(l.runtime_hours), 0);
+  if (fuel <= 0 || hrs <= 0) return null;
+  return fuel / hrs;
+}
+
 // ---------------------------------------------------------------------------
 // Propane math
 // ---------------------------------------------------------------------------

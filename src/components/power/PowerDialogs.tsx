@@ -8,6 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { todayLocal } from "@/lib/dates";
 import type { PowerGenerator, PropaneTank } from "@/lib/power";
+import {
+  GENERATOR_MODELS,
+  findGeneratorModel,
+  searchGeneratorModels,
+  generatorModelLabel,
+  type GeneratorModel,
+} from "@/lib/generator-models";
 
 const dollarsToCents = (s: string): number | null =>
   s.trim() === "" ? null : Math.round(Number(s) * 100);
@@ -45,6 +52,23 @@ export function GeneratorForm({
   const [interval, setInterval] = useState(String(initial?.oil_change_interval_hrs ?? 100));
   const [fuel, setFuel] = useState(String(initial?.current_fuel_gal ?? ""));
   const [notes, setNotes] = useState(initial?.notes ?? "");
+  // Model lookup (add mode only): picking a model pre-fills specs.
+  const [modelId, setModelId] = useState("");
+  const [modelQuery, setModelQuery] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const selectedModel: GeneratorModel | undefined = modelId ? findGeneratorModel(modelId) : undefined;
+  const modelMatches = searchGeneratorModels(modelQuery);
+
+  const pickModel = (m: GeneratorModel | null) => {
+    setModelId(m?.id ?? "");
+    setModelQuery("");
+    setPickerOpen(false);
+    if (m) {
+      setCapacity(String(m.tank_gal));
+      setFuelType(m.fuel_type);
+      setBurn(String(m.est_burn_gph));
+    }
+  };
 
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto">
@@ -65,6 +89,64 @@ export function GeneratorForm({
         }}
         className="space-y-3"
       >
+        {!initial && (
+          <div className="relative">
+            <Label>Model (optional)</Label>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full justify-between font-normal"
+              onClick={() => setPickerOpen((o) => !o)}
+            >
+              <span className="truncate">
+                {selectedModel ? generatorModelLabel(selectedModel) : "Select a model to pre-fill specs…"}
+              </span>
+              <span className="text-muted-foreground">▾</span>
+            </Button>
+            {pickerOpen && (
+              <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md">
+                <div className="p-2 border-b">
+                  <Input
+                    value={modelQuery}
+                    onChange={(e) => setModelQuery(e.target.value)}
+                    placeholder="Search models…"
+                    autoFocus
+                  />
+                </div>
+                <div className="max-h-56 overflow-y-auto p-1">
+                  <button
+                    type="button"
+                    className="w-full text-left px-2 py-2 rounded text-sm hover:bg-accent"
+                    onClick={() => pickModel(null)}
+                  >
+                    Custom / not listed
+                  </button>
+                  {modelMatches.map((mod) => (
+                    <button
+                      key={mod.id}
+                      type="button"
+                      className={`w-full text-left px-2 py-2 rounded text-sm hover:bg-accent ${mod.id === modelId ? "bg-accent" : ""}`}
+                      onClick={() => pickModel(mod)}
+                    >
+                      <div className="font-medium">{generatorModelLabel(mod)}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {mod.tank_gal} gal tank · {mod.runtime_hrs} hrs at {mod.runtime_load_note} → est. {mod.est_burn_gph.toFixed(2)} gal/hr
+                      </div>
+                    </button>
+                  ))}
+                  {modelMatches.length === 0 && (
+                    <p className="px-2 py-3 text-sm text-muted-foreground">No models match — pick "Custom / not listed".</p>
+                  )}
+                </div>
+              </div>
+            )}
+            {selectedModel && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Spec: {selectedModel.tank_gal} gal tank · {selectedModel.runtime_hrs} hrs at {selectedModel.runtime_load_note} → est. {selectedModel.est_burn_gph.toFixed(2)} gal/hr. You can still change any field below.
+              </p>
+            )}
+          </div>
+        )}
         <div><Label>Name *</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Big Red" maxLength={100} required /></div>
         <div className="grid grid-cols-2 gap-3">
           <div>

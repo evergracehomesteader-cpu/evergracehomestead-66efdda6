@@ -22,6 +22,7 @@ import {
 import {
   generatorFuelPct, runtimeRemainingHrs, hoursSinceMaintenance,
   maintenanceHrsRemaining, maintenanceState, applyFuelAdd, applyRuntime,
+  actualBurnRateGph,
   daysSincePropaneRefill, propaneUsageGalPerDay, propaneGallonsOnHand,
   propaneDaysRemaining, LOW_FUEL_PCT, LOW_PROPANE_PCT,
   fmtGal, fmtHrs, fmtMoney,
@@ -259,6 +260,12 @@ function PowerPage() {
   const runtimeLeft = gen ? runtimeRemainingHrs(gen) : null;
   const maintState = gen ? maintenanceState(gen) : "ok";
   const maintRemaining = gen ? maintenanceHrsRemaining(gen) : null;
+  const genAllLogs = useMemo(
+    () => gen ? genLogs.filter((l) => l.generator_id === gen.id) : [],
+    [genLogs, gen],
+  );
+  const actualBurn = useMemo(() => actualBurnRateGph(genAllLogs), [genAllLogs]);
+  const estBurn = gen ? Number(gen.burn_rate_gph ?? 0) : 0;
   const tankPct = tank ? Math.min(100, Math.max(0, Number(tank.current_level_pct ?? 0))) : 0;
   const tankLogs = tank ? propaneLogs.filter((l) => l.tank_id === tank.id) : [];
   const refillAgo = daysSincePropaneRefill(tankLogs);
@@ -424,7 +431,9 @@ function PowerPage() {
                     <div>
                       <div className="font-display text-xl font-semibold">{gen.name}</div>
                       <div className="text-sm text-muted-foreground">
-                        {gen.fuel_type ?? "—"} · {fmtGal(Number(gen.tank_capacity_gal ?? 0))} tank · burns {Number(gen.burn_rate_gph ?? 0).toFixed(2)} gal/hr
+                        {gen.fuel_type ?? "—"} · {fmtGal(Number(gen.tank_capacity_gal ?? 0))} tank
+                        {estBurn > 0 ? ` · Est. ${estBurn.toFixed(2)} gal/hr` : ""}
+                        {actualBurn != null ? ` · Actual ${actualBurn.toFixed(2)} gal/hr` : ""}
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">
                         {fmtGal(Number(gen.current_fuel_gal ?? 0))} in tank · {fmtHrs(Number(gen.total_runtime_hrs ?? 0))} total
