@@ -1,1 +1,42 @@
-aW1wb3J0IHsgUmVhY3ROb2RlLCB1c2VTdGF0ZSB9IGZyb20gInJlYWN0IjsKaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAiQC9jb21wb25lbnRzL3VpL2J1dHRvbiI7CmltcG9ydCB7CiAgQWxlcnREaWFsb2csIEFsZXJ0RGlhbG9nQWN0aW9uLCBBbGVydERpYWxvZ0NhbmNlbCwgQWxlcnREaWFsb2dDb250ZW50LAogIEFsZXJ0RGlhbG9nRGVzY3JpcHRpb24sIEFsZXJ0RGlhbG9nRm9vdGVyLCBBbGVydERpYWxvZ0hlYWRlciwgQWxlcnREaWFsb2dUaXRsZSwgQWxlcnREaWFsb2dUcmlnZ2VyLAp9IGZyb20gIkAvY29tcG9uZW50cy91aS9hbGVydC1kaWFsb2ciOwoKZXhwb3J0IGZ1bmN0aW9uIENvbmZpcm1EZWxldGUoewogIHRyaWdnZXIsCiAgb25Db25maXJtLAogIHRpdGxlID0gIkRlbGV0ZSB0aGlzIGl0ZW0/IiwKICBkZXNjcmlwdGlvbiA9ICJUaGlzIGNhbm5vdCBiZSB1bmRvbmUuIiwKICBjb25maXJtTGFiZWwgPSAiRGVsZXRlIiwKfTogewogIHRyaWdnZXI6IFJlYWN0Tm9kZTsKICBvbkNvbmZpcm06ICgpID0+IHZvaWQ7CiAgdGl0bGU/OiBzdHJpbmc7CiAgZGVzY3JpcHRpb24/OiBzdHJpbmc7CiAgY29uZmlybUxhYmVsPzogc3RyaW5nOwp9KSB7CiAgY29uc3QgW29wZW4sIHNldE9wZW5dID0gdXNlU3RhdGUoZmFsc2UpOwogIHJldHVybiAoCiAgICA8QWxlcnREaWFsb2cgb3Blbj17b3Blbn0gb25PcGVuQ2hhbmdlPXtzZXRPcGVufT4KICAgICAgPEFsZXJ0RGlhbG9nVHJpZ2dlciBhc0NoaWxkPnt0cmlnZ2VyfTwvQWxlcnREaWFsb2dUcmlnZ2VyPgogICAgICA8QWxlcnREaWFsb2dDb250ZW50PgogICAgICAgIDxBbGVydERpYWxvZ0hlYWRlcj4KICAgICAgICAgIDxBbGVydERpYWxvZ1RpdGxlPnt0aXRsZX08L0FsZXJ0RGlhbG9nVGl0bGU+CiAgICAgICAgICA8QWxlcnREaWFsb2dEZXNjcmlwdGlvbj57ZGVzY3JpcHRpb259PC9BbGVydERpYWxvZ0Rlc2NyaXB0aW9uPgogICAgICAgIDwvQWxlcnREaWFsb2dIZWFkZXI+CiAgICAgICAgPEFsZXJ0RGlhbG9nRm9vdGVyPgogICAgICAgICAgPEFsZXJ0RGlhbG9nQ2FuY2VsPkNhbmNlbDwvQWxlcnREaWFsb2dDYW5jZWw+CiAgICAgICAgICA8QWxlcnREaWFsb2dBY3Rpb24KICAgICAgICAgICAgY2xhc3NOYW1lPSJiZy1kZXN0cnVjdGl2ZSB0ZXh0LWRlc3RydWN0aXZlLWZvcmVncm91bmQgaG92ZXI6YmctZGVzdHJ1Y3RpdmUvOTAiCiAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHsgb25Db25maXJtKCk7IHNldE9wZW4oZmFsc2UpOyB9fQogICAgICAgICAgPgogICAgICAgICAgICB7Y29uZmlybUxhYmVsfQogICAgICAgICAgPC9BbGVydERpYWxvZ0FjdGlvbj4KICAgICAgICA8L0FsZXJ0RGlhbG9nRm9vdGVyPgogICAgICA8L0FsZXJ0RGlhbG9nQ29udGVudD4KICAgIDwvQWxlcnREaWFsb2c+CiAgKTsKfQo=
+import { ReactNode, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+export function ConfirmDelete({
+  trigger,
+  onConfirm,
+  title = "Delete this item?",
+  description = "This cannot be undone.",
+  confirmLabel = "Delete",
+}: {
+  trigger: ReactNode;
+  onConfirm: () => void;
+  title?: string;
+  description?: string;
+  confirmLabel?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            onClick={() => { onConfirm(); setOpen(false); }}
+          >
+            {confirmLabel}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

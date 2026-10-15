@@ -1,1 +1,220 @@
-aW1wb3J0IHsgY3JlYXRlU2VydmVyRm4gfSBmcm9tICJAdGFuc3RhY2svcmVhY3Qtc3RhcnQiOwppbXBvcnQgeyByZXF1aXJlU3VwYWJhc2VBdXRoIH0gZnJvbSAiQC9pbnRlZ3JhdGlvbnMvc3VwYWJhc2UvYXV0aC1taWRkbGV3YXJlIjsKaW1wb3J0IHsgeiB9IGZyb20gInpvZCI7CmltcG9ydCB0eXBlIHsgQXBwUm9sZSB9IGZyb20gIkAvbGliL3Blcm1pc3Npb25zIjsKaW1wb3J0IHsgcmVtb3ZlRnJvbUhvbWVzdGVhZCwgYXNzZXJ0VXNlckRlbGV0YWJsZSB9IGZyb20gIkAvbGliL2hvbWVzdGVhZC1tZW1iZXJzaGlwIjsKCmNvbnN0IFJPTEVfVkFMVUVTID0gWwogICJhZG1pbiIsIm1hbmFnZXIiLCJoZWxwZXIiLCJ2aWV3ZXIiLCJib29ra2VlcGVyIiwiYW5pbWFsX2NhcmUiLCJ2b2x1bnRlZXIiLCJwZW5kaW5nIiwKXSBhcyBjb25zdDsKCmFzeW5jIGZ1bmN0aW9uIGFzc2VydEFkbWluKHN1cGFiYXNlOiBhbnksIHVzZXJJZDogc3RyaW5nKSB7CiAgY29uc3QgeyBkYXRhLCBlcnJvciB9ID0gYXdhaXQgc3VwYWJhc2UKICAgIC5mcm9tKCJ1c2VyX3JvbGVzIikKICAgIC5zZWxlY3QoInJvbGUiKQogICAgLmVxKCJ1c2VyX2lkIiwgdXNlcklkKQogICAgLmVxKCJyb2xlIiwgImFkbWluIikKICAgIC5tYXliZVNpbmdsZSgpOwogIGlmIChlcnJvcikgdGhyb3cgbmV3IEVycm9yKGVycm9yLm1lc3NhZ2UpOwogIGlmICghZGF0YSkgdGhyb3cgbmV3IEVycm9yKCJGb3JiaWRkZW46IGFkbWluIHJvbGUgcmVxdWlyZWQiKTsKfQoKZXhwb3J0IGNvbnN0IGFkbWluTGlzdFVzZXJzID0gY3JlYXRlU2VydmVyRm4oeyBtZXRob2Q6ICJHRVQiIH0pCiAgLm1pZGRsZXdhcmUoW3JlcXVpcmVTdXBhYmFzZUF1dGhdKQogIC5oYW5kbGVyKGFzeW5jICh7IGNvbnRleHQgfSkgPT4gewogICAgYXdhaXQgYXNzZXJ0QWRtaW4oY29udGV4dC5zdXBhYmFzZSwgY29udGV4dC51c2VySWQpOwogICAgY29uc3QgeyBzdXBhYmFzZUFkbWluIH0gPSBhd2FpdCBpbXBvcnQoIkAvaW50ZWdyYXRpb25zL3N1cGFiYXNlL2NsaWVudC5zZXJ2ZXIiKTsKICAgIGNvbnN0IHsgZGF0YSwgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlQWRtaW4uYXV0aC5hZG1pbi5saXN0VXNlcnMoeyBwZXJQYWdlOiAyMDAgfSk7CiAgICBpZiAoZXJyb3IpIHRocm93IG5ldyBFcnJvcihlcnJvci5tZXNzYWdlKTsKCiAgICBjb25zdCBpZHMgPSBkYXRhLnVzZXJzLm1hcCgodSkgPT4gdS5pZCk7CiAgICBjb25zdCB7IGRhdGE6IHByb2ZpbGVzIH0gPSBhd2FpdCBzdXBhYmFzZUFkbWluCiAgICAgIC5mcm9tKCJwcm9maWxlcyIpCiAgICAgIC5zZWxlY3QoImlkLCBkaXNwbGF5X25hbWUsIG5vdGVzLCBhY3RpdmUiKQogICAgICAuaW4oImlkIiwgaWRzLmxlbmd0aCA/IGlkcyA6IFsiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIl0pOwogICAgY29uc3QgeyBkYXRhOiByb2xlUm93cyB9ID0gYXdhaXQgc3VwYWJhc2VBZG1pbgogICAgICAuZnJvbSgidXNlcl9yb2xlcyIpCiAgICAgIC5zZWxlY3QoInVzZXJfaWQsIHJvbGUiKQogICAgICAuaW4oInVzZXJfaWQiLCBpZHMubGVuZ3RoID8gaWRzIDogWyIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiXSk7CgogICAgY29uc3QgcHJvZmlsZU1hcCA9IG5ldyBNYXAoKHByb2ZpbGVzID8/IFtdKS5tYXAoKHA6IGFueSkgPT4gW3AuaWQsIHBdKSk7CiAgICBjb25zdCByb2xlc01hcCA9IG5ldyBNYXA8c3RyaW5nLCBzdHJpbmdbXT4oKTsKICAgIGZvciAoY29uc3QgciBvZiAocm9sZVJvd3MgPz8gW10pIGFzIGFueVtdKSB7CiAgICAgIGNvbnN0IGFyciA9IHJvbGVzTWFwLmdldChyLnVzZXJfaWQpID8/IFtdOwogICAgICBhcnIucHVzaChyLnJvbGUpOwogICAgICByb2xlc01hcC5zZXQoci51c2VyX2lkLCBhcnIpOwogICAgfQoKICAgIHJldHVybiBkYXRhLnVzZXJzLm1hcCgodSkgPT4gewogICAgICBjb25zdCBwOiBhbnkgPSBwcm9maWxlTWFwLmdldCh1LmlkKSA/PyB7fTsKICAgICAgcmV0dXJuIHsKICAgICAgICBpZDogdS5pZCwKICAgICAgICBlbWFpbDogdS5lbWFpbCA/PyAiIiwKICAgICAgICBjcmVhdGVkX2F0OiB1LmNyZWF0ZWRfYXQsCiAgICAgICAgbGFzdF9zaWduX2luX2F0OiB1Lmxhc3Rfc2lnbl9pbl9hdCA/PyBudWxsLAogICAgICAgIGRpc3BsYXlfbmFtZTogcC5kaXNwbGF5X25hbWUgPz8gbnVsbCwKICAgICAgICBub3RlczogcC5ub3RlcyA/PyBudWxsLAogICAgICAgIGFjdGl2ZTogcC5hY3RpdmUgPz8gdHJ1ZSwKICAgICAgICByb2xlczogKHJvbGVzTWFwLmdldCh1LmlkKSA/PyBbXSkgYXMgQXBwUm9sZVtdLAogICAgICB9IHNhdGlzZmllcyBBZG1pblVzZXJSb3c7CiAgICB9KTsKICB9KTsKCmV4cG9ydCBjb25zdCBhZG1pbkNyZWF0ZVVzZXIgPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLm1pZGRsZXdhcmUoW3JlcXVpcmVTdXBhYmFzZUF1dGhdKQogIC5pbnB1dFZhbGlkYXRvcigoZDogdW5rbm93bikgPT4gei5vYmplY3QoewogICAgZW1haWw6IHouc3RyaW5nKCkuZW1haWwoKSwKICAgIHBhc3N3b3JkOiB6LnN0cmluZygpLm1pbig4KS5tYXgoNzIpLAogICAgZGlzcGxheV9uYW1lOiB6LnN0cmluZygpLm1pbigxKS5tYXgoODApLm9wdGlvbmFsKCksCiAgICByb2xlOiB6LmVudW0oUk9MRV9WQUxVRVMpLmRlZmF1bHQoInZpZXdlciIpLAogICAgbm90ZXM6IHouc3RyaW5nKCkubWF4KDIwMDApLm9wdGlvbmFsKCksCiAgfSkucGFyc2UoZCkpCiAgLmhhbmRsZXIoYXN5bmMgKHsgY29udGV4dCwgZGF0YSB9KSA9PiB7CiAgICBhd2FpdCBhc3NlcnRBZG1pbihjb250ZXh0LnN1cGFiYXNlLCBjb250ZXh0LnVzZXJJZCk7CiAgICBjb25zdCB7IHN1cGFiYXNlQWRtaW4gfSA9IGF3YWl0IGltcG9ydCgiQC9pbnRlZ3JhdGlvbnMvc3VwYWJhc2UvY2xpZW50LnNlcnZlciIpOwogICAgY29uc3QgeyBkYXRhOiBjcmVhdGVkLCBlcnJvciB9ID0gYXdhaXQgc3VwYWJhc2VBZG1pbi5hdXRoLmFkbWluLmNyZWF0ZVVzZXIoewogICAgICBlbWFpbDogZGF0YS5lbWFpbCwKICAgICAgcGFzc3dvcmQ6IGRhdGEucGFzc3dvcmQsCiAgICAgIGVtYWlsX2NvbmZpcm06IHRydWUsCiAgICAgIHVzZXJfbWV0YWRhdGE6IGRhdGEuZGlzcGxheV9uYW1lID8geyBkaXNwbGF5X25hbWU6IGRhdGEuZGlzcGxheV9uYW1lIH0gOiB1bmRlZmluZWQsCiAgICB9KTsKICAgIGlmIChlcnJvcikgdGhyb3cgbmV3IEVycm9yKGVycm9yLm1lc3NhZ2UpOwogICAgY29uc3QgaWQgPSBjcmVhdGVkLnVzZXIhLmlkOwogICAgaWYgKGRhdGEubm90ZXMpIHsKICAgICAgYXdhaXQgc3VwYWJhc2VBZG1pbi5mcm9tKCJwcm9maWxlcyIpLnVwZGF0ZSh7IG5vdGVzOiBkYXRhLm5vdGVzIH0pLmVxKCJpZCIsIGlkKTsKICAgIH0KICAgIC8vIFJlcGxhY2UgYW55IGRlZmF1bHQgJ3ZpZXdlcicgaW5zZXJ0ZWQgYnkgdHJpZ2dlciB3aXRoIGNob3NlbiByb2xlCiAgICBhd2FpdCBzdXBhYmFzZUFkbWluLmZyb20oInVzZXJfcm9sZXMiKS5kZWxldGUoKS5lcSgidXNlcl9pZCIsIGlkKTsKICAgIGF3YWl0IHN1cGFiYXNlQWRtaW4uZnJvbSgidXNlcl9yb2xlcyIpLmluc2VydCh7IHVzZXJfaWQ6IGlkLCByb2xlOiBkYXRhLnJvbGUgfSk7CiAgICByZXR1cm4geyBpZCB9OwogIH0pOwoKZXhwb3J0IGNvbnN0IGFkbWluVXBkYXRlUHJvZmlsZSA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAiUE9TVCIgfSkKICAubWlkZGxld2FyZShbcmVxdWlyZVN1cGFiYXNlQXV0aF0pCiAgLmlucHV0VmFsaWRhdG9yKChkOiB1bmtub3duKSA9PiB6Lm9iamVjdCh7CiAgICB1c2VyX2lkOiB6LnN0cmluZygpLnV1aWQoKSwKICAgIGRpc3BsYXlfbmFtZTogei5zdHJpbmcoKS5tYXgoODApLm51bGxhYmxlKCkub3B0aW9uYWwoKSwKICAgIG5vdGVzOiB6LnN0cmluZygpLm1heCgyMDAwKS5udWxsYWJsZSgpLm9wdGlvbmFsKCksCiAgICBhY3RpdmU6IHouYm9vbGVhbigpLm9wdGlvbmFsKCksCiAgfSkucGFyc2UoZCkpCiAgLmhhbmRsZXIoYXN5bmMgKHsgY29udGV4dCwgZGF0YSB9KSA9PiB7CiAgICBhd2FpdCBhc3NlcnRBZG1pbihjb250ZXh0LnN1cGFiYXNlLCBjb250ZXh0LnVzZXJJZCk7CiAgICBjb25zdCB7IHN1cGFiYXNlQWRtaW4gfSA9IGF3YWl0IGltcG9ydCgiQC9pbnRlZ3JhdGlvbnMvc3VwYWJhc2UvY2xpZW50LnNlcnZlciIpOwogICAgY29uc3QgcGF0Y2g6IGFueSA9IHt9OwogICAgaWYgKGRhdGEuZGlzcGxheV9uYW1lICE9PSB1bmRlZmluZWQpIHBhdGNoLmRpc3BsYXlfbmFtZSA9IGRhdGEuZGlzcGxheV9uYW1lOwogICAgaWYgKGRhdGEubm90ZXMgIT09IHVuZGVmaW5lZCkgcGF0Y2gubm90ZXMgPSBkYXRhLm5vdGVzOwogICAgaWYgKGRhdGEuYWN0aXZlICE9PSB1bmRlZmluZWQpIHBhdGNoLmFjdGl2ZSA9IGRhdGEuYWN0aXZlOwogICAgaWYgKE9iamVjdC5rZXlzKHBhdGNoKS5sZW5ndGggPT09IDApIHJldHVybiB7IG9rOiB0cnVlIH07CiAgICAvLyB1cHNlcnQgaW4gY2FzZSBwcm9maWxlIHJvdyBpcyBtaXNzaW5nCiAgICBjb25zdCB7IGVycm9yIH0gPSBhd2FpdCBzdXBhYmFzZUFkbWluCiAgICAgIC5mcm9tKCJwcm9maWxlcyIpCiAgICAgIC51cHNlcnQoeyBpZDogZGF0YS51c2VyX2lkLCAuLi5wYXRjaCB9LCB7IG9uQ29uZmxpY3Q6ICJpZCIgfSk7CiAgICBpZiAoZXJyb3IpIHRocm93IG5ldyBFcnJvcihlcnJvci5tZXNzYWdlKTsKICAgIGlmIChkYXRhLmFjdGl2ZSA9PT0gZmFsc2UpIHsKICAgICAgLy8gQmFuIHRoZSB1c2VyIHRvIHByZXZlbnQgbG9naW4gd2hpbGUgaW5hY3RpdmUKICAgICAgYXdhaXQgc3VwYWJhc2VBZG1pbi5hdXRoLmFkbWluLnVwZGF0ZVVzZXJCeUlkKGRhdGEudXNlcl9pZCwgeyBiYW5fZHVyYXRpb246ICI4NzYwMDBoIiB9KTsKICAgIH0gZWxzZSBpZiAoZGF0YS5hY3RpdmUgPT09IHRydWUpIHsKICAgICAgYXdhaXQgc3VwYWJhc2VBZG1pbi5hdXRoLmFkbWluLnVwZGF0ZVVzZXJCeUlkKGRhdGEudXNlcl9pZCwgeyBiYW5fZHVyYXRpb246ICJub25lIiB9KTsKICAgIH0KICAgIHJldHVybiB7IG9rOiB0cnVlIH07CiAgfSk7CgpleHBvcnQgY29uc3QgYWRtaW5TZXRVc2VyUm9sZXMgPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLm1pZGRsZXdhcmUoW3JlcXVpcmVTdXBhYmFzZUF1dGhdKQogIC5pbnB1dFZhbGlkYXRvcigoZDogdW5rbm93bikgPT4gei5vYmplY3QoewogICAgdXNlcl9pZDogei5zdHJpbmcoKS51dWlkKCksCiAgICByb2xlczogei5hcnJheSh6LmVudW0oUk9MRV9WQUxVRVMpKS5taW4oMCkubWF4KDgpLAogIH0pLnBhcnNlKGQpKQogIC5oYW5kbGVyKGFzeW5jICh7IGNvbnRleHQsIGRhdGEgfSkgPT4gewogICAgYXdhaXQgYXNzZXJ0QWRtaW4oY29udGV4dC5zdXBhYmFzZSwgY29udGV4dC51c2VySWQpOwogICAgLy8gUHJldmVudCByZW1vdmluZyBhZG1pbiBmcm9tIHlvdXJzZWxmCiAgICBpZiAoZGF0YS51c2VyX2lkID09PSBjb250ZXh0LnVzZXJJZCAmJiAhZGF0YS5yb2xlcy5pbmNsdWRlcygiYWRtaW4iKSkgewogICAgICB0aHJvdyBuZXcgRXJyb3IoIllvdSBjYW5ub3QgcmVtb3ZlIHlvdXIgb3duIGFkbWluIHJvbGUuIik7CiAgICB9CiAgICBjb25zdCB7IHN1cGFiYXNlQWRtaW4gfSA9IGF3YWl0IGltcG9ydCgiQC9pbnRlZ3JhdGlvbnMvc3VwYWJhc2UvY2xpZW50LnNlcnZlciIpOwogICAgYXdhaXQgc3VwYWJhc2VBZG1pbi5mcm9tKCJ1c2VyX3JvbGVzIikuZGVsZXRlKCkuZXEoInVzZXJfaWQiLCBkYXRhLnVzZXJfaWQpOwogICAgaWYgKGRhdGEucm9sZXMubGVuZ3RoID4gMCkgewogICAgICBjb25zdCByb3dzID0gZGF0YS5yb2xlcy5tYXAoKHJvbGUpID0+ICh7IHVzZXJfaWQ6IGRhdGEudXNlcl9pZCwgcm9sZSB9KSk7CiAgICAgIGNvbnN0IHsgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlQWRtaW4uZnJvbSgidXNlcl9yb2xlcyIpLmluc2VydChyb3dzKTsKICAgICAgaWYgKGVycm9yKSB0aHJvdyBuZXcgRXJyb3IoZXJyb3IubWVzc2FnZSk7CiAgICB9CiAgICByZXR1cm4geyBvazogdHJ1ZSB9OwogIH0pOwoKZXhwb3J0IGNvbnN0IGFkbWluUmVzZXRQYXNzd29yZCA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAiUE9TVCIgfSkKICAubWlkZGxld2FyZShbcmVxdWlyZVN1cGFiYXNlQXV0aF0pCiAgLmlucHV0VmFsaWRhdG9yKChkOiB1bmtub3duKSA9PiB6Lm9iamVjdCh7CiAgICB1c2VyX2lkOiB6LnN0cmluZygpLnV1aWQoKSwKICAgIHBhc3N3b3JkOiB6LnN0cmluZygpLm1pbig4KS5tYXgoNzIpLAogIH0pLnBhcnNlKGQpKQogIC5oYW5kbGVyKGFzeW5jICh7IGNvbnRleHQsIGRhdGEgfSkgPT4gewogICAgYXdhaXQgYXNzZXJ0QWRtaW4oY29udGV4dC5zdXBhYmFzZSwgY29udGV4dC51c2VySWQpOwogICAgY29uc3QgeyBzdXBhYmFzZUFkbWluIH0gPSBhd2FpdCBpbXBvcnQoIkAvaW50ZWdyYXRpb25zL3N1cGFiYXNlL2NsaWVudC5zZXJ2ZXIiKTsKICAgIGNvbnN0IHsgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlQWRtaW4uYXV0aC5hZG1pbi51cGRhdGVVc2VyQnlJZChkYXRhLnVzZXJfaWQsIHsKICAgICAgcGFzc3dvcmQ6IGRhdGEucGFzc3dvcmQsCiAgICB9KTsKICAgIGlmIChlcnJvcikgdGhyb3cgbmV3IEVycm9yKGVycm9yLm1lc3NhZ2UpOwogICAgcmV0dXJuIHsgb2s6IHRydWUgfTsKICB9KTsKCmV4cG9ydCBjb25zdCBhZG1pbkRlbGV0ZVVzZXIgPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLm1pZGRsZXdhcmUoW3JlcXVpcmVTdXBhYmFzZUF1dGhdKQogIC5pbnB1dFZhbGlkYXRvcigoZDogdW5rbm93bikgPT4gei5vYmplY3QoeyB1c2VyX2lkOiB6LnN0cmluZygpLnV1aWQoKSB9KS5wYXJzZShkKSkKICAuaGFuZGxlcihhc3luYyAoeyBjb250ZXh0LCBkYXRhIH0pID0+IHsKICAgIGF3YWl0IGFzc2VydEFkbWluKGNvbnRleHQuc3VwYWJhc2UsIGNvbnRleHQudXNlcklkKTsKICAgIGNvbnN0IHsgc3VwYWJhc2VBZG1pbiB9ID0gYXdhaXQgaW1wb3J0KCJAL2ludGVncmF0aW9ucy9zdXBhYmFzZS9jbGllbnQuc2VydmVyIik7CiAgICAvLyBob21lc3RlYWRzLm93bmVyX2lkIGlzIE9OIERFTEVURSBSRVNUUklDVCDigJQgY2hlY2sgZmlyc3Qgc28gdGhlIGFkbWluIGdldHMKICAgIC8vIGEgY2xlYXIgbWVzc2FnZSBpbnN0ZWFkIG9mIEdvVHJ1ZSdzIGNyeXB0aWMgIkRhdGFiYXNlIGVycm9yIGRlbGV0aW5nIHVzZXIiLgogICAgYXdhaXQgYXNzZXJ0VXNlckRlbGV0YWJsZShzdXBhYmFzZUFkbWluLCBkYXRhLnVzZXJfaWQsIGNvbnRleHQudXNlcklkKTsKICAgIGNvbnN0IHsgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlQWRtaW4uYXV0aC5hZG1pbi5kZWxldGVVc2VyKGRhdGEudXNlcl9pZCk7CiAgICBpZiAoZXJyb3IpIHRocm93IG5ldyBFcnJvcihlcnJvci5tZXNzYWdlKTsKICAgIHJldHVybiB7IG9rOiB0cnVlIH07CiAgfSk7CgovKioKICogUmVtb3ZlIGEgdXNlciBmcm9tIE9ORSBob21lc3RlYWQgKHJldm9rZSBhY2Nlc3MpLiBUaGVpciBhY2NvdW50LCBnbG9iYWwKICogcm9sZXMsIGFuZCBtZW1iZXJzaGlwcyBpbiBvdGhlciBob21lc3RlYWRzIGFyZSBsZWZ0IHVudG91Y2hlZC4KICovCmV4cG9ydCBjb25zdCBhZG1pblJlbW92ZUZyb21Ib21lc3RlYWQgPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLm1pZGRsZXdhcmUoW3JlcXVpcmVTdXBhYmFzZUF1dGhdKQogIC5pbnB1dFZhbGlkYXRvcigoZDogdW5rbm93bikgPT4gei5vYmplY3QoewogICAgdXNlcl9pZDogei5zdHJpbmcoKS51dWlkKCksCiAgICBob21lc3RlYWRfaWQ6IHouc3RyaW5nKCkudXVpZCgpLAogIH0pLnBhcnNlKGQpKQogIC5oYW5kbGVyKGFzeW5jICh7IGNvbnRleHQsIGRhdGEgfSkgPT4gewogICAgYXdhaXQgYXNzZXJ0QWRtaW4oY29udGV4dC5zdXBhYmFzZSwgY29udGV4dC51c2VySWQpOwogICAgY29uc3QgeyBzdXBhYmFzZUFkbWluIH0gPSBhd2FpdCBpbXBvcnQoIkAvaW50ZWdyYXRpb25zL3N1cGFiYXNlL2NsaWVudC5zZXJ2ZXIiKTsKICAgIHJldHVybiByZW1vdmVGcm9tSG9tZXN0ZWFkKHN1cGFiYXNlQWRtaW4sIGRhdGEudXNlcl9pZCwgZGF0YS5ob21lc3RlYWRfaWQsIGNvbnRleHQudXNlcklkKTsKICB9KTsKCmV4cG9ydCBjb25zdCBhZG1pblNldFJvbGVQZXJtaXNzaW9ucyA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAiUE9TVCIgfSkKICAubWlkZGxld2FyZShbcmVxdWlyZVN1cGFiYXNlQXV0aF0pCiAgLmlucHV0VmFsaWRhdG9yKChkOiB1bmtub3duKSA9PiB6Lm9iamVjdCh7CiAgICByb2xlOiB6LmVudW0oUk9MRV9WQUxVRVMpLAogICAgcGVybWlzc2lvbnM6IHouYXJyYXkoei5zdHJpbmcoKS5taW4oMSkubWF4KDgwKSksCiAgfSkucGFyc2UoZCkpCiAgLmhhbmRsZXIoYXN5bmMgKHsgY29udGV4dCwgZGF0YSB9KSA9PiB7CiAgICBhd2FpdCBhc3NlcnRBZG1pbihjb250ZXh0LnN1cGFiYXNlLCBjb250ZXh0LnVzZXJJZCk7CiAgICBpZiAoZGF0YS5yb2xlID09PSAiYWRtaW4iKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcigiQWRtaW4gcm9sZSBwZXJtaXNzaW9ucyBjYW5ub3QgYmUgbW9kaWZpZWQuIik7CiAgICB9CiAgICBjb25zdCB7IHN1cGFiYXNlQWRtaW4gfSA9IGF3YWl0IGltcG9ydCgiQC9pbnRlZ3JhdGlvbnMvc3VwYWJhc2UvY2xpZW50LnNlcnZlciIpOwogICAgYXdhaXQgc3VwYWJhc2VBZG1pbi5mcm9tKCJyb2xlX3Blcm1pc3Npb25zIikuZGVsZXRlKCkuZXEoInJvbGUiLCBkYXRhLnJvbGUpOwogICAgaWYgKGRhdGEucGVybWlzc2lvbnMubGVuZ3RoID4gMCkgewogICAgICBjb25zdCByb3dzID0gZGF0YS5wZXJtaXNzaW9ucy5tYXAoKHBlcm1pc3Npb24pID0+ICh7IHJvbGU6IGRhdGEucm9sZSwgcGVybWlzc2lvbiB9KSk7CiAgICAgIGNvbnN0IHsgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlQWRtaW4uZnJvbSgicm9sZV9wZXJtaXNzaW9ucyIpLmluc2VydChyb3dzKTsKICAgICAgaWYgKGVycm9yKSB0aHJvdyBuZXcgRXJyb3IoZXJyb3IubWVzc2FnZSk7CiAgICB9CiAgICByZXR1cm4geyBvazogdHJ1ZSB9OwogIH0pOwoKZXhwb3J0IHR5cGUgQWRtaW5Vc2VyUm93ID0gewogIGlkOiBzdHJpbmc7CiAgZW1haWw6IHN0cmluZzsKICBjcmVhdGVkX2F0OiBzdHJpbmc7CiAgbGFzdF9zaWduX2luX2F0OiBzdHJpbmcgfCBudWxsOwogIGRpc3BsYXlfbmFtZTogc3RyaW5nIHwgbnVsbDsKICBub3Rlczogc3RyaW5nIHwgbnVsbDsKICBhY3RpdmU6IGJvb2xlYW47CiAgcm9sZXM6IEFwcFJvbGVbXTsKfTsK
+import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { z } from "zod";
+import type { AppRole } from "@/lib/permissions";
+import { removeFromHomestead, assertUserDeletable } from "@/lib/homestead-membership";
+
+const ROLE_VALUES = [
+  "admin","manager","helper","viewer","bookkeeper","animal_care","volunteer","pending",
+] as const;
+
+async function assertAdmin(supabase: any, userId: string) {
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Forbidden: admin role required");
+}
+
+export const adminListUsers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
+    if (error) throw new Error(error.message);
+
+    const ids = data.users.map((u) => u.id);
+    const { data: profiles } = await supabaseAdmin
+      .from("profiles")
+      .select("id, display_name, notes, active")
+      .in("id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
+    const { data: roleRows } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id, role")
+      .in("user_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
+
+    const profileMap = new Map((profiles ?? []).map((p: any) => [p.id, p]));
+    const rolesMap = new Map<string, string[]>();
+    for (const r of (roleRows ?? []) as any[]) {
+      const arr = rolesMap.get(r.user_id) ?? [];
+      arr.push(r.role);
+      rolesMap.set(r.user_id, arr);
+    }
+
+    return data.users.map((u) => {
+      const p: any = profileMap.get(u.id) ?? {};
+      return {
+        id: u.id,
+        email: u.email ?? "",
+        created_at: u.created_at,
+        last_sign_in_at: u.last_sign_in_at ?? null,
+        display_name: p.display_name ?? null,
+        notes: p.notes ?? null,
+        active: p.active ?? true,
+        roles: (rolesMap.get(u.id) ?? []) as AppRole[],
+      } satisfies AdminUserRow;
+    });
+  });
+
+export const adminCreateUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    email: z.string().email(),
+    password: z.string().min(8).max(72),
+    display_name: z.string().min(1).max(80).optional(),
+    role: z.enum(ROLE_VALUES).default("viewer"),
+    notes: z.string().max(2000).optional(),
+  }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
+      email: data.email,
+      password: data.password,
+      email_confirm: true,
+      user_metadata: data.display_name ? { display_name: data.display_name } : undefined,
+    });
+    if (error) throw new Error(error.message);
+    const id = created.user!.id;
+    if (data.notes) {
+      await supabaseAdmin.from("profiles").update({ notes: data.notes }).eq("id", id);
+    }
+    // Replace any default 'viewer' inserted by trigger with chosen role
+    await supabaseAdmin.from("user_roles").delete().eq("user_id", id);
+    await supabaseAdmin.from("user_roles").insert({ user_id: id, role: data.role });
+    return { id };
+  });
+
+export const adminUpdateProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    user_id: z.string().uuid(),
+    display_name: z.string().max(80).nullable().optional(),
+    notes: z.string().max(2000).nullable().optional(),
+    active: z.boolean().optional(),
+  }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const patch: any = {};
+    if (data.display_name !== undefined) patch.display_name = data.display_name;
+    if (data.notes !== undefined) patch.notes = data.notes;
+    if (data.active !== undefined) patch.active = data.active;
+    if (Object.keys(patch).length === 0) return { ok: true };
+    // upsert in case profile row is missing
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .upsert({ id: data.user_id, ...patch }, { onConflict: "id" });
+    if (error) throw new Error(error.message);
+    if (data.active === false) {
+      // Ban the user to prevent login while inactive
+      await supabaseAdmin.auth.admin.updateUserById(data.user_id, { ban_duration: "876000h" });
+    } else if (data.active === true) {
+      await supabaseAdmin.auth.admin.updateUserById(data.user_id, { ban_duration: "none" });
+    }
+    return { ok: true };
+  });
+
+export const adminSetUserRoles = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    user_id: z.string().uuid(),
+    roles: z.array(z.enum(ROLE_VALUES)).min(0).max(8),
+  }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    // Prevent removing admin from yourself
+    if (data.user_id === context.userId && !data.roles.includes("admin")) {
+      throw new Error("You cannot remove your own admin role.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("user_roles").delete().eq("user_id", data.user_id);
+    if (data.roles.length > 0) {
+      const rows = data.roles.map((role) => ({ user_id: data.user_id, role }));
+      const { error } = await supabaseAdmin.from("user_roles").insert(rows);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+export const adminResetPassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    user_id: z.string().uuid(),
+    password: z.string().min(8).max(72),
+  }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.user_id, {
+      password: data.password,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminDeleteUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ user_id: z.string().uuid() }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // homesteads.owner_id is ON DELETE RESTRICT — check first so the admin gets
+    // a clear message instead of GoTrue's cryptic "Database error deleting user".
+    await assertUserDeletable(supabaseAdmin, data.user_id, context.userId);
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.user_id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/**
+ * Remove a user from ONE homestead (revoke access). Their account, global
+ * roles, and memberships in other homesteads are left untouched.
+ */
+export const adminRemoveFromHomestead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    user_id: z.string().uuid(),
+    homestead_id: z.string().uuid(),
+  }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    return removeFromHomestead(supabaseAdmin, data.user_id, data.homestead_id, context.userId);
+  });
+
+export const adminSetRolePermissions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    role: z.enum(ROLE_VALUES),
+    permissions: z.array(z.string().min(1).max(80)),
+  }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    if (data.role === "admin") {
+      throw new Error("Admin role permissions cannot be modified.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("role_permissions").delete().eq("role", data.role);
+    if (data.permissions.length > 0) {
+      const rows = data.permissions.map((permission) => ({ role: data.role, permission }));
+      const { error } = await supabaseAdmin.from("role_permissions").insert(rows);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+export type AdminUserRow = {
+  id: string;
+  email: string;
+  created_at: string;
+  last_sign_in_at: string | null;
+  display_name: string | null;
+  notes: string | null;
+  active: boolean;
+  roles: AppRole[];
+};

@@ -1,1 +1,163 @@
-aW1wb3J0IHsgZGVzY3JpYmUsIGl0LCBleHBlY3QgfSBmcm9tICJ2aXRlc3QiOwppbXBvcnQgeyByZW1vdmVGcm9tSG9tZXN0ZWFkLCBhc3NlcnRVc2VyRGVsZXRhYmxlIH0gZnJvbSAiLi4vaG9tZXN0ZWFkLW1lbWJlcnNoaXAiOwoKY29uc3QgQURNSU5fSUQgPSAiMTExMTExMTEtMTExMS0xMTExLTExMTEtMTExMTExMTExMTExIjsKY29uc3QgVEFSR0VUX0lEID0gIjIyMjIyMjIyLTIyMjItMjIyMi0yMjIyLTIyMjIyMjIyMjIyMiI7CmNvbnN0IEhPTUVTVEVBRF9JRCA9ICIzMzMzMzMzMy0zMzMzLTMzMzMtMzMzMy0zMzMzMzMzMzMzMzMiOwoKdHlwZSBGYWtlT3B0cyA9IHsKICBob21lc3RlYWRSb3c/OiB7IGlkOiBzdHJpbmc7IG5hbWU6IHN0cmluZzsgb3duZXJfaWQ6IHN0cmluZyB9IHwgbnVsbDsKICBob21lc3RlYWRFcnJvcj86IHN0cmluZzsKICBvd25lZFJvd3M/OiB7IGlkOiBzdHJpbmc7IG5hbWU6IHN0cmluZyB9W107CiAgb3duZWRFcnJvcj86IHN0cmluZzsKICBtZW1iZXJSb3c/OiB7IHVzZXJfaWQ6IHN0cmluZyB9IHwgbnVsbDsKICBtZW1iZXJFcnJvcj86IHN0cmluZzsKICBtZW1iZXJEZWxldGVFcnJvcj86IHN0cmluZzsKICBhdXRoRGVsZXRlRXJyb3I/OiBzdHJpbmc7Cn07CgovKiogTWluaW1hbCBjaGFpbmFibGUgZmFrZSBvZiB0aGUgc3VwYWJhc2VBZG1pbiBjbGllbnQuICovCmZ1bmN0aW9uIG1ha2VGYWtlQWRtaW4ob3B0czogRmFrZU9wdHMgPSB7fSkgewogIGNvbnN0IGNhbGxzID0geyBtZW1iZXJEZWxldGU6IDAsIGF1dGhEZWxldGU6IDAsIGF1dGhEZWxldGVJZHM6IFtdIGFzIHN0cmluZ1tdIH07CiAgY29uc3QgZXJyID0gKG1zZz86IHN0cmluZykgPT4gKG1zZyA/IHsgbWVzc2FnZTogbXNnIH0gOiBudWxsKTsKCiAgY29uc3QgY2xpZW50ID0gewogICAgZnJvbTogKHRhYmxlOiBzdHJpbmcpID0+ICh7CiAgICAgIHNlbGVjdDogKF9jb2xzOiBzdHJpbmcpID0+ICh7CiAgICAgICAgZXE6IChjb2w6IHN0cmluZywgX3ZhbDogc3RyaW5nKSA9PiB7CiAgICAgICAgICBpZiAodGFibGUgPT09ICJob21lc3RlYWRzIiAmJiBjb2wgPT09ICJvd25lcl9pZCIpIHsKICAgICAgICAgICAgcmV0dXJuIFByb21pc2UucmVzb2x2ZSh7IGRhdGE6IG9wdHMub3duZWRSb3dzID8/IFtdLCBlcnJvcjogZXJyKG9wdHMub3duZWRFcnJvcikgfSk7CiAgICAgICAgICB9CiAgICAgICAgICBpZiAodGFibGUgPT09ICJob21lc3RlYWRzIiAmJiBjb2wgPT09ICJpZCIpIHsKICAgICAgICAgICAgcmV0dXJuIHsKICAgICAgICAgICAgICBzaW5nbGU6ICgpID0+CiAgICAgICAgICAgICAgICBQcm9taXNlLnJlc29sdmUoeyBkYXRhOiBvcHRzLmhvbWVzdGVhZFJvdyA/PyBudWxsLCBlcnJvcjogZXJyKG9wdHMuaG9tZXN0ZWFkRXJyb3IpIH0pLAogICAgICAgICAgICB9OwogICAgICAgICAgfQogICAgICAgICAgaWYgKHRhYmxlID09PSAiaG9tZXN0ZWFkX21lbWJlcnMiICYmIGNvbCA9PT0gImhvbWVzdGVhZF9pZCIpIHsKICAgICAgICAgICAgcmV0dXJuIHsKICAgICAgICAgICAgICBlcTogKF9jMjogc3RyaW5nLCBfdjI6IHN0cmluZykgPT4gKHsKICAgICAgICAgICAgICAgIG1heWJlU2luZ2xlOiAoKSA9PgogICAgICAgICAgICAgICAgICBQcm9taXNlLnJlc29sdmUoeyBkYXRhOiBvcHRzLm1lbWJlclJvdyA/PyBudWxsLCBlcnJvcjogZXJyKG9wdHMubWVtYmVyRXJyb3IpIH0pLAogICAgICAgICAgICAgIH0pLAogICAgICAgICAgICB9OwogICAgICAgICAgfQogICAgICAgICAgdGhyb3cgbmV3IEVycm9yKGB1bmV4cGVjdGVkIHNlbGVjdCBxdWVyeTogJHt0YWJsZX0uJHtjb2x9YCk7CiAgICAgICAgfSwKICAgICAgfSksCiAgICAgIGRlbGV0ZTogKCkgPT4gKHsKICAgICAgICBlcTogKF9jMTogc3RyaW5nLCBfdjE6IHN0cmluZykgPT4gKHsKICAgICAgICAgIGVxOiAoX2MyOiBzdHJpbmcsIF92Mjogc3RyaW5nKSA9PiB7CiAgICAgICAgICAgIGNhbGxzLm1lbWJlckRlbGV0ZSsrOwogICAgICAgICAgICByZXR1cm4gUHJvbWlzZS5yZXNvbHZlKHsgZXJyb3I6IGVycihvcHRzLm1lbWJlckRlbGV0ZUVycm9yKSB9KTsKICAgICAgICAgIH0sCiAgICAgICAgfSksCiAgICAgIH0pLAogICAgfSksCiAgICBhdXRoOiB7CiAgICAgIGFkbWluOiB7CiAgICAgICAgZGVsZXRlVXNlcjogKGlkOiBzdHJpbmcpID0+IHsKICAgICAgICAgIGNhbGxzLmF1dGhEZWxldGUrKzsKICAgICAgICAgIGNhbGxzLmF1dGhEZWxldGVJZHMucHVzaChpZCk7CiAgICAgICAgICByZXR1cm4gUHJvbWlzZS5yZXNvbHZlKHsgZXJyb3I6IGVycihvcHRzLmF1dGhEZWxldGVFcnJvcikgfSk7CiAgICAgICAgfSwKICAgICAgfSwKICAgIH0sCiAgfTsKICByZXR1cm4geyBjbGllbnQsIGNhbGxzIH07Cn0KCmNvbnN0IGhvbWVzdGVhZCA9IHsgaWQ6IEhPTUVTVEVBRF9JRCwgbmFtZTogIkV2ZXJHcmFjZSBIb21lc3RlYWQiLCBvd25lcl9pZDogQURNSU5fSUQgfTsKCmRlc2NyaWJlKCJyZW1vdmVGcm9tSG9tZXN0ZWFkIiwgKCkgPT4gewogIGl0KCJ0aHJvd3Mgd2hlbiByZW1vdmluZyB5b3Vyc2VsZiIsIGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHsgY2xpZW50LCBjYWxscyB9ID0gbWFrZUZha2VBZG1pbih7IGhvbWVzdGVhZFJvdzogaG9tZXN0ZWFkLCBtZW1iZXJSb3c6IHsgdXNlcl9pZDogVEFSR0VUX0lEIH0gfSk7CiAgICBhd2FpdCBleHBlY3QocmVtb3ZlRnJvbUhvbWVzdGVhZChjbGllbnQsIEFETUlOX0lELCBIT01FU1RFQURfSUQsIEFETUlOX0lEKSkucmVqZWN0cy50b1Rocm93KAogICAgICAiWW91IGNhbm5vdCByZW1vdmUgeW91cnNlbGYgZnJvbSB0aGUgaG9tZXN0ZWFkLiIsCiAgICApOwogICAgZXhwZWN0KGNhbGxzLm1lbWJlckRlbGV0ZSkudG9CZSgwKTsKICB9KTsKCiAgaXQoInRocm93cyBhIGNsZWFyIGVycm9yIHdoZW4gdGhlIHRhcmdldCBvd25zIHRoZSBob21lc3RlYWQiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCBvd25lZCA9IHsgLi4uaG9tZXN0ZWFkLCBvd25lcl9pZDogVEFSR0VUX0lEIH07CiAgICBjb25zdCB7IGNsaWVudCwgY2FsbHMgfSA9IG1ha2VGYWtlQWRtaW4oeyBob21lc3RlYWRSb3c6IG93bmVkIH0pOwogICAgYXdhaXQgZXhwZWN0KHJlbW92ZUZyb21Ib21lc3RlYWQoY2xpZW50LCBUQVJHRVRfSUQsIEhPTUVTVEVBRF9JRCwgQURNSU5fSUQpKS5yZWplY3RzLnRvVGhyb3coCiAgICAgICdUaGlzIHVzZXIgb3ducyAiRXZlckdyYWNlIEhvbWVzdGVhZCIuIFRyYW5zZmVyIG93bmVyc2hpcCB0byBhbm90aGVyIG1lbWJlciBiZWZvcmUgcmVtb3ZpbmcgdGhlbS4nLAogICAgKTsKICAgIGV4cGVjdChjYWxscy5tZW1iZXJEZWxldGUpLnRvQmUoMCk7CiAgfSk7CgogIGl0KCJ0aHJvd3Mgd2hlbiB0aGUgdGFyZ2V0IGlzIG5vdCBhIG1lbWJlciIsIGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHsgY2xpZW50LCBjYWxscyB9ID0gbWFrZUZha2VBZG1pbih7IGhvbWVzdGVhZFJvdzogaG9tZXN0ZWFkLCBtZW1iZXJSb3c6IG51bGwgfSk7CiAgICBhd2FpdCBleHBlY3QocmVtb3ZlRnJvbUhvbWVzdGVhZChjbGllbnQsIFRBUkdFVF9JRCwgSE9NRVNURUFEX0lELCBBRE1JTl9JRCkpLnJlamVjdHMudG9UaHJvdygKICAgICAgJ1RoaXMgdXNlciBpcyBub3QgYSBtZW1iZXIgb2YgIkV2ZXJHcmFjZSBIb21lc3RlYWQiLicsCiAgICApOwogICAgZXhwZWN0KGNhbGxzLm1lbWJlckRlbGV0ZSkudG9CZSgwKTsKICB9KTsKCiAgaXQoInJlbW92ZXMgdGhlIG1lbWJlciBhbmQgcmV0dXJucyB0aGUgaG9tZXN0ZWFkIG5hbWUiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCB7IGNsaWVudCwgY2FsbHMgfSA9IG1ha2VGYWtlQWRtaW4oeyBob21lc3RlYWRSb3c6IGhvbWVzdGVhZCwgbWVtYmVyUm93OiB7IHVzZXJfaWQ6IFRBUkdFVF9JRCB9IH0pOwogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgcmVtb3ZlRnJvbUhvbWVzdGVhZChjbGllbnQsIFRBUkdFVF9JRCwgSE9NRVNURUFEX0lELCBBRE1JTl9JRCk7CiAgICBleHBlY3QoY2FsbHMubWVtYmVyRGVsZXRlKS50b0JlKDEpOwogICAgZXhwZWN0KHJlc3VsdCkudG9FcXVhbCh7IG9rOiB0cnVlLCBob21lc3RlYWROYW1lOiAiRXZlckdyYWNlIEhvbWVzdGVhZCIgfSk7CiAgfSk7CgogIGl0KCJzdXJmYWNlcyBob21lc3RlYWQgbG9va3VwIGVycm9ycyIsIGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHsgY2xpZW50IH0gPSBtYWtlRmFrZUFkbWluKHsgaG9tZXN0ZWFkRXJyb3I6ICJjb25uZWN0aW9uIGxvc3QiIH0pOwogICAgYXdhaXQgZXhwZWN0KHJlbW92ZUZyb21Ib21lc3RlYWQoY2xpZW50LCBUQVJHRVRfSUQsIEhPTUVTVEVBRF9JRCwgQURNSU5fSUQpKS5yZWplY3RzLnRvVGhyb3coCiAgICAgICJjb25uZWN0aW9uIGxvc3QiLAogICAgKTsKICB9KTsKCiAgaXQoInN1cmZhY2VzIG1lbWJlcnNoaXAgZGVsZXRlIGVycm9ycyIsIGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHsgY2xpZW50IH0gPSBtYWtlRmFrZUFkbWluKHsKICAgICAgaG9tZXN0ZWFkUm93OiBob21lc3RlYWQsCiAgICAgIG1lbWJlclJvdzogeyB1c2VyX2lkOiBUQVJHRVRfSUQgfSwKICAgICAgbWVtYmVyRGVsZXRlRXJyb3I6ICJwZXJtaXNzaW9uIGRlbmllZCIsCiAgICB9KTsKICAgIGF3YWl0IGV4cGVjdChyZW1vdmVGcm9tSG9tZXN0ZWFkKGNsaWVudCwgVEFSR0VUX0lELCBIT01FU1RFQURfSUQsIEFETUlOX0lEKSkucmVqZWN0cy50b1Rocm93KAogICAgICAicGVybWlzc2lvbiBkZW5pZWQiLAogICAgKTsKICB9KTsKfSk7CgpkZXNjcmliZSgiYXNzZXJ0VXNlckRlbGV0YWJsZSIsICgpID0+IHsKICBpdCgidGhyb3dzIHdoZW4gZGVsZXRpbmcgeW91cnNlbGYiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCB7IGNsaWVudCB9ID0gbWFrZUZha2VBZG1pbih7IG93bmVkUm93czogW10gfSk7CiAgICBhd2FpdCBleHBlY3QoYXNzZXJ0VXNlckRlbGV0YWJsZShjbGllbnQsIEFETUlOX0lELCBBRE1JTl9JRCkpLnJlamVjdHMudG9UaHJvdygKICAgICAgIllvdSBjYW5ub3QgZGVsZXRlIHlvdXIgb3duIGFjY291bnQuIiwKICAgICk7CiAgfSk7CgogIGl0KCJ0aHJvd3MgYSBjbGVhciBlcnJvciBsaXN0aW5nIG93bmVkIGhvbWVzdGVhZHMiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCB7IGNsaWVudCwgY2FsbHMgfSA9IG1ha2VGYWtlQWRtaW4oewogICAgICBvd25lZFJvd3M6IFsKICAgICAgICB7IGlkOiAiYSIsIG5hbWU6ICJFdmVyR3JhY2UgSG9tZXN0ZWFkIiB9LAogICAgICAgIHsgaWQ6ICJiIiwgbmFtZTogIlBpcCdzIEhvbWVzdGVhZCIgfSwKICAgICAgXSwKICAgIH0pOwogICAgYXdhaXQgZXhwZWN0KGFzc2VydFVzZXJEZWxldGFibGUoY2xpZW50LCBUQVJHRVRfSUQsIEFETUlOX0lEKSkucmVqZWN0cy50b1Rocm93KAogICAgICAnVGhpcyB1c2VyIG93bnMgMiBob21lc3RlYWRzICgiRXZlckdyYWNlIEhvbWVzdGVhZCIsICJQaXBcJ3MgSG9tZXN0ZWFkIikuICcgKwogICAgICAgICdUcmFuc2ZlciBvd25lcnNoaXAgdG8gYW5vdGhlciB1c2VyIGJlZm9yZSBkZWxldGluZyB0aGUgYWNjb3VudC4gJyArCiAgICAgICAgJ1RvIGp1c3QgcmV2b2tlIHRoZWlyIGFjY2VzcywgdXNlICJSZW1vdmUgZnJvbSBob21lc3RlYWQiIGluc3RlYWQuJywKICAgICk7CiAgICBleHBlY3QoY2FsbHMuYXV0aERlbGV0ZSkudG9CZSgwKTsKICB9KTsKCiAgaXQoInVzZXMgc2luZ3VsYXIgd29yZGluZyBmb3Igb25lIGhvbWVzdGVhZCIsIGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHsgY2xpZW50IH0gPSBtYWtlRmFrZUFkbWluKHsgb3duZWRSb3dzOiBbeyBpZDogImEiLCBuYW1lOiAiRXZlckdyYWNlIEhvbWVzdGVhZCIgfV0gfSk7CiAgICBhd2FpdCBleHBlY3QoYXNzZXJ0VXNlckRlbGV0YWJsZShjbGllbnQsIFRBUkdFVF9JRCwgQURNSU5fSUQpKS5yZWplY3RzLnRvVGhyb3coCiAgICAgICdUaGlzIHVzZXIgb3ducyAxIGhvbWVzdGVhZCAoIkV2ZXJHcmFjZSBIb21lc3RlYWQiKS4nLAogICAgKTsKICB9KTsKCiAgaXQoInJlc29sdmVzIHdoZW4gdGhlIHVzZXIgb3ducyBub3RoaW5nIiwgYXN5bmMgKCkgPT4gewogICAgY29uc3QgeyBjbGllbnQgfSA9IG1ha2VGYWtlQWRtaW4oeyBvd25lZFJvd3M6IFtdIH0pOwogICAgYXdhaXQgZXhwZWN0KGFzc2VydFVzZXJEZWxldGFibGUoY2xpZW50LCBUQVJHRVRfSUQsIEFETUlOX0lEKSkucmVzb2x2ZXMudG9CZVVuZGVmaW5lZCgpOwogIH0pOwoKICBpdCgic3VyZmFjZXMgcXVlcnkgZXJyb3JzIiwgYXN5bmMgKCkgPT4gewogICAgY29uc3QgeyBjbGllbnQgfSA9IG1ha2VGYWtlQWRtaW4oeyBvd25lZEVycm9yOiAiY29ubmVjdGlvbiBsb3N0IiB9KTsKICAgIGF3YWl0IGV4cGVjdChhc3NlcnRVc2VyRGVsZXRhYmxlKGNsaWVudCwgVEFSR0VUX0lELCBBRE1JTl9JRCkpLnJlamVjdHMudG9UaHJvdygiY29ubmVjdGlvbiBsb3N0Iik7CiAgfSk7Cn0pOwo=
+import { describe, it, expect } from "vitest";
+import { removeFromHomestead, assertUserDeletable } from "../homestead-membership";
+
+const ADMIN_ID = "11111111-1111-1111-1111-111111111111";
+const TARGET_ID = "22222222-2222-2222-2222-222222222222";
+const HOMESTEAD_ID = "33333333-3333-3333-3333-333333333333";
+
+type FakeOpts = {
+  homesteadRow?: { id: string; name: string; owner_id: string } | null;
+  homesteadError?: string;
+  ownedRows?: { id: string; name: string }[];
+  ownedError?: string;
+  memberRow?: { user_id: string } | null;
+  memberError?: string;
+  memberDeleteError?: string;
+  authDeleteError?: string;
+};
+
+/** Minimal chainable fake of the supabaseAdmin client. */
+function makeFakeAdmin(opts: FakeOpts = {}) {
+  const calls = { memberDelete: 0, authDelete: 0, authDeleteIds: [] as string[] };
+  const err = (msg?: string) => (msg ? { message: msg } : null);
+
+  const client = {
+    from: (table: string) => ({
+      select: (_cols: string) => ({
+        eq: (col: string, _val: string) => {
+          if (table === "homesteads" && col === "owner_id") {
+            return Promise.resolve({ data: opts.ownedRows ?? [], error: err(opts.ownedError) });
+          }
+          if (table === "homesteads" && col === "id") {
+            return {
+              single: () =>
+                Promise.resolve({ data: opts.homesteadRow ?? null, error: err(opts.homesteadError) }),
+            };
+          }
+          if (table === "homestead_members" && col === "homestead_id") {
+            return {
+              eq: (_c2: string, _v2: string) => ({
+                maybeSingle: () =>
+                  Promise.resolve({ data: opts.memberRow ?? null, error: err(opts.memberError) }),
+              }),
+            };
+          }
+          throw new Error(`unexpected select query: ${table}.${col}`);
+        },
+      }),
+      delete: () => ({
+        eq: (_c1: string, _v1: string) => ({
+          eq: (_c2: string, _v2: string) => {
+            calls.memberDelete++;
+            return Promise.resolve({ error: err(opts.memberDeleteError) });
+          },
+        }),
+      }),
+    }),
+    auth: {
+      admin: {
+        deleteUser: (id: string) => {
+          calls.authDelete++;
+          calls.authDeleteIds.push(id);
+          return Promise.resolve({ error: err(opts.authDeleteError) });
+        },
+      },
+    },
+  };
+  return { client, calls };
+}
+
+const homestead = { id: HOMESTEAD_ID, name: "EverGrace Homestead", owner_id: ADMIN_ID };
+
+describe("removeFromHomestead", () => {
+  it("throws when removing yourself", async () => {
+    const { client, calls } = makeFakeAdmin({ homesteadRow: homestead, memberRow: { user_id: TARGET_ID } });
+    await expect(removeFromHomestead(client, ADMIN_ID, HOMESTEAD_ID, ADMIN_ID)).rejects.toThrow(
+      "You cannot remove yourself from the homestead.",
+    );
+    expect(calls.memberDelete).toBe(0);
+  });
+
+  it("throws a clear error when the target owns the homestead", async () => {
+    const owned = { ...homestead, owner_id: TARGET_ID };
+    const { client, calls } = makeFakeAdmin({ homesteadRow: owned });
+    await expect(removeFromHomestead(client, TARGET_ID, HOMESTEAD_ID, ADMIN_ID)).rejects.toThrow(
+      'This user owns "EverGrace Homestead". Transfer ownership to another member before removing them.',
+    );
+    expect(calls.memberDelete).toBe(0);
+  });
+
+  it("throws when the target is not a member", async () => {
+    const { client, calls } = makeFakeAdmin({ homesteadRow: homestead, memberRow: null });
+    await expect(removeFromHomestead(client, TARGET_ID, HOMESTEAD_ID, ADMIN_ID)).rejects.toThrow(
+      'This user is not a member of "EverGrace Homestead".',
+    );
+    expect(calls.memberDelete).toBe(0);
+  });
+
+  it("removes the member and returns the homestead name", async () => {
+    const { client, calls } = makeFakeAdmin({ homesteadRow: homestead, memberRow: { user_id: TARGET_ID } });
+    const result = await removeFromHomestead(client, TARGET_ID, HOMESTEAD_ID, ADMIN_ID);
+    expect(calls.memberDelete).toBe(1);
+    expect(result).toEqual({ ok: true, homesteadName: "EverGrace Homestead" });
+  });
+
+  it("surfaces homestead lookup errors", async () => {
+    const { client } = makeFakeAdmin({ homesteadError: "connection lost" });
+    await expect(removeFromHomestead(client, TARGET_ID, HOMESTEAD_ID, ADMIN_ID)).rejects.toThrow(
+      "connection lost",
+    );
+  });
+
+  it("surfaces membership delete errors", async () => {
+    const { client } = makeFakeAdmin({
+      homesteadRow: homestead,
+      memberRow: { user_id: TARGET_ID },
+      memberDeleteError: "permission denied",
+    });
+    await expect(removeFromHomestead(client, TARGET_ID, HOMESTEAD_ID, ADMIN_ID)).rejects.toThrow(
+      "permission denied",
+    );
+  });
+});
+
+describe("assertUserDeletable", () => {
+  it("throws when deleting yourself", async () => {
+    const { client } = makeFakeAdmin({ ownedRows: [] });
+    await expect(assertUserDeletable(client, ADMIN_ID, ADMIN_ID)).rejects.toThrow(
+      "You cannot delete your own account.",
+    );
+  });
+
+  it("throws a clear error listing owned homesteads", async () => {
+    const { client, calls } = makeFakeAdmin({
+      ownedRows: [
+        { id: "a", name: "EverGrace Homestead" },
+        { id: "b", name: "Pip's Homestead" },
+      ],
+    });
+    await expect(assertUserDeletable(client, TARGET_ID, ADMIN_ID)).rejects.toThrow(
+      'This user owns 2 homesteads ("EverGrace Homestead", "Pip\'s Homestead"). ' +
+        'Transfer ownership to another user before deleting the account. ' +
+        'To just revoke their access, use "Remove from homestead" instead.',
+    );
+    expect(calls.authDelete).toBe(0);
+  });
+
+  it("uses singular wording for one homestead", async () => {
+    const { client } = makeFakeAdmin({ ownedRows: [{ id: "a", name: "EverGrace Homestead" }] });
+    await expect(assertUserDeletable(client, TARGET_ID, ADMIN_ID)).rejects.toThrow(
+      'This user owns 1 homestead ("EverGrace Homestead").',
+    );
+  });
+
+  it("resolves when the user owns nothing", async () => {
+    const { client } = makeFakeAdmin({ ownedRows: [] });
+    await expect(assertUserDeletable(client, TARGET_ID, ADMIN_ID)).resolves.toBeUndefined();
+  });
+
+  it("surfaces query errors", async () => {
+    const { client } = makeFakeAdmin({ ownedError: "connection lost" });
+    await expect(assertUserDeletable(client, TARGET_ID, ADMIN_ID)).rejects.toThrow("connection lost");
+  });
+});
