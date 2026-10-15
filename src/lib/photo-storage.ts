@@ -1,1 +1,57 @@
-aW1wb3J0IHsgdXNlRWZmZWN0LCB1c2VTdGF0ZSB9IGZyb20gInJlYWN0IjsKaW1wb3J0IHsgc3VwYWJhc2UgfSBmcm9tICJAL2xpYi9zdXBhYmFzZSI7CgpleHBvcnQgY29uc3QgQUxMT1dFRF9JTUFHRV9UWVBFUyA9IFsiaW1hZ2UvanBlZyIsICJpbWFnZS9wbmciLCAiaW1hZ2Uvd2VicCIsICJpbWFnZS9naWYiXTsKZXhwb3J0IGNvbnN0IE1BWF9JTUFHRV9CWVRFUyA9IDEwXzAwMF8wMDA7CgpleHBvcnQgdHlwZSBQaG90b0J1Y2tldCA9ICJhbmltYWwtcGhvdG9zIiB8ICJiYXJ0ZXItcGhvdG9zIiB8ICJyZWNlaXB0LXBob3RvcyI7CgovKiogRXh0cmFjdCB7IGJ1Y2tldCwgcGF0aCB9IGZyb20gYSBzdG9yZWQgdmFsdWUgKGxlZ2FjeSBwdWJsaWMgVVJMIG9yIGJhcmUgcGF0aCkuICovCmV4cG9ydCBmdW5jdGlvbiBwYXJzZVBob3RvUmVmKHZhbHVlOiBzdHJpbmcsIGRlZmF1bHRCdWNrZXQ/OiBQaG90b0J1Y2tldCk6IHsgYnVja2V0OiBQaG90b0J1Y2tldDsgcGF0aDogc3RyaW5nIH0gfCBudWxsIHsKICBpZiAoIXZhbHVlKSByZXR1cm4gbnVsbDsKICAvLyBNYXRjaCBTdXBhYmFzZSBzdG9yYWdlIFVSTCBwYXR0ZXJuIChwdWJsaWMgb3Igc2lnbmVkL2F1dGhlbnRpY2F0ZWQpCiAgY29uc3QgbSA9IHZhbHVlLm1hdGNoKC9cL3N0b3JhZ2VcL3YxXC9vYmplY3RcLyg/OnB1YmxpY3xzaWdufGF1dGhlbnRpY2F0ZWQpXC8oW14vXSspXC8oLis/KSg/Olw/fCQpLyk7CiAgaWYgKG0pIHsKICAgIHJldHVybiB7IGJ1Y2tldDogbVsxXSBhcyBQaG90b0J1Y2tldCwgcGF0aDogZGVjb2RlVVJJQ29tcG9uZW50KG1bMl0pIH07CiAgfQogIC8vIEJhcmUgcGF0aCAocHJlZmVycmVkIG5ldyBmb3JtYXQpCiAgaWYgKGRlZmF1bHRCdWNrZXQgJiYgIXZhbHVlLnN0YXJ0c1dpdGgoImh0dHAiKSkgewogICAgcmV0dXJuIHsgYnVja2V0OiBkZWZhdWx0QnVja2V0LCBwYXRoOiB2YWx1ZSB9OwogIH0KICByZXR1cm4gbnVsbDsKfQoKLyoqIFZhbGlkYXRlIGEgZmlsZSBpcyBhbiBpbWFnZSB3aXRoaW4gdGhlIHNpemUgY2FwLiAqLwpleHBvcnQgZnVuY3Rpb24gdmFsaWRhdGVJbWFnZUZpbGUoZmlsZTogRmlsZSk6IHN0cmluZyB8IG51bGwgewogIGlmICghQUxMT1dFRF9JTUFHRV9UWVBFUy5pbmNsdWRlcyhmaWxlLnR5cGUpKSByZXR1cm4gIk9ubHkgSlBFRywgUE5HLCBXZWJQLCBvciBHSUYgaW1hZ2VzIGFyZSBhbGxvd2VkIjsKICBpZiAoZmlsZS5zaXplID4gTUFYX0lNQUdFX0JZVEVTKSByZXR1cm4gIkltYWdlIG11c3QgYmUgMTAgTUIgb3Igc21hbGxlciI7CiAgcmV0dXJuIG51bGw7Cn0KCmNvbnN0IGNhY2hlID0gbmV3IE1hcDxzdHJpbmcsIHsgdXJsOiBzdHJpbmc7IGV4cGlyZXNBdDogbnVtYmVyIH0+KCk7CgovKiogR2V0IGEgc2lnbmVkIFVSTCBmb3IgYSBzdG9yZWQgcGhvdG8gdmFsdWUuIENhY2hlcyBmb3IgfjU1IG1pbi4gKi8KZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGdldFNpZ25lZFBob3RvVXJsKHZhbHVlOiBzdHJpbmcgfCBudWxsLCBkZWZhdWx0QnVja2V0PzogUGhvdG9CdWNrZXQpOiBQcm9taXNlPHN0cmluZyB8IG51bGw+IHsKICBpZiAoIXZhbHVlKSByZXR1cm4gbnVsbDsKICBjb25zdCByZWYgPSBwYXJzZVBob3RvUmVmKHZhbHVlLCBkZWZhdWx0QnVja2V0KTsKICBpZiAoIXJlZikgcmV0dXJuIG51bGw7CiAgY29uc3QgY2FjaGVLZXkgPSBgJHtyZWYuYnVja2V0fS8ke3JlZi5wYXRofWA7CiAgY29uc3QgY2FjaGVkID0gY2FjaGUuZ2V0KGNhY2hlS2V5KTsKICBpZiAoY2FjaGVkICYmIGNhY2hlZC5leHBpcmVzQXQgPiBEYXRlLm5vdygpKSByZXR1cm4gY2FjaGVkLnVybDsKICBjb25zdCB7IGRhdGEsIGVycm9yIH0gPSBhd2FpdCBzdXBhYmFzZS5zdG9yYWdlLmZyb20ocmVmLmJ1Y2tldCkuY3JlYXRlU2lnbmVkVXJsKHJlZi5wYXRoLCAzNjAwKTsKICBpZiAoZXJyb3IgfHwgIWRhdGEpIHJldHVybiBudWxsOwogIGNhY2hlLnNldChjYWNoZUtleSwgeyB1cmw6IGRhdGEuc2lnbmVkVXJsLCBleHBpcmVzQXQ6IERhdGUubm93KCkgKyA1NSAqIDYwICogMTAwMCB9KTsKICByZXR1cm4gZGF0YS5zaWduZWRVcmw7Cn0KCi8qKiBSZWFjdCBob29rOiByZXNvbHZlcyBhIHN0b3JlZCBwaG90byB2YWx1ZSB0byBhIHNpZ25lZCBVUkwuICovCmV4cG9ydCBmdW5jdGlvbiB1c2VTaWduZWRQaG90byh2YWx1ZTogc3RyaW5nIHwgbnVsbCB8IHVuZGVmaW5lZCwgZGVmYXVsdEJ1Y2tldD86IFBob3RvQnVja2V0KTogc3RyaW5nIHwgbnVsbCB7CiAgY29uc3QgW3VybCwgc2V0VXJsXSA9IHVzZVN0YXRlPHN0cmluZyB8IG51bGw+KG51bGwpOwogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBsZXQgY2FuY2VsbGVkID0gZmFsc2U7CiAgICBpZiAoIXZhbHVlKSB7IHNldFVybChudWxsKTsgcmV0dXJuOyB9CiAgICBnZXRTaWduZWRQaG90b1VybCh2YWx1ZSwgZGVmYXVsdEJ1Y2tldCkudGhlbigodSkgPT4geyBpZiAoIWNhbmNlbGxlZCkgc2V0VXJsKHUpOyB9KTsKICAgIHJldHVybiAoKSA9PiB7IGNhbmNlbGxlZCA9IHRydWU7IH07CiAgfSwgW3ZhbHVlLCBkZWZhdWx0QnVja2V0XSk7CiAgcmV0dXJuIHVybDsKfQo=
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+
+export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+export const MAX_IMAGE_BYTES = 10_000_000;
+
+export type PhotoBucket = "animal-photos" | "barter-photos" | "receipt-photos";
+
+/** Extract { bucket, path } from a stored value (legacy public URL or bare path). */
+export function parsePhotoRef(value: string, defaultBucket?: PhotoBucket): { bucket: PhotoBucket; path: string } | null {
+  if (!value) return null;
+  // Match Supabase storage URL pattern (public or signed/authenticated)
+  const m = value.match(/\/storage\/v1\/object\/(?:public|sign|authenticated)\/([^/]+)\/(.+?)(?:\?|$)/);
+  if (m) {
+    return { bucket: m[1] as PhotoBucket, path: decodeURIComponent(m[2]) };
+  }
+  // Bare path (preferred new format)
+  if (defaultBucket && !value.startsWith("http")) {
+    return { bucket: defaultBucket, path: value };
+  }
+  return null;
+}
+
+/** Validate a file is an image within the size cap. */
+export function validateImageFile(file: File): string | null {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) return "Only JPEG, PNG, WebP, or GIF images are allowed";
+  if (file.size > MAX_IMAGE_BYTES) return "Image must be 10 MB or smaller";
+  return null;
+}
+
+const cache = new Map<string, { url: string; expiresAt: number }>();
+
+/** Get a signed URL for a stored photo value. Caches for ~55 min. */
+export async function getSignedPhotoUrl(value: string | null, defaultBucket?: PhotoBucket): Promise<string | null> {
+  if (!value) return null;
+  const ref = parsePhotoRef(value, defaultBucket);
+  if (!ref) return null;
+  const cacheKey = `${ref.bucket}/${ref.path}`;
+  const cached = cache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) return cached.url;
+  const { data, error } = await supabase.storage.from(ref.bucket).createSignedUrl(ref.path, 3600);
+  if (error || !data) return null;
+  cache.set(cacheKey, { url: data.signedUrl, expiresAt: Date.now() + 55 * 60 * 1000 });
+  return data.signedUrl;
+}
+
+/** React hook: resolves a stored photo value to a signed URL. */
+export function useSignedPhoto(value: string | null | undefined, defaultBucket?: PhotoBucket): string | null {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!value) { setUrl(null); return; }
+    getSignedPhotoUrl(value, defaultBucket).then((u) => { if (!cancelled) setUrl(u); });
+    return () => { cancelled = true; };
+  }, [value, defaultBucket]);
+  return url;
+}

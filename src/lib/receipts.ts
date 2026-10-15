@@ -1,1 +1,134 @@
-Ly8gUmVjZWlwdCAvIGV4cGVuc2Ugc2VhcmNoIGFuZCBkdXBsaWNhdGUgZGV0ZWN0aW9uIChwdXJlIGZ1bmN0aW9ucyDigJQgdGVzdGVkKS4KLy8KLy8gU2VhcmNoIGlzIGEga2V5IGRpZmZlcmVudGlhdG9yOiBpdCBtdXN0IGZpbHRlciBpbnN0YW50bHkgYWNyb3NzIHZlbmRvciwKLy8gYW1vdW50LCBkYXRlLCBjYXRlZ29yeSwgaXRlbSBuYW1lLCBhbmQgbm90ZXMsIGFuZCBuZXZlciByZXR1cm4gYmxhbmsgd2hlbgovLyBtYXRjaGVzIGV4aXN0LgoKZXhwb3J0IGludGVyZmFjZSBSZWNlaXB0UHVyY2hhc2UgewogIGlkOiBzdHJpbmc7CiAgZmVlZF9pdGVtX2lkOiBzdHJpbmc7CiAgc3RvcmU6IHN0cmluZyB8IG51bGw7CiAgcHJpY2VfY2VudHM6IG51bWJlcjsKICBxdWFudGl0eTogbnVtYmVyOwogIHRvdGFsX2xiczogbnVtYmVyIHwgbnVsbDsKICBwdXJjaGFzZWRfb246IHN0cmluZzsgLy8gWVlZWS1NTS1ERAogIG5vdGVzOiBzdHJpbmcgfCBudWxsOwogIHJlY2VpcHRfcGhvdG9fcGF0aDogc3RyaW5nIHwgbnVsbDsKICBjb250YWluZXJfaWQ/OiBzdHJpbmcgfCBudWxsOwogIC8qKiBSZXNvbHZlZCBmZWVkIGl0ZW0gbmFtZSAoam9pbmVkIGNsaWVudC1zaWRlKS4gKi8KICBpdGVtX25hbWU/OiBzdHJpbmcgfCBudWxsOwp9Cgpjb25zdCBNT05USFNfU0hPUlQgPSBbCiAgImphbiIsCiAgImZlYiIsCiAgIm1hciIsCiAgImFwciIsCiAgIm1heSIsCiAgImp1biIsCiAgImp1bCIsCiAgImF1ZyIsCiAgInNlcCIsCiAgIm9jdCIsCiAgIm5vdiIsCiAgImRlYyIsCl07CmNvbnN0IE1PTlRIU19MT05HID0gWwogICJqYW51YXJ5IiwKICAiZmVicnVhcnkiLAogICJtYXJjaCIsCiAgImFwcmlsIiwKICAibWF5IiwKICAianVuZSIsCiAgImp1bHkiLAogICJhdWd1c3QiLAogICJzZXB0ZW1iZXIiLAogICJvY3RvYmVyIiwKICAibm92ZW1iZXIiLAogICJkZWNlbWJlciIsCl07CgovKiogTm9ybWFsaXplIGEgcXVlcnkgdG9rZW4gc3RyZWFtOiBsb3dlcmNhc2UsIHRyaW0sIGNvbGxhcHNlIHdoaXRlc3BhY2UuICovCmZ1bmN0aW9uIG5vcm0ocTogc3RyaW5nKTogc3RyaW5nIHsKICByZXR1cm4gcS50b0xvd2VyQ2FzZSgpLnRyaW0oKS5yZXBsYWNlKC9ccysvZywgIiAiKTsKfQoKLyoqIEFtb3VudCBzZWFyY2ggZm9ybXMgZm9yIGEgcHJpY2UgaW4gY2VudHM6ICIxMi41MCIsICIxMi41IiwgIjEyNTAiLCAiJDEyLjUwIi4gKi8KZnVuY3Rpb24gYW1vdW50Rm9ybXMoY2VudHM6IG51bWJlcik6IHN0cmluZ1tdIHsKICBjb25zdCBkb2xsYXJzID0gKGNlbnRzIC8gMTAwKS50b0ZpeGVkKDIpOyAvLyAiMTIuNTAiCiAgY29uc3QgZm9ybXMgPSBuZXcgU2V0PHN0cmluZz4oW2RvbGxhcnMsIFN0cmluZyhjZW50cyldKTsKICBmb3Jtcy5hZGQoZG9sbGFycy5yZXBsYWNlKC8wJC8sICIiKSk7IC8vICIxMi41IgogIGZvcm1zLmFkZChgJCR7ZG9sbGFyc31gKTsKICByZXR1cm4gWy4uLmZvcm1zXTsKfQoKLyoqIERhdGUgc2VhcmNoIGZvcm1zIGZvciBZWVlZLU1NLUREOiAib2N0IDE0IDIwMjYiLCAiMTAvMTQvMjAyNiIsICIyMDI2LTEwLTE0IiwgIjE0Ii4gKi8KZnVuY3Rpb24gZGF0ZUZvcm1zKGlzbzogc3RyaW5nKTogc3RyaW5nW10gewogIGNvbnN0IGZvcm1zID0gbmV3IFNldDxzdHJpbmc+KCk7CiAgY29uc3QgbSA9IGlzby5tYXRjaCgvXihcZHs0fSktKFxkezJ9KS0oXGR7Mn0pJC8pOwogIGlmICghbSkgewogICAgZm9ybXMuYWRkKGlzby50b0xvd2VyQ2FzZSgpKTsKICAgIHJldHVybiBbLi4uZm9ybXNdOwogIH0KICBjb25zdCBbLCB5LCBtbywgZF0gPSBtOwogIGNvbnN0IG1pID0gTnVtYmVyKG1vKSAtIDE7CiAgY29uc3QgZGF5ID0gU3RyaW5nKE51bWJlcihkKSk7CiAgZm9ybXMuYWRkKGAke3l9LSR7bW99LSR7ZH1gKTsKICBmb3Jtcy5hZGQoYCR7TnVtYmVyKG1vKX0vJHtOdW1iZXIoZCl9LyR7eX1gKTsKICBmb3Jtcy5hZGQoYCR7TnVtYmVyKG1vKX0vJHtOdW1iZXIoZCl9YCk7CiAgZm9ybXMuYWRkKGAke01PTlRIU19TSE9SVFttaV19ICR7ZGF5fSAke3l9YCk7CiAgZm9ybXMuYWRkKGAke01PTlRIU19MT05HW21pXX0gJHtkYXl9ICR7eX1gKTsKICBmb3Jtcy5hZGQoYCR7TU9OVEhTX1NIT1JUW21pXX0gJHtkYXl9YCk7CiAgZm9ybXMuYWRkKGRheSk7CiAgZm9ybXMuYWRkKHkpOwogIHJldHVybiBbLi4uZm9ybXNdOwp9CgovKioKICogSW5zdGFudCBjbGllbnQtc2lkZSBzZWFyY2ggb3ZlciBwdXJjaGFzZXMuIEV2ZXJ5IHdoaXRlc3BhY2Utc2VwYXJhdGVkIHRva2VuCiAqIGluIHRoZSBxdWVyeSBtdXN0IG1hdGNoIGF0IGxlYXN0IG9uZSBmaWVsZCAoQU5EIHNlbWFudGljcykuIE1hdGNoaW5nIGlzCiAqIHN1YnN0cmluZy1iYXNlZCBhbmQgY2FzZS1pbnNlbnNpdGl2ZSwgc28gcGFydGlhbCBpbnB1dCBmaWx0ZXJzIGxpdmUuCiAqLwpleHBvcnQgZnVuY3Rpb24gc2VhcmNoUHVyY2hhc2VzKHB1cmNoYXNlczogUmVjZWlwdFB1cmNoYXNlW10sIHF1ZXJ5OiBzdHJpbmcpOiBSZWNlaXB0UHVyY2hhc2VbXSB7CiAgY29uc3QgcSA9IG5vcm0ocXVlcnkpOwogIGlmICghcSkgcmV0dXJuIHB1cmNoYXNlczsKICBjb25zdCB0b2tlbnMgPSBxLnNwbGl0KCIgIik7CiAgcmV0dXJuIHB1cmNoYXNlcy5maWx0ZXIoKHApID0+IHsKICAgIGNvbnN0IGhheXN0YWNrczogc3RyaW5nW10gPSBbCiAgICAgIChwLnN0b3JlID8/ICIiKS50b0xvd2VyQ2FzZSgpLAogICAgICAocC5pdGVtX25hbWUgPz8gIiIpLnRvTG93ZXJDYXNlKCksCiAgICAgIChwLm5vdGVzID8/ICIiKS50b0xvd2VyQ2FzZSgpLAogICAgICAuLi5hbW91bnRGb3JtcyhOdW1iZXIocC5wcmljZV9jZW50cyA/PyAwKSksCiAgICAgIC4uLmRhdGVGb3JtcyhwLnB1cmNoYXNlZF9vbiA/PyAiIiksCiAgICBdOwogICAgcmV0dXJuIHRva2Vucy5ldmVyeSgodCkgPT4gaGF5c3RhY2tzLnNvbWUoKGgpID0+IGguaW5jbHVkZXModCkpKTsKICB9KTsKfQoKZXhwb3J0IGludGVyZmFjZSBEdXBsaWNhdGVLZXkgewogIHN0b3JlOiBzdHJpbmcgfCBudWxsOwogIHByaWNlX2NlbnRzOiBudW1iZXI7CiAgcHVyY2hhc2VkX29uOiBzdHJpbmc7Cn0KCi8qKgogKiBGaW5kIGFuIGV4aXN0aW5nIHB1cmNoYXNlIHdpdGggdGhlIHNhbWUgdmVuZG9yICsgYW1vdW50ICsgZGF0ZS4KICogQ29tcGFyaXNvbiBpcyBjYXNlLWluc2Vuc2l0aXZlIG9uIHZlbmRvciBhbmQgdHJpbXMgd2hpdGVzcGFjZSwgc28KICogIlRyYWN0b3IgU3VwcGx5IiBtYXRjaGVzICJ0cmFjdG9yIHN1cHBseSAiLgogKi8KZXhwb3J0IGZ1bmN0aW9uIGZpbmREdXBsaWNhdGVQdXJjaGFzZSgKICBwdXJjaGFzZXM6IFJlY2VpcHRQdXJjaGFzZVtdLAogIGtleTogRHVwbGljYXRlS2V5LAopOiBSZWNlaXB0UHVyY2hhc2UgfCBudWxsIHsKICBjb25zdCBzdG9yZSA9IChrZXkuc3RvcmUgPz8gIiIpLnRyaW0oKS50b0xvd2VyQ2FzZSgpOwogIGZvciAoY29uc3QgcCBvZiBwdXJjaGFzZXMpIHsKICAgIGlmICgKICAgICAgKHAuc3RvcmUgPz8gIiIpLnRyaW0oKS50b0xvd2VyQ2FzZSgpID09PSBzdG9yZSAmJgogICAgICBOdW1iZXIocC5wcmljZV9jZW50cykgPT09IE51bWJlcihrZXkucHJpY2VfY2VudHMpICYmCiAgICAgIHAucHVyY2hhc2VkX29uID09PSBrZXkucHVyY2hhc2VkX29uCiAgICApIHsKICAgICAgcmV0dXJuIHA7CiAgICB9CiAgfQogIHJldHVybiBudWxsOwp9Cg==
+// Receipt / expense search and duplicate detection (pure functions — tested).
+//
+// Search is a key differentiator: it must filter instantly across vendor,
+// amount, date, category, item name, and notes, and never return blank when
+// matches exist.
+
+export interface ReceiptPurchase {
+  id: string;
+  feed_item_id: string;
+  store: string | null;
+  price_cents: number;
+  quantity: number;
+  total_lbs: number | null;
+  purchased_on: string; // YYYY-MM-DD
+  notes: string | null;
+  receipt_photo_path: string | null;
+  container_id?: string | null;
+  /** Resolved feed item name (joined client-side). */
+  item_name?: string | null;
+}
+
+const MONTHS_SHORT = [
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "may",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "oct",
+  "nov",
+  "dec",
+];
+const MONTHS_LONG = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
+
+/** Normalize a query token stream: lowercase, trim, collapse whitespace. */
+function norm(q: string): string {
+  return q.toLowerCase().trim().replace(/\s+/g, " ");
+}
+
+/** Amount search forms for a price in cents: "12.50", "12.5", "1250", "$12.50". */
+function amountForms(cents: number): string[] {
+  const dollars = (cents / 100).toFixed(2); // "12.50"
+  const forms = new Set<string>([dollars, String(cents)]);
+  forms.add(dollars.replace(/0$/, "")); // "12.5"
+  forms.add(`$${dollars}`);
+  return [...forms];
+}
+
+/** Date search forms for YYYY-MM-DD: "oct 14 2026", "10/14/2026", "2026-10-14", "14". */
+function dateForms(iso: string): string[] {
+  const forms = new Set<string>();
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) {
+    forms.add(iso.toLowerCase());
+    return [...forms];
+  }
+  const [, y, mo, d] = m;
+  const mi = Number(mo) - 1;
+  const day = String(Number(d));
+  forms.add(`${y}-${mo}-${d}`);
+  forms.add(`${Number(mo)}/${Number(d)}/${y}`);
+  forms.add(`${Number(mo)}/${Number(d)}`);
+  forms.add(`${MONTHS_SHORT[mi]} ${day} ${y}`);
+  forms.add(`${MONTHS_LONG[mi]} ${day} ${y}`);
+  forms.add(`${MONTHS_SHORT[mi]} ${day}`);
+  forms.add(day);
+  forms.add(y);
+  return [...forms];
+}
+
+/**
+ * Instant client-side search over purchases. Every whitespace-separated token
+ * in the query must match at least one field (AND semantics). Matching is
+ * substring-based and case-insensitive, so partial input filters live.
+ */
+export function searchPurchases(purchases: ReceiptPurchase[], query: string): ReceiptPurchase[] {
+  const q = norm(query);
+  if (!q) return purchases;
+  const tokens = q.split(" ");
+  return purchases.filter((p) => {
+    const haystacks: string[] = [
+      (p.store ?? "").toLowerCase(),
+      (p.item_name ?? "").toLowerCase(),
+      (p.notes ?? "").toLowerCase(),
+      ...amountForms(Number(p.price_cents ?? 0)),
+      ...dateForms(p.purchased_on ?? ""),
+    ];
+    return tokens.every((t) => haystacks.some((h) => h.includes(t)));
+  });
+}
+
+export interface DuplicateKey {
+  store: string | null;
+  price_cents: number;
+  purchased_on: string;
+}
+
+/**
+ * Find an existing purchase with the same vendor + amount + date.
+ * Comparison is case-insensitive on vendor and trims whitespace, so
+ * "Tractor Supply" matches "tractor supply ".
+ */
+export function findDuplicatePurchase(
+  purchases: ReceiptPurchase[],
+  key: DuplicateKey,
+): ReceiptPurchase | null {
+  const store = (key.store ?? "").trim().toLowerCase();
+  for (const p of purchases) {
+    if (
+      (p.store ?? "").trim().toLowerCase() === store &&
+      Number(p.price_cents) === Number(key.price_cents) &&
+      p.purchased_on === key.purchased_on
+    ) {
+      return p;
+    }
+  }
+  return null;
+}
