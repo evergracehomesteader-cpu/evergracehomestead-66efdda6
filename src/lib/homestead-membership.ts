@@ -1,1 +1,101 @@
-LyoqCiAqIFB1cmUgYnVzaW5lc3MgbG9naWMgZm9yIGhvbWVzdGVhZCBtZW1iZXJzaGlwIGNoYW5nZXMuCiAqCiAqIEtlcHQgZnJlZSBvZiBzZXJ2ZXItZnVuY3Rpb24gd3JhcHBlcnMgc28gaXQgY2FuIGJlIHVuaXQtdGVzdGVkIHdpdGggYSBmYWtlCiAqIFN1cGFiYXNlIGNsaWVudC4gVGhlIGNyZWF0ZVNlcnZlckZuIHdyYXBwZXJzIGluIGFkbWluLXVzZXJzLmZ1bmN0aW9ucy50cwogKiBoYW5kbGUgYXV0aCBhbmQgZGVsZWdhdGUgaGVyZS4KICoKICogTk9URTogYHVzZXJfcm9sZXNgIGlzIGEgR0xPQkFMIHRhYmxlIChhcHAtd2lkZSByb2xlcyksIG5vdCBwZXItaG9tZXN0ZWFkLgogKiBSZW1vdmluZyBhIG1lbWJlciBmcm9tIGEgaG9tZXN0ZWFkIG11c3Qgb25seSB0b3VjaCBgaG9tZXN0ZWFkX21lbWJlcnNgIOKAlAogKiBuZXZlciBgdXNlcl9yb2xlc2AuCiAqLwoKZXhwb3J0IHR5cGUgSG9tZXN0ZWFkT3duZXJzaGlwID0geyBpZDogc3RyaW5nOyBuYW1lOiBzdHJpbmc7IG93bmVyX2lkPzogc3RyaW5nIH07CgovKioKICogUmVtb3ZlIGEgdXNlciBmcm9tIGEgc2luZ2xlIGhvbWVzdGVhZCAocmV2b2tlIGFjY2Vzcywga2VlcCB0aGUgYWNjb3VudCkuCiAqCiAqIFRocm93cyBhIGh1bWFuLXJlYWRhYmxlIGVycm9yIHdoZW46CiAqIC0gdGhlIHRhcmdldCBpcyB0aGUgY2FsbGVyIHRoZW1zZWx2ZXMsCiAqIC0gdGhlIHRhcmdldCBvd25zIHRoZSBob21lc3RlYWQgKG93bmVyc2hpcCBtdXN0IGJlIHRyYW5zZmVycmVkIGZpcnN0KSwKICogLSB0aGUgdGFyZ2V0IGlzIG5vdCBhIG1lbWJlciBvZiB0aGUgaG9tZXN0ZWFkLAogKiAtIGFueSBkYXRhYmFzZSBjYWxsIGZhaWxzLgogKi8KZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIHJlbW92ZUZyb21Ib21lc3RlYWQoCiAgc3VwYWJhc2VBZG1pbjogYW55LAogIHRhcmdldFVzZXJJZDogc3RyaW5nLAogIGhvbWVzdGVhZElkOiBzdHJpbmcsCiAgY3VycmVudFVzZXJJZDogc3RyaW5nLAopOiBQcm9taXNlPHsgb2s6IHRydWU7IGhvbWVzdGVhZE5hbWU6IHN0cmluZyB9PiB7CiAgaWYgKHRhcmdldFVzZXJJZCA9PT0gY3VycmVudFVzZXJJZCkgewogICAgdGhyb3cgbmV3IEVycm9yKCJZb3UgY2Fubm90IHJlbW92ZSB5b3Vyc2VsZiBmcm9tIHRoZSBob21lc3RlYWQuIik7CiAgfQoKICBjb25zdCB7IGRhdGE6IGhzLCBlcnJvcjogaHNFcnJvciB9ID0gYXdhaXQgc3VwYWJhc2VBZG1pbgogICAgLmZyb20oImhvbWVzdGVhZHMiKQogICAgLnNlbGVjdCgiaWQsIG5hbWUsIG93bmVyX2lkIikKICAgIC5lcSgiaWQiLCBob21lc3RlYWRJZCkKICAgIC5zaW5nbGUoKTsKICBpZiAoaHNFcnJvcikgdGhyb3cgbmV3IEVycm9yKGhzRXJyb3IubWVzc2FnZSk7CiAgaWYgKCFocykgdGhyb3cgbmV3IEVycm9yKCJIb21lc3RlYWQgbm90IGZvdW5kLiIpOwoKICBpZiAoaHMub3duZXJfaWQgPT09IHRhcmdldFVzZXJJZCkgewogICAgdGhyb3cgbmV3IEVycm9yKAogICAgICBgVGhpcyB1c2VyIG93bnMgIiR7aHMubmFtZX0iLiBUcmFuc2ZlciBvd25lcnNoaXAgdG8gYW5vdGhlciBtZW1iZXIgYmVmb3JlIHJlbW92aW5nIHRoZW0uYCwKICAgICk7CiAgfQoKICBjb25zdCB7IGRhdGE6IG1lbWJlciwgZXJyb3I6IG1lbWJlckVycm9yIH0gPSBhd2FpdCBzdXBhYmFzZUFkbWluCiAgICAuZnJvbSgiaG9tZXN0ZWFkX21lbWJlcnMiKQogICAgLnNlbGVjdCgidXNlcl9pZCIpCiAgICAuZXEoImhvbWVzdGVhZF9pZCIsIGhvbWVzdGVhZElkKQogICAgLmVxKCJ1c2VyX2lkIiwgdGFyZ2V0VXNlcklkKQogICAgLm1heWJlU2luZ2xlKCk7CiAgaWYgKG1lbWJlckVycm9yKSB0aHJvdyBuZXcgRXJyb3IobWVtYmVyRXJyb3IubWVzc2FnZSk7CiAgaWYgKCFtZW1iZXIpIHsKICAgIHRocm93IG5ldyBFcnJvcihgVGhpcyB1c2VyIGlzIG5vdCBhIG1lbWJlciBvZiAiJHtocy5uYW1lfSIuYCk7CiAgfQoKICBjb25zdCB7IGVycm9yIH0gPSBhd2FpdCBzdXBhYmFzZUFkbWluCiAgICAuZnJvbSgiaG9tZXN0ZWFkX21lbWJlcnMiKQogICAgLmRlbGV0ZSgpCiAgICAuZXEoImhvbWVzdGVhZF9pZCIsIGhvbWVzdGVhZElkKQogICAgLmVxKCJ1c2VyX2lkIiwgdGFyZ2V0VXNlcklkKTsKICBpZiAoZXJyb3IpIHRocm93IG5ldyBFcnJvcihlcnJvci5tZXNzYWdlKTsKCiAgcmV0dXJuIHsgb2s6IHRydWUsIGhvbWVzdGVhZE5hbWU6IGhzLm5hbWUgfTsKfQoKLyoqCiAqIEd1YXJkIGZvciBmdWxsIGFjY291bnQgZGVsZXRpb24uCiAqCiAqIGBob21lc3RlYWRzLm93bmVyX2lkYCBpcyBPTiBERUxFVEUgUkVTVFJJQ1QgYWdhaW5zdCBhdXRoLnVzZXJzLCBzbyBkZWxldGluZwogKiBhbiBvd25lciB2aWEgdGhlIEF1dGggQVBJIGZhaWxzIHdpdGggR29UcnVlJ3MgY3J5cHRpYyAiRGF0YWJhc2UgZXJyb3IKICogZGVsZXRpbmcgdXNlciIuIENoZWNrIGZpcnN0IGFuZCBleHBsYWluIHdoYXQgdG8gZG8gaW5zdGVhZC4KICovCmV4cG9ydCBhc3luYyBmdW5jdGlvbiBhc3NlcnRVc2VyRGVsZXRhYmxlKAogIHN1cGFiYXNlQWRtaW46IGFueSwKICB0YXJnZXRVc2VySWQ6IHN0cmluZywKICBjdXJyZW50VXNlcklkOiBzdHJpbmcsCik6IFByb21pc2U8dm9pZD4gewogIGlmICh0YXJnZXRVc2VySWQgPT09IGN1cnJlbnRVc2VySWQpIHsKICAgIHRocm93IG5ldyBFcnJvcigiWW91IGNhbm5vdCBkZWxldGUgeW91ciBvd24gYWNjb3VudC4iKTsKICB9CgogIGNvbnN0IHsgZGF0YTogb3duZWQsIGVycm9yIH0gPSBhd2FpdCBzdXBhYmFzZUFkbWluCiAgICAuZnJvbSgiaG9tZXN0ZWFkcyIpCiAgICAuc2VsZWN0KCJpZCwgbmFtZSIpCiAgICAuZXEoIm93bmVyX2lkIiwgdGFyZ2V0VXNlcklkKTsKICBpZiAoZXJyb3IpIHRocm93IG5ldyBFcnJvcihlcnJvci5tZXNzYWdlKTsKCiAgY29uc3QgaG9tZXN0ZWFkczogSG9tZXN0ZWFkT3duZXJzaGlwW10gPSBvd25lZCA/PyBbXTsKICBpZiAoaG9tZXN0ZWFkcy5sZW5ndGggPiAwKSB7CiAgICBjb25zdCBuYW1lcyA9IGhvbWVzdGVhZHMubWFwKChoKSA9PiBgIiR7aC5uYW1lfSJgKS5qb2luKCIsICIpOwogICAgY29uc3QgcGx1cmFsID0gaG9tZXN0ZWFkcy5sZW5ndGggPT09IDEgPyAiIiA6ICJzIjsKICAgIHRocm93IG5ldyBFcnJvcigKICAgICAgYFRoaXMgdXNlciBvd25zICR7aG9tZXN0ZWFkcy5sZW5ndGh9IGhvbWVzdGVhZCR7cGx1cmFsfSAoJHtuYW1lc30pLiBgICsKICAgICAgICBgVHJhbnNmZXIgb3duZXJzaGlwIHRvIGFub3RoZXIgdXNlciBiZWZvcmUgZGVsZXRpbmcgdGhlIGFjY291bnQuIGAgKwogICAgICAgIGBUbyBqdXN0IHJldm9rZSB0aGVpciBhY2Nlc3MsIHVzZSAiUmVtb3ZlIGZyb20gaG9tZXN0ZWFkIiBpbnN0ZWFkLmAsCiAgICApOwogIH0KfQo=
+/**
+ * Pure business logic for homestead membership changes.
+ *
+ * Kept free of server-function wrappers so it can be unit-tested with a fake
+ * Supabase client. The createServerFn wrappers in admin-users.functions.ts
+ * handle auth and delegate here.
+ *
+ * NOTE: `user_roles` is a GLOBAL table (app-wide roles), not per-homestead.
+ * Removing a member from a homestead must only touch `homestead_members` —
+ * never `user_roles`.
+ */
+
+export type HomesteadOwnership = { id: string; name: string; owner_id?: string };
+
+/**
+ * Remove a user from a single homestead (revoke access, keep the account).
+ *
+ * Throws a human-readable error when:
+ * - the target is the caller themselves,
+ * - the target owns the homestead (ownership must be transferred first),
+ * - the target is not a member of the homestead,
+ * - any database call fails.
+ */
+export async function removeFromHomestead(
+  supabaseAdmin: any,
+  targetUserId: string,
+  homesteadId: string,
+  currentUserId: string,
+): Promise<{ ok: true; homesteadName: string }> {
+  if (targetUserId === currentUserId) {
+    throw new Error("You cannot remove yourself from the homestead.");
+  }
+
+  const { data: hs, error: hsError } = await supabaseAdmin
+    .from("homesteads")
+    .select("id, name, owner_id")
+    .eq("id", homesteadId)
+    .single();
+  if (hsError) throw new Error(hsError.message);
+  if (!hs) throw new Error("Homestead not found.");
+
+  if (hs.owner_id === targetUserId) {
+    throw new Error(
+      `This user owns "${hs.name}". Transfer ownership to another member before removing them.`,
+    );
+  }
+
+  const { data: member, error: memberError } = await supabaseAdmin
+    .from("homestead_members")
+    .select("user_id")
+    .eq("homestead_id", homesteadId)
+    .eq("user_id", targetUserId)
+    .maybeSingle();
+  if (memberError) throw new Error(memberError.message);
+  if (!member) {
+    throw new Error(`This user is not a member of "${hs.name}".`);
+  }
+
+  const { error } = await supabaseAdmin
+    .from("homestead_members")
+    .delete()
+    .eq("homestead_id", homesteadId)
+    .eq("user_id", targetUserId);
+  if (error) throw new Error(error.message);
+
+  return { ok: true, homesteadName: hs.name };
+}
+
+/**
+ * Guard for full account deletion.
+ *
+ * `homesteads.owner_id` is ON DELETE RESTRICT against auth.users, so deleting
+ * an owner via the Auth API fails with GoTrue's cryptic "Database error
+ * deleting user". Check first and explain what to do instead.
+ */
+export async function assertUserDeletable(
+  supabaseAdmin: any,
+  targetUserId: string,
+  currentUserId: string,
+): Promise<void> {
+  if (targetUserId === currentUserId) {
+    throw new Error("You cannot delete your own account.");
+  }
+
+  const { data: owned, error } = await supabaseAdmin
+    .from("homesteads")
+    .select("id, name")
+    .eq("owner_id", targetUserId);
+  if (error) throw new Error(error.message);
+
+  const homesteads: HomesteadOwnership[] = owned ?? [];
+  if (homesteads.length > 0) {
+    const names = homesteads.map((h) => `"${h.name}"`).join(", ");
+    const plural = homesteads.length === 1 ? "" : "s";
+    throw new Error(
+      `This user owns ${homesteads.length} homestead${plural} (${names}). ` +
+        `Transfer ownership to another user before deleting the account. ` +
+        `To just revoke their access, use "Remove from homestead" instead.`,
+    );
+  }
+}

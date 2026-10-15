@@ -1,1 +1,299 @@
-aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCB1c2VOYXZpZ2F0ZSB9IGZyb20gIkB0YW5zdGFjay9yZWFjdC1yb3V0ZXIiOwppbXBvcnQgeyB1c2VTZXJ2ZXJGbiB9IGZyb20gIkB0YW5zdGFjay9yZWFjdC1zdGFydCI7CmltcG9ydCB7IHVzZVF1ZXJ5LCB1c2VNdXRhdGlvbiwgdXNlUXVlcnlDbGllbnQgfSBmcm9tICJAdGFuc3RhY2svcmVhY3QtcXVlcnkiOwppbXBvcnQgeyB1c2VTdGF0ZSB9IGZyb20gInJlYWN0IjsKaW1wb3J0IHsgdG9hc3QgfSBmcm9tICJzb25uZXIiOwppbXBvcnQgeyBDYXJkIH0gZnJvbSAiQC9jb21wb25lbnRzL3VpL2NhcmQiOwppbXBvcnQgeyBCdXR0b24gfSBmcm9tICJAL2NvbXBvbmVudHMvdWkvYnV0dG9uIjsKaW1wb3J0IHsgSW5wdXQgfSBmcm9tICJAL2NvbXBvbmVudHMvdWkvaW5wdXQiOwppbXBvcnQgeyBMYWJlbCB9IGZyb20gIkAvY29tcG9uZW50cy91aS9sYWJlbCI7CmltcG9ydCB7IFRleHRhcmVhIH0gZnJvbSAiQC9jb21wb25lbnRzL3VpL3RleHRhcmVhIjsKaW1wb3J0IHsgQmFkZ2UgfSBmcm9tICJAL2NvbXBvbmVudHMvdWkvYmFkZ2UiOwppbXBvcnQgeyBEaWFsb2csIERpYWxvZ0NvbnRlbnQsIERpYWxvZ0hlYWRlciwgRGlhbG9nVGl0bGUsIERpYWxvZ0Zvb3RlciwgRGlhbG9nVHJpZ2dlciB9IGZyb20gIkAvY29tcG9uZW50cy91aS9kaWFsb2ciOwppbXBvcnQgeyBTZWxlY3QsIFNlbGVjdENvbnRlbnQsIFNlbGVjdEl0ZW0sIFNlbGVjdFRyaWdnZXIsIFNlbGVjdFZhbHVlIH0gZnJvbSAiQC9jb21wb25lbnRzL3VpL3NlbGVjdCI7CmltcG9ydCB7IFN3aXRjaCB9IGZyb20gIkAvY29tcG9uZW50cy91aS9zd2l0Y2giOwppbXBvcnQgeyBDaGVja2JveCB9IGZyb20gIkAvY29tcG9uZW50cy91aS9jaGVja2JveCI7CmltcG9ydCB7IENvbmZpcm1EZWxldGUgfSBmcm9tICJAL2NvbXBvbmVudHMvQ29uZmlybURlbGV0ZSI7CmltcG9ydCB7IEFMTF9ST0xFUywgUk9MRV9MQUJFTCwgdHlwZSBBcHBSb2xlIH0gZnJvbSAiQC9saWIvcGVybWlzc2lvbnMiOwppbXBvcnQgeyB1c2VQZXJtaXNzaW9ucyB9IGZyb20gIkAvaG9va3MvdXNlUGVybWlzc2lvbnMiOwppbXBvcnQgeyB1c2VBdXRoIH0gZnJvbSAiQC9saWIvYXV0aC1jb250ZXh0IjsKaW1wb3J0IHsgdXNlSG9tZXN0ZWFkIH0gZnJvbSAiQC9saWIvaG9tZXN0ZWFkLWNvbnRleHQiOwppbXBvcnQgewogIGFkbWluTGlzdFVzZXJzLCBhZG1pbkNyZWF0ZVVzZXIsIGFkbWluVXBkYXRlUHJvZmlsZSwKICBhZG1pblNldFVzZXJSb2xlcywgYWRtaW5SZXNldFBhc3N3b3JkLCBhZG1pbkRlbGV0ZVVzZXIsCiAgYWRtaW5SZW1vdmVGcm9tSG9tZXN0ZWFkLAogIHR5cGUgQWRtaW5Vc2VyUm93LAp9IGZyb20gIkAvbGliL2FkbWluLXVzZXJzLmZ1bmN0aW9ucyI7CmltcG9ydCB7IFVzZXJQbHVzLCBTaGllbGQsIEtleVJvdW5kLCBUcmFzaDIsIFBlbmNpbCwgVXNlck1pbnVzIH0gZnJvbSAibHVjaWRlLXJlYWN0IjsKCmV4cG9ydCBjb25zdCBSb3V0ZSA9IGNyZWF0ZUZpbGVSb3V0ZSgiL19hdXRoZW50aWNhdGVkL2FkbWluL3VzZXJzIikoeyBjb21wb25lbnQ6IFVzZXJzUGFnZSB9KTsKCmZ1bmN0aW9uIFVzZXJzUGFnZSgpIHsKICBjb25zdCB7IGlzQWRtaW4sIGxvYWRpbmc6IHBlcm1Mb2FkaW5nIH0gPSB1c2VQZXJtaXNzaW9ucygpOwogIGNvbnN0IG5hdmlnYXRlID0gdXNlTmF2aWdhdGUoKTsKICBjb25zdCBsaXN0ID0gdXNlU2VydmVyRm4oYWRtaW5MaXN0VXNlcnMpOwogIGNvbnN0IHFjID0gdXNlUXVlcnlDbGllbnQoKTsKCiAgY29uc3QgdXNlcnNRID0gdXNlUXVlcnkoewogICAgcXVlcnlLZXk6IFsiYWRtaW4tdXNlcnMiXSwKICAgIHF1ZXJ5Rm46ICgpID0+IGxpc3QoKSwKICAgIGVuYWJsZWQ6IGlzQWRtaW4sCiAgfSk7CgogIGlmIChwZXJtTG9hZGluZykgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJwLTYgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5Mb2FkaW5n4oCmPC9kaXY+OwogIGlmICghaXNBZG1pbikgewogICAgcmV0dXJuICgKICAgICAgPGRpdiBjbGFzc05hbWU9InAtNiI+CiAgICAgICAgPENhcmQgY2xhc3NOYW1lPSJwLTYiPgogICAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC14bCBmb250LXNlbWlib2xkIj5BZG1pbnMgb25seTwvaDE+CiAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+WW91IGRvbid0IGhhdmUgcGVybWlzc2lvbiB0byBtYW5hZ2UgdXNlcnMuPC9wPgogICAgICAgICAgPEJ1dHRvbiBjbGFzc05hbWU9Im10LTMiIHZhcmlhbnQ9Im91dGxpbmUiIG9uQ2xpY2s9eygpID0+IG5hdmlnYXRlKHsgdG86ICIvc2V0dGluZ3MiIH0pfT5CYWNrIHRvIFNldHRpbmdzPC9CdXR0b24+CiAgICAgICAgPC9DYXJkPgogICAgICA8L2Rpdj4KICAgICk7CiAgfQoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9InNwYWNlLXktNiI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtd3JhcCBpdGVtcy1lbmQganVzdGlmeS1iZXR3ZWVuIGdhcC0zIj4KICAgICAgICA8ZGl2PgogICAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC0zeGwgZm9udC1kaXNwbGF5IGZvbnQtc2VtaWJvbGQiPlVzZXJzPC9oMT4KICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5NYW5hZ2Ugd2hvIGNhbiBzaWduIGluIGFuZCB3aGF0IHRoZXkgY2FuIGRvLjwvcD4KICAgICAgICA8L2Rpdj4KICAgICAgICA8Q3JlYXRlVXNlckRpYWxvZyBvbkNyZWF0ZWQ9eygpID0+IHFjLmludmFsaWRhdGVRdWVyaWVzKHsgcXVlcnlLZXk6IFsiYWRtaW4tdXNlcnMiXSB9KX0gLz4KICAgICAgPC9kaXY+CgogICAgICB7dXNlcnNRLmlzTG9hZGluZyAmJiA8ZGl2IGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5Mb2FkaW5nIHVzZXJz4oCmPC9kaXY+fQogICAgICB7dXNlcnNRLmVycm9yICYmIDxDYXJkIGNsYXNzTmFtZT0icC00IHRleHQtZGVzdHJ1Y3RpdmUiPkZhaWxlZCB0byBsb2FkOiB7KHVzZXJzUS5lcnJvciBhcyBFcnJvcikubWVzc2FnZX08L0NhcmQ+fQoKICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ2FwLTMiPgogICAgICAgIHsoQXJyYXkuaXNBcnJheSh1c2Vyc1EuZGF0YSkgPyB1c2Vyc1EuZGF0YSA6IFtdKS5tYXAoKHUpID0+ICgKICAgICAgICAgIDxVc2VyQ2FyZCBrZXk9e3UuaWR9IHVzZXI9e3V9IG9uQ2hhbmdlZD17KCkgPT4gcWMuaW52YWxpZGF0ZVF1ZXJpZXMoeyBxdWVyeUtleTogWyJhZG1pbi11c2VycyJdIH0pfSAvPgogICAgICAgICkpfQogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICk7Cn0KCmZ1bmN0aW9uIFVzZXJDYXJkKHsgdXNlciwgb25DaGFuZ2VkIH06IHsgdXNlcjogQWRtaW5Vc2VyUm93OyBvbkNoYW5nZWQ6ICgpID0+IHZvaWQgfSkgewogIGNvbnN0IHsgdXNlcjogbWUgfSA9IHVzZUF1dGgoKTsKICBjb25zdCB7IGN1cnJlbnRJZCwgY3VycmVudE5hbWUgfSA9IHVzZUhvbWVzdGVhZCgpOwogIGNvbnN0IGlzU2VsZiA9IG1lPy5pZCA9PT0gdXNlci5pZDsKICBjb25zdCB1cGRhdGVQcm9maWxlID0gdXNlU2VydmVyRm4oYWRtaW5VcGRhdGVQcm9maWxlKTsKICBjb25zdCBzZXRSb2xlcyA9IHVzZVNlcnZlckZuKGFkbWluU2V0VXNlclJvbGVzKTsKICBjb25zdCByZXNldFB3ZCA9IHVzZVNlcnZlckZuKGFkbWluUmVzZXRQYXNzd29yZCk7CiAgY29uc3QgZGVsID0gdXNlU2VydmVyRm4oYWRtaW5EZWxldGVVc2VyKTsKICBjb25zdCByZW1vdmVGcm9tSHMgPSB1c2VTZXJ2ZXJGbihhZG1pblJlbW92ZUZyb21Ib21lc3RlYWQpOwoKICBjb25zdCBhY3RpdmVNID0gdXNlTXV0YXRpb24oewogICAgbXV0YXRpb25GbjogKGFjdGl2ZTogYm9vbGVhbikgPT4gdXBkYXRlUHJvZmlsZSh7IGRhdGE6IHsgdXNlcl9pZDogdXNlci5pZCwgYWN0aXZlIH0gfSksCiAgICBvblN1Y2Nlc3M6ICgpID0+IHsgdG9hc3Quc3VjY2Vzcyh1c2VyLmFjdGl2ZSA/ICJVc2VyIGRlYWN0aXZhdGVkIiA6ICJVc2VyIGFjdGl2YXRlZCIpOyBvbkNoYW5nZWQoKTsgfSwKICAgIG9uRXJyb3I6IChlOiBhbnkpID0+IHRvYXN0LmVycm9yKGUubWVzc2FnZSksCiAgfSk7CgogIGNvbnN0IHJvbGVzTSA9IHVzZU11dGF0aW9uKHsKICAgIG11dGF0aW9uRm46IChyb2xlczogQXBwUm9sZVtdKSA9PiBzZXRSb2xlcyh7IGRhdGE6IHsgdXNlcl9pZDogdXNlci5pZCwgcm9sZXMgfSB9KSwKICAgIG9uU3VjY2VzczogKCkgPT4geyB0b2FzdC5zdWNjZXNzKCJSb2xlcyB1cGRhdGVkIik7IG9uQ2hhbmdlZCgpOyB9LAogICAgb25FcnJvcjogKGU6IGFueSkgPT4gdG9hc3QuZXJyb3IoZS5tZXNzYWdlKSwKICB9KTsKCiAgY29uc3QgZGVsZXRlTSA9IHVzZU11dGF0aW9uKHsKICAgIG11dGF0aW9uRm46ICgpID0+IGRlbCh7IGRhdGE6IHsgdXNlcl9pZDogdXNlci5pZCB9IH0pLAogICAgb25TdWNjZXNzOiAoKSA9PiB7IHRvYXN0LnN1Y2Nlc3MoIlVzZXIgYWNjb3VudCBkZWxldGVkIik7IG9uQ2hhbmdlZCgpOyB9LAogICAgb25FcnJvcjogKGU6IGFueSkgPT4gdG9hc3QuZXJyb3IoZS5tZXNzYWdlKSwKICB9KTsKCiAgY29uc3QgcmVtb3ZlRnJvbUhzTSA9IHVzZU11dGF0aW9uKHsKICAgIG11dGF0aW9uRm46ICgpID0+IHJlbW92ZUZyb21Icyh7IGRhdGE6IHsgdXNlcl9pZDogdXNlci5pZCwgaG9tZXN0ZWFkX2lkOiBjdXJyZW50SWQhIH0gfSksCiAgICBvblN1Y2Nlc3M6IChyOiBhbnkpID0+IHsgdG9hc3Quc3VjY2VzcyhgUmVtb3ZlZCBmcm9tICR7cj8uaG9tZXN0ZWFkTmFtZSA/PyAiaG9tZXN0ZWFkIn1gKTsgb25DaGFuZ2VkKCk7IH0sCiAgICBvbkVycm9yOiAoZTogYW55KSA9PiB0b2FzdC5lcnJvcihlLm1lc3NhZ2UpLAogIH0pOwoKICBjb25zdCBbZWRpdE9wZW4sIHNldEVkaXRPcGVuXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbcHdkT3Blbiwgc2V0UHdkT3Blbl0gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW3JvbGVzT3Blbiwgc2V0Um9sZXNPcGVuXSA9IHVzZVN0YXRlKGZhbHNlKTsKCiAgcmV0dXJuICgKICAgIDxDYXJkIGNsYXNzTmFtZT0icC00IHNwYWNlLXktMyI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtd3JhcCBpdGVtcy1zdGFydCBqdXN0aWZ5LWJldHdlZW4gZ2FwLTMiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtaW4tdy0wIj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBmbGV4LXdyYXAiPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZm9udC1zZW1pYm9sZCB0cnVuY2F0ZSI+e3VzZXIuZGlzcGxheV9uYW1lID8/IHVzZXIuZW1haWx9PC9kaXY+CiAgICAgICAgICAgIHshdXNlci5hY3RpdmUgJiYgPEJhZGdlIHZhcmlhbnQ9ImRlc3RydWN0aXZlIj5JbmFjdGl2ZTwvQmFkZ2U+fQogICAgICAgICAgICB7aXNTZWxmICYmIDxCYWRnZSB2YXJpYW50PSJzZWNvbmRhcnkiPllvdTwvQmFkZ2U+fQogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0idGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmQgdHJ1bmNhdGUiPnt1c2VyLmVtYWlsfTwvZGl2PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InRleHQteHMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIG10LTEiPgogICAgICAgICAgICBDcmVhdGVkIHtuZXcgRGF0ZSh1c2VyLmNyZWF0ZWRfYXQpLnRvTG9jYWxlRGF0ZVN0cmluZygpfSDCt3siICJ9CiAgICAgICAgICAgIExhc3QgbG9naW4ge3VzZXIubGFzdF9zaWduX2luX2F0ID8gbmV3IERhdGUodXNlci5sYXN0X3NpZ25faW5fYXQpLnRvTG9jYWxlU3RyaW5nKCkgOiAibmV2ZXIifQogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LXdyYXAgZ2FwLTEgbXQtMiI+CiAgICAgICAgICAgIHt1c2VyLnJvbGVzLmxlbmd0aCA9PT0gMCAmJiA8QmFkZ2UgdmFyaWFudD0ib3V0bGluZSI+Tm8gcm9sZTwvQmFkZ2U+fQogICAgICAgICAgICB7KHVzZXIucm9sZXMgPz8gW10pLm1hcCgocikgPT4gPEJhZGdlIGtleT17cn0+e1JPTEVfTEFCRUxbcl19PC9CYWRnZT4pfQogICAgICAgICAgPC9kaXY+CiAgICAgICAgICB7dXNlci5ub3RlcyAmJiA8ZGl2IGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LW11dGVkLWZvcmVncm91bmQgbXQtMiBpdGFsaWMiPnt1c2VyLm5vdGVzfTwvZGl2Pn0KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUiPgogICAgICAgICAgICA8U3dpdGNoCiAgICAgICAgICAgICAgY2hlY2tlZD17dXNlci5hY3RpdmV9CiAgICAgICAgICAgICAgb25DaGVja2VkQ2hhbmdlPXsodikgPT4gYWN0aXZlTS5tdXRhdGUodil9CiAgICAgICAgICAgICAgZGlzYWJsZWQ9e2lzU2VsZn0KICAgICAgICAgICAgLz4KICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+e3VzZXIuYWN0aXZlID8gIkFjdGl2ZSIgOiAiT2ZmIn08L3NwYW4+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LXdyYXAgZ2FwLTIiPgogICAgICAgIDxCdXR0b24gc2l6ZT0ic20iIHZhcmlhbnQ9Im91dGxpbmUiIG9uQ2xpY2s9eygpID0+IHNldEVkaXRPcGVuKHRydWUpfT48UGVuY2lsIGNsYXNzTmFtZT0iaC0zLjUgdy0zLjUiIC8+IEVkaXQ8L0J1dHRvbj4KICAgICAgICA8QnV0dG9uIHNpemU9InNtIiB2YXJpYW50PSJvdXRsaW5lIiBvbkNsaWNrPXsoKSA9PiBzZXRSb2xlc09wZW4odHJ1ZSl9PjxTaGllbGQgY2xhc3NOYW1lPSJoLTMuNSB3LTMuNSIgLz4gUm9sZXM8L0J1dHRvbj4KICAgICAgICA8QnV0dG9uIHNpemU9InNtIiB2YXJpYW50PSJvdXRsaW5lIiBvbkNsaWNrPXsoKSA9PiBzZXRQd2RPcGVuKHRydWUpfT48S2V5Um91bmQgY2xhc3NOYW1lPSJoLTMuNSB3LTMuNSIgLz4gUmVzZXQgcGFzc3dvcmQ8L0J1dHRvbj4KICAgICAgICB7IWlzU2VsZiAmJiBjdXJyZW50SWQgJiYgKAogICAgICAgICAgPENvbmZpcm1EZWxldGUKICAgICAgICAgICAgb25Db25maXJtPXsoKSA9PiByZW1vdmVGcm9tSHNNLm11dGF0ZSgpfQogICAgICAgICAgICB0aXRsZT17YFJlbW92ZSBmcm9tICR7Y3VycmVudE5hbWUgfHwgImhvbWVzdGVhZCJ9P2B9CiAgICAgICAgICAgIGRlc2NyaXB0aW9uPSJUaGV5J2xsIGxvc2UgYWNjZXNzIHRvIHRoaXMgaG9tZXN0ZWFkJ3MgZGF0YS4gVGhlaXIgYWNjb3VudCBhbmQgb3RoZXIgaG9tZXN0ZWFkcyBhcmUgdW50b3VjaGVkLiIKICAgICAgICAgICAgY29uZmlybUxhYmVsPSJSZW1vdmUiCiAgICAgICAgICAgIHRyaWdnZXI9ezxCdXR0b24gc2l6ZT0ic20iIHZhcmlhbnQ9Im91dGxpbmUiPjxVc2VyTWludXMgY2xhc3NOYW1lPSJoLTMuNSB3LTMuNSIgLz4gUmVtb3ZlIGZyb20gaG9tZXN0ZWFkPC9CdXR0b24+fQogICAgICAgICAgLz4KICAgICAgICApfQogICAgICAgIHshaXNTZWxmICYmICgKICAgICAgICAgIDxDb25maXJtRGVsZXRlCiAgICAgICAgICAgIG9uQ29uZmlybT17KCkgPT4gZGVsZXRlTS5tdXRhdGUoKX0KICAgICAgICAgICAgdGl0bGU9IkRlbGV0ZSB0aGlzIGFjY291bnQ/IgogICAgICAgICAgICBkZXNjcmlwdGlvbj0iVGhpcyBwZXJtYW5lbnRseSBkZWxldGVzIHRoZSB1c2VyJ3MgZW50aXJlIGFjY291bnQgYWNyb3NzIGFsbCBob21lc3RlYWRzLiBUaGlzIGNhbm5vdCBiZSB1bmRvbmUuIgogICAgICAgICAgICB0cmlnZ2VyPXs8QnV0dG9uIHNpemU9InNtIiB2YXJpYW50PSJkZXN0cnVjdGl2ZSI+PFRyYXNoMiBjbGFzc05hbWU9ImgtMy41IHctMy41IiAvPiBEZWxldGUgYWNjb3VudDwvQnV0dG9uPn0KICAgICAgICAgIC8+CiAgICAgICAgKX0KICAgICAgPC9kaXY+CgogICAgICA8RWRpdFByb2ZpbGVEaWFsb2cgb3Blbj17ZWRpdE9wZW59IG9uT3BlbkNoYW5nZT17c2V0RWRpdE9wZW59IHVzZXI9e3VzZXJ9IG9uU2F2ZWQ9e29uQ2hhbmdlZH0gLz4KICAgICAgPFJvbGVzRGlhbG9nIG9wZW49e3JvbGVzT3Blbn0gb25PcGVuQ2hhbmdlPXtzZXRSb2xlc09wZW59IHVzZXI9e3VzZXJ9CiAgICAgICAgb25TYXZlPXsocm9sZXMpID0+IHsgcm9sZXNNLm11dGF0ZShyb2xlcyk7IHNldFJvbGVzT3BlbihmYWxzZSk7IH19IC8+CiAgICAgIDxSZXNldFBhc3N3b3JkRGlhbG9nIG9wZW49e3B3ZE9wZW59IG9uT3BlbkNoYW5nZT17c2V0UHdkT3Blbn0gdXNlcklkPXt1c2VyLmlkfSAvPgogICAgPC9DYXJkPgogICk7Cn0KCmZ1bmN0aW9uIENyZWF0ZVVzZXJEaWFsb2coeyBvbkNyZWF0ZWQgfTogeyBvbkNyZWF0ZWQ6ICgpID0+IHZvaWQgfSkgewogIGNvbnN0IFtvcGVuLCBzZXRPcGVuXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBjcmVhdGUgPSB1c2VTZXJ2ZXJGbihhZG1pbkNyZWF0ZVVzZXIpOwogIGNvbnN0IFtmb3JtLCBzZXRGb3JtXSA9IHVzZVN0YXRlKHsgZW1haWw6ICIiLCBwYXNzd29yZDogIiIsIGRpc3BsYXlfbmFtZTogIiIsIHJvbGU6ICJ2aWV3ZXIiIGFzIEFwcFJvbGUsIG5vdGVzOiAiIiB9KTsKICBjb25zdCBtID0gdXNlTXV0YXRpb24oewogICAgbXV0YXRpb25GbjogKCkgPT4gY3JlYXRlKHsgZGF0YTogewogICAgICBlbWFpbDogZm9ybS5lbWFpbCwKICAgICAgcGFzc3dvcmQ6IGZvcm0ucGFzc3dvcmQsCiAgICAgIGRpc3BsYXlfbmFtZTogZm9ybS5kaXNwbGF5X25hbWUgfHwgdW5kZWZpbmVkLAogICAgICByb2xlOiBmb3JtLnJvbGUsCiAgICAgIG5vdGVzOiBmb3JtLm5vdGVzIHx8IHVuZGVmaW5lZCwKICAgIH0gfSksCiAgICBvblN1Y2Nlc3M6ICgpID0+IHsgdG9hc3Quc3VjY2VzcygiVXNlciBjcmVhdGVkIik7IHNldE9wZW4oZmFsc2UpOyBzZXRGb3JtKHsgZW1haWw6ICIiLCBwYXNzd29yZDogIiIsIGRpc3BsYXlfbmFtZTogIiIsIHJvbGU6ICJ2aWV3ZXIiLCBub3RlczogIiIgfSk7IG9uQ3JlYXRlZCgpOyB9LAogICAgb25FcnJvcjogKGU6IGFueSkgPT4gdG9hc3QuZXJyb3IoZS5tZXNzYWdlKSwKICB9KTsKICByZXR1cm4gKAogICAgPERpYWxvZyBvcGVuPXtvcGVufSBvbk9wZW5DaGFuZ2U9e3NldE9wZW59PgogICAgICA8RGlhbG9nVHJpZ2dlciBhc0NoaWxkPjxCdXR0b24+PFVzZXJQbHVzIGNsYXNzTmFtZT0iaC00IHctNCIgLz4gQWRkIHVzZXI8L0J1dHRvbj48L0RpYWxvZ1RyaWdnZXI+CiAgICAgIDxEaWFsb2dDb250ZW50IGNsYXNzTmFtZT0ibWF4LXctbWQiPgogICAgICAgIDxEaWFsb2dIZWFkZXI+PERpYWxvZ1RpdGxlPkFkZCB1c2VyPC9EaWFsb2dUaXRsZT48L0RpYWxvZ0hlYWRlcj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic3BhY2UteS0zIj4KICAgICAgICAgIDxkaXY+PExhYmVsPkVtYWlsPC9MYWJlbD48SW5wdXQgdHlwZT0iZW1haWwiIHZhbHVlPXtmb3JtLmVtYWlsfSBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBlbWFpbDogZS50YXJnZXQudmFsdWUgfSl9IC8+PC9kaXY+CiAgICAgICAgICA8ZGl2PjxMYWJlbD5QYXNzd29yZDwvTGFiZWw+PElucHV0IHR5cGU9InBhc3N3b3JkIiB2YWx1ZT17Zm9ybS5wYXNzd29yZH0gb25DaGFuZ2U9eyhlKSA9PiBzZXRGb3JtKHsgLi4uZm9ybSwgcGFzc3dvcmQ6IGUudGFyZ2V0LnZhbHVlIH0pfSBwbGFjZWhvbGRlcj0iTWluIDggY2hhcnMiIC8+PC9kaXY+CiAgICAgICAgICA8ZGl2PjxMYWJlbD5OYW1lPC9MYWJlbD48SW5wdXQgdmFsdWU9e2Zvcm0uZGlzcGxheV9uYW1lfSBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBkaXNwbGF5X25hbWU6IGUudGFyZ2V0LnZhbHVlIH0pfSAvPjwvZGl2PgogICAgICAgICAgPGRpdj4KICAgICAgICAgICAgPExhYmVsPlJvbGU8L0xhYmVsPgogICAgICAgICAgICA8U2VsZWN0IHZhbHVlPXtmb3JtLnJvbGV9IG9uVmFsdWVDaGFuZ2U9eyh2KSA9PiBzZXRGb3JtKHsgLi4uZm9ybSwgcm9sZTogdiBhcyBBcHBSb2xlIH0pfT4KICAgICAgICAgICAgICA8U2VsZWN0VHJpZ2dlcj48U2VsZWN0VmFsdWUgLz48L1NlbGVjdFRyaWdnZXI+CiAgICAgICAgICAgICAgPFNlbGVjdENvbnRlbnQ+e0FMTF9ST0xFUy5tYXAoKHIpID0+IDxTZWxlY3RJdGVtIGtleT17cn0gdmFsdWU9e3J9PntST0xFX0xBQkVMW3JdfTwvU2VsZWN0SXRlbT4pfTwvU2VsZWN0Q29udGVudD4KICAgICAgICAgICAgPC9TZWxlY3Q+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxkaXY+PExhYmVsPk5vdGVzPC9MYWJlbD48VGV4dGFyZWEgdmFsdWU9e2Zvcm0ubm90ZXN9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0Rm9ybSh7IC4uLmZvcm0sIG5vdGVzOiBlLnRhcmdldC52YWx1ZSB9KX0gLz48L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8RGlhbG9nRm9vdGVyPgogICAgICAgICAgPEJ1dHRvbiB2YXJpYW50PSJvdXRsaW5lIiBvbkNsaWNrPXsoKSA9PiBzZXRPcGVuKGZhbHNlKX0+Q2FuY2VsPC9CdXR0b24+CiAgICAgICAgICA8QnV0dG9uIG9uQ2xpY2s9eygpID0+IG0ubXV0YXRlKCl9IGRpc2FibGVkPXttLmlzUGVuZGluZyB8fCAhZm9ybS5lbWFpbCB8fCBmb3JtLnBhc3N3b3JkLmxlbmd0aCA8IDh9PgogICAgICAgICAgICB7bS5pc1BlbmRpbmcgPyAiQ3JlYXRpbmfigKYiIDogIkNyZWF0ZSJ9CiAgICAgICAgICA8L0J1dHRvbj4KICAgICAgICA8L0RpYWxvZ0Zvb3Rlcj4KICAgICAgPC9EaWFsb2dDb250ZW50PgogICAgPC9EaWFsb2c+CiAgKTsKfQoKZnVuY3Rpb24gRWRpdFByb2ZpbGVEaWFsb2coeyBvcGVuLCBvbk9wZW5DaGFuZ2UsIHVzZXIsIG9uU2F2ZWQgfTogeyBvcGVuOiBib29sZWFuOyBvbk9wZW5DaGFuZ2U6IChiOiBib29sZWFuKSA9PiB2b2lkOyB1c2VyOiBBZG1pblVzZXJSb3c7IG9uU2F2ZWQ6ICgpID0+IHZvaWQgfSkgewogIGNvbnN0IHVwZGF0ZVByb2ZpbGUgPSB1c2VTZXJ2ZXJGbihhZG1pblVwZGF0ZVByb2ZpbGUpOwogIGNvbnN0IFtkaXNwbGF5TmFtZSwgc2V0RGlzcGxheU5hbWVdID0gdXNlU3RhdGUodXNlci5kaXNwbGF5X25hbWUgPz8gIiIpOwogIGNvbnN0IFtub3Rlcywgc2V0Tm90ZXNdID0gdXNlU3RhdGUodXNlci5ub3RlcyA/PyAiIik7CiAgY29uc3QgbSA9IHVzZU11dGF0aW9uKHsKICAgIG11dGF0aW9uRm46ICgpID0+IHVwZGF0ZVByb2ZpbGUoeyBkYXRhOiB7IHVzZXJfaWQ6IHVzZXIuaWQsIGRpc3BsYXlfbmFtZTogZGlzcGxheU5hbWUsIG5vdGVzIH0gfSksCiAgICBvblN1Y2Nlc3M6ICgpID0+IHsgdG9hc3Quc3VjY2VzcygiU2F2ZWQiKTsgb25PcGVuQ2hhbmdlKGZhbHNlKTsgb25TYXZlZCgpOyB9LAogICAgb25FcnJvcjogKGU6IGFueSkgPT4gdG9hc3QuZXJyb3IoZS5tZXNzYWdlKSwKICB9KTsKICByZXR1cm4gKAogICAgPERpYWxvZyBvcGVuPXtvcGVufSBvbk9wZW5DaGFuZ2U9e29uT3BlbkNoYW5nZX0+CiAgICAgIDxEaWFsb2dDb250ZW50IGNsYXNzTmFtZT0ibWF4LXctbWQiPgogICAgICAgIDxEaWFsb2dIZWFkZXI+PERpYWxvZ1RpdGxlPkVkaXQgdXNlcjwvRGlhbG9nVGl0bGU+PC9EaWFsb2dIZWFkZXI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InNwYWNlLXktMyI+CiAgICAgICAgICA8ZGl2PjxMYWJlbD5OYW1lPC9MYWJlbD48SW5wdXQgdmFsdWU9e2Rpc3BsYXlOYW1lfSBvbkNoYW5nZT17KGUpID0+IHNldERpc3BsYXlOYW1lKGUudGFyZ2V0LnZhbHVlKX0gLz48L2Rpdj4KICAgICAgICAgIDxkaXY+PExhYmVsPk5vdGVzPC9MYWJlbD48VGV4dGFyZWEgdmFsdWU9e25vdGVzfSBvbkNoYW5nZT17KGUpID0+IHNldE5vdGVzKGUudGFyZ2V0LnZhbHVlKX0gLz48L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8RGlhbG9nRm9vdGVyPgogICAgICAgICAgPEJ1dHRvbiB2YXJpYW50PSJvdXRsaW5lIiBvbkNsaWNrPXsoKSA9PiBvbk9wZW5DaGFuZ2UoZmFsc2UpfT5DYW5jZWw8L0J1dHRvbj4KICAgICAgICAgIDxCdXR0b24gb25DbGljaz17KCkgPT4gbS5tdXRhdGUoKX0gZGlzYWJsZWQ9e20uaXNQZW5kaW5nfT57bS5pc1BlbmRpbmcgPyAiU2F2aW5n4oCmIiA6ICJTYXZlIn08L0J1dHRvbj4KICAgICAgICA8L0RpYWxvZ0Zvb3Rlcj4KICAgICAgPC9EaWFsb2dDb250ZW50PgogICAgPC9EaWFsb2c+CiAgKTsKfQoKZnVuY3Rpb24gUm9sZXNEaWFsb2coeyBvcGVuLCBvbk9wZW5DaGFuZ2UsIHVzZXIsIG9uU2F2ZSB9OiB7IG9wZW46IGJvb2xlYW47IG9uT3BlbkNoYW5nZTogKGI6IGJvb2xlYW4pID0+IHZvaWQ7IHVzZXI6IEFkbWluVXNlclJvdzsgb25TYXZlOiAocm9sZXM6IEFwcFJvbGVbXSkgPT4gdm9pZCB9KSB7CiAgY29uc3QgW3NlbGVjdGVkLCBzZXRTZWxlY3RlZF0gPSB1c2VTdGF0ZTxTZXQ8QXBwUm9sZT4+KG5ldyBTZXQodXNlci5yb2xlcykpOwogIHJldHVybiAoCiAgICA8RGlhbG9nIG9wZW49e29wZW59IG9uT3BlbkNoYW5nZT17b25PcGVuQ2hhbmdlfT4KICAgICAgPERpYWxvZ0NvbnRlbnQgY2xhc3NOYW1lPSJtYXgtdy1tZCI+CiAgICAgICAgPERpYWxvZ0hlYWRlcj48RGlhbG9nVGl0bGU+QXNzaWduIHJvbGVzIOKAlCB7dXNlci5kaXNwbGF5X25hbWUgPz8gdXNlci5lbWFpbH08L0RpYWxvZ1RpdGxlPjwvRGlhbG9nSGVhZGVyPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTIgbWF4LWgtODAgb3ZlcmZsb3ctYXV0byI+CiAgICAgICAgICB7QUxMX1JPTEVTLm1hcCgocikgPT4gKAogICAgICAgICAgICA8bGFiZWwga2V5PXtyfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHAtMiByb3VuZGVkIGhvdmVyOmJnLW11dGVkIGN1cnNvci1wb2ludGVyIj4KICAgICAgICAgICAgICA8Q2hlY2tib3gKICAgICAgICAgICAgICAgIGNoZWNrZWQ9e3NlbGVjdGVkLmhhcyhyKX0KICAgICAgICAgICAgICAgIG9uQ2hlY2tlZENoYW5nZT17KGMpID0+IHsKICAgICAgICAgICAgICAgICAgY29uc3QgbmV4dCA9IG5ldyBTZXQoc2VsZWN0ZWQpOwogICAgICAgICAgICAgICAgICBpZiAoYykgbmV4dC5hZGQocik7IGVsc2UgbmV4dC5kZWxldGUocik7CiAgICAgICAgICAgICAgICAgIHNldFNlbGVjdGVkKG5leHQpOwogICAgICAgICAgICAgICAgfX0KICAgICAgICAgICAgICAvPgogICAgICAgICAgICAgIDxzcGFuPntST0xFX0xBQkVMW3JdfTwvc3Bhbj4KICAgICAgICAgICAgPC9sYWJlbD4KICAgICAgICAgICkpfQogICAgICAgIDwvZGl2PgogICAgICAgIDxEaWFsb2dGb290ZXI+CiAgICAgICAgICA8QnV0dG9uIHZhcmlhbnQ9Im91dGxpbmUiIG9uQ2xpY2s9eygpID0+IG9uT3BlbkNoYW5nZShmYWxzZSl9PkNhbmNlbDwvQnV0dG9uPgogICAgICAgICAgPEJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBvblNhdmUoQXJyYXkuZnJvbShzZWxlY3RlZCkpfT5TYXZlIHJvbGVzPC9CdXR0b24+CiAgICAgICAgPC9EaWFsb2dGb290ZXI+CiAgICAgIDwvRGlhbG9nQ29udGVudD4KICAgIDwvRGlhbG9nPgogICk7Cn0KCmZ1bmN0aW9uIFJlc2V0UGFzc3dvcmREaWFsb2coeyBvcGVuLCBvbk9wZW5DaGFuZ2UsIHVzZXJJZCB9OiB7IG9wZW46IGJvb2xlYW47IG9uT3BlbkNoYW5nZTogKGI6IGJvb2xlYW4pID0+IHZvaWQ7IHVzZXJJZDogc3RyaW5nIH0pIHsKICBjb25zdCByZXNldCA9IHVzZVNlcnZlckZuKGFkbWluUmVzZXRQYXNzd29yZCk7CiAgY29uc3QgW3B3ZCwgc2V0UHdkXSA9IHVzZVN0YXRlKCIiKTsKICBjb25zdCBtID0gdXNlTXV0YXRpb24oewogICAgbXV0YXRpb25GbjogKCkgPT4gcmVzZXQoeyBkYXRhOiB7IHVzZXJfaWQ6IHVzZXJJZCwgcGFzc3dvcmQ6IHB3ZCB9IH0pLAogICAgb25TdWNjZXNzOiAoKSA9PiB7IHRvYXN0LnN1Y2Nlc3MoIlBhc3N3b3JkIHJlc2V0Iik7IG9uT3BlbkNoYW5nZShmYWxzZSk7IHNldFB3ZCgiIik7IH0sCiAgICBvbkVycm9yOiAoZTogYW55KSA9PiB0b2FzdC5lcnJvcihlLm1lc3NhZ2UpLAogIH0pOwogIHJldHVybiAoCiAgICA8RGlhbG9nIG9wZW49e29wZW59IG9uT3BlbkNoYW5nZT17b25PcGVuQ2hhbmdlfT4KICAgICAgPERpYWxvZ0NvbnRlbnQgY2xhc3NOYW1lPSJtYXgtdy1zbSI+CiAgICAgICAgPERpYWxvZ0hlYWRlcj48RGlhbG9nVGl0bGU+UmVzZXQgcGFzc3dvcmQ8L0RpYWxvZ1RpdGxlPjwvRGlhbG9nSGVhZGVyPgogICAgICAgIDxkaXY+PExhYmVsPk5ldyBwYXNzd29yZDwvTGFiZWw+PElucHV0IHR5cGU9InBhc3N3b3JkIiB2YWx1ZT17cHdkfSBvbkNoYW5nZT17KGUpID0+IHNldFB3ZChlLnRhcmdldC52YWx1ZSl9IHBsYWNlaG9sZGVyPSJNaW4gOCBjaGFycyIgLz48L2Rpdj4KICAgICAgICA8RGlhbG9nRm9vdGVyPgogICAgICAgICAgPEJ1dHRvbiB2YXJpYW50PSJvdXRsaW5lIiBvbkNsaWNrPXsoKSA9PiBvbk9wZW5DaGFuZ2UoZmFsc2UpfT5DYW5jZWw8L0J1dHRvbj4KICAgICAgICAgIDxCdXR0b24gb25DbGljaz17KCkgPT4gbS5tdXRhdGUoKX0gZGlzYWJsZWQ9e20uaXNQZW5kaW5nIHx8IHB3ZC5sZW5ndGggPCA4fT57bS5pc1BlbmRpbmcgPyAiU2F2aW5n4oCmIiA6ICJTZXQgcGFzc3dvcmQifTwvQnV0dG9uPgogICAgICAgIDwvRGlhbG9nRm9vdGVyPgogICAgICA8L0RpYWxvZ0NvbnRlbnQ+CiAgICA8L0RpYWxvZz4KICApOwp9Cg==
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
+import { ALL_ROLES, ROLE_LABEL, type AppRole } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/usePermissions";
+import { useAuth } from "@/lib/auth-context";
+import { useHomestead } from "@/lib/homestead-context";
+import {
+  adminListUsers, adminCreateUser, adminUpdateProfile,
+  adminSetUserRoles, adminResetPassword, adminDeleteUser,
+  adminRemoveFromHomestead,
+  type AdminUserRow,
+} from "@/lib/admin-users.functions";
+import { UserPlus, Shield, KeyRound, Trash2, Pencil, UserMinus } from "lucide-react";
+
+export const Route = createFileRoute("/_authenticated/admin/users")({ component: UsersPage });
+
+function UsersPage() {
+  const { isAdmin, loading: permLoading } = usePermissions();
+  const navigate = useNavigate();
+  const list = useServerFn(adminListUsers);
+  const qc = useQueryClient();
+
+  const usersQ = useQuery({
+    queryKey: ["admin-users"],
+    queryFn: () => list(),
+    enabled: isAdmin,
+  });
+
+  if (permLoading) return <div className="p-6 text-muted-foreground">Loading…</div>;
+  if (!isAdmin) {
+    return (
+      <div className="p-6">
+        <Card className="p-6">
+          <h1 className="text-xl font-semibold">Admins only</h1>
+          <p className="text-muted-foreground">You don't have permission to manage users.</p>
+          <Button className="mt-3" variant="outline" onClick={() => navigate({ to: "/settings" })}>Back to Settings</Button>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-display font-semibold">Users</h1>
+          <p className="text-muted-foreground">Manage who can sign in and what they can do.</p>
+        </div>
+        <CreateUserDialog onCreated={() => qc.invalidateQueries({ queryKey: ["admin-users"] })} />
+      </div>
+
+      {usersQ.isLoading && <div className="text-muted-foreground">Loading users…</div>}
+      {usersQ.error && <Card className="p-4 text-destructive">Failed to load: {(usersQ.error as Error).message}</Card>}
+
+      <div className="grid gap-3">
+        {(Array.isArray(usersQ.data) ? usersQ.data : []).map((u) => (
+          <UserCard key={u.id} user={u} onChanged={() => qc.invalidateQueries({ queryKey: ["admin-users"] })} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function UserCard({ user, onChanged }: { user: AdminUserRow; onChanged: () => void }) {
+  const { user: me } = useAuth();
+  const { currentId, currentName } = useHomestead();
+  const isSelf = me?.id === user.id;
+  const updateProfile = useServerFn(adminUpdateProfile);
+  const setRoles = useServerFn(adminSetUserRoles);
+  const resetPwd = useServerFn(adminResetPassword);
+  const del = useServerFn(adminDeleteUser);
+  const removeFromHs = useServerFn(adminRemoveFromHomestead);
+
+  const activeM = useMutation({
+    mutationFn: (active: boolean) => updateProfile({ data: { user_id: user.id, active } }),
+    onSuccess: () => { toast.success(user.active ? "User deactivated" : "User activated"); onChanged(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const rolesM = useMutation({
+    mutationFn: (roles: AppRole[]) => setRoles({ data: { user_id: user.id, roles } }),
+    onSuccess: () => { toast.success("Roles updated"); onChanged(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const deleteM = useMutation({
+    mutationFn: () => del({ data: { user_id: user.id } }),
+    onSuccess: () => { toast.success("User account deleted"); onChanged(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const removeFromHsM = useMutation({
+    mutationFn: () => removeFromHs({ data: { user_id: user.id, homestead_id: currentId! } }),
+    onSuccess: (r: any) => { toast.success(`Removed from ${r?.homesteadName ?? "homestead"}`); onChanged(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [pwdOpen, setPwdOpen] = useState(false);
+  const [rolesOpen, setRolesOpen] = useState(false);
+
+  return (
+    <Card className="p-4 space-y-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="font-semibold truncate">{user.display_name ?? user.email}</div>
+            {!user.active && <Badge variant="destructive">Inactive</Badge>}
+            {isSelf && <Badge variant="secondary">You</Badge>}
+          </div>
+          <div className="text-sm text-muted-foreground truncate">{user.email}</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Created {new Date(user.created_at).toLocaleDateString()} ·{" "}
+            Last login {user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "never"}
+          </div>
+          <div className="flex flex-wrap gap-1 mt-2">
+            {user.roles.length === 0 && <Badge variant="outline">No role</Badge>}
+            {(user.roles ?? []).map((r) => <Badge key={r}>{ROLE_LABEL[r]}</Badge>)}
+          </div>
+          {user.notes && <div className="text-xs text-muted-foreground mt-2 italic">{user.notes}</div>}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <Switch
+              checked={user.active}
+              onCheckedChange={(v) => activeM.mutate(v)}
+              disabled={isSelf}
+            />
+            <span className="text-xs text-muted-foreground">{user.active ? "Active" : "Off"}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm" variant="outline" onClick={() => setEditOpen(true)}><Pencil className="h-3.5 w-3.5" /> Edit</Button>
+        <Button size="sm" variant="outline" onClick={() => setRolesOpen(true)}><Shield className="h-3.5 w-3.5" /> Roles</Button>
+        <Button size="sm" variant="outline" onClick={() => setPwdOpen(true)}><KeyRound className="h-3.5 w-3.5" /> Reset password</Button>
+        {!isSelf && currentId && (
+          <ConfirmDelete
+            onConfirm={() => removeFromHsM.mutate()}
+            title={`Remove from ${currentName || "homestead"}?`}
+            description="They'll lose access to this homestead's data. Their account and other homesteads are untouched."
+            confirmLabel="Remove"
+            trigger={<Button size="sm" variant="outline"><UserMinus className="h-3.5 w-3.5" /> Remove from homestead</Button>}
+          />
+        )}
+        {!isSelf && (
+          <ConfirmDelete
+            onConfirm={() => deleteM.mutate()}
+            title="Delete this account?"
+            description="This permanently deletes the user's entire account across all homesteads. This cannot be undone."
+            trigger={<Button size="sm" variant="destructive"><Trash2 className="h-3.5 w-3.5" /> Delete account</Button>}
+          />
+        )}
+      </div>
+
+      <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} user={user} onSaved={onChanged} />
+      <RolesDialog open={rolesOpen} onOpenChange={setRolesOpen} user={user}
+        onSave={(roles) => { rolesM.mutate(roles); setRolesOpen(false); }} />
+      <ResetPasswordDialog open={pwdOpen} onOpenChange={setPwdOpen} userId={user.id} />
+    </Card>
+  );
+}
+
+function CreateUserDialog({ onCreated }: { onCreated: () => void }) {
+  const [open, setOpen] = useState(false);
+  const create = useServerFn(adminCreateUser);
+  const [form, setForm] = useState({ email: "", password: "", display_name: "", role: "viewer" as AppRole, notes: "" });
+  const m = useMutation({
+    mutationFn: () => create({ data: {
+      email: form.email,
+      password: form.password,
+      display_name: form.display_name || undefined,
+      role: form.role,
+      notes: form.notes || undefined,
+    } }),
+    onSuccess: () => { toast.success("User created"); setOpen(false); setForm({ email: "", password: "", display_name: "", role: "viewer", notes: "" }); onCreated(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild><Button><UserPlus className="h-4 w-4" /> Add user</Button></DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader><DialogTitle>Add user</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+          <div><Label>Password</Label><Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Min 8 chars" /></div>
+          <div><Label>Name</Label><Input value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} /></div>
+          <div>
+            <Label>Role</Label>
+            <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v as AppRole })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{ALL_ROLES.map((r) => <SelectItem key={r} value={r}>{ROLE_LABEL[r]}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={() => m.mutate()} disabled={m.isPending || !form.email || form.password.length < 8}>
+            {m.isPending ? "Creating…" : "Create"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function EditProfileDialog({ open, onOpenChange, user, onSaved }: { open: boolean; onOpenChange: (b: boolean) => void; user: AdminUserRow; onSaved: () => void }) {
+  const updateProfile = useServerFn(adminUpdateProfile);
+  const [displayName, setDisplayName] = useState(user.display_name ?? "");
+  const [notes, setNotes] = useState(user.notes ?? "");
+  const m = useMutation({
+    mutationFn: () => updateProfile({ data: { user_id: user.id, display_name: displayName, notes } }),
+    onSuccess: () => { toast.success("Saved"); onOpenChange(false); onSaved(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader><DialogTitle>Edit user</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div><Label>Name</Label><Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} /></div>
+          <div><Label>Notes</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={() => m.mutate()} disabled={m.isPending}>{m.isPending ? "Saving…" : "Save"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function RolesDialog({ open, onOpenChange, user, onSave }: { open: boolean; onOpenChange: (b: boolean) => void; user: AdminUserRow; onSave: (roles: AppRole[]) => void }) {
+  const [selected, setSelected] = useState<Set<AppRole>>(new Set(user.roles));
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader><DialogTitle>Assign roles — {user.display_name ?? user.email}</DialogTitle></DialogHeader>
+        <div className="space-y-2 max-h-80 overflow-auto">
+          {ALL_ROLES.map((r) => (
+            <label key={r} className="flex items-center gap-2 p-2 rounded hover:bg-muted cursor-pointer">
+              <Checkbox
+                checked={selected.has(r)}
+                onCheckedChange={(c) => {
+                  const next = new Set(selected);
+                  if (c) next.add(r); else next.delete(r);
+                  setSelected(next);
+                }}
+              />
+              <span>{ROLE_LABEL[r]}</span>
+            </label>
+          ))}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={() => onSave(Array.from(selected))}>Save roles</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ResetPasswordDialog({ open, onOpenChange, userId }: { open: boolean; onOpenChange: (b: boolean) => void; userId: string }) {
+  const reset = useServerFn(adminResetPassword);
+  const [pwd, setPwd] = useState("");
+  const m = useMutation({
+    mutationFn: () => reset({ data: { user_id: userId, password: pwd } }),
+    onSuccess: () => { toast.success("Password reset"); onOpenChange(false); setPwd(""); },
+    onError: (e: any) => toast.error(e.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader><DialogTitle>Reset password</DialogTitle></DialogHeader>
+        <div><Label>New password</Label><Input type="password" value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Min 8 chars" /></div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={() => m.mutate()} disabled={m.isPending || pwd.length < 8}>{m.isPending ? "Saving…" : "Set password"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
