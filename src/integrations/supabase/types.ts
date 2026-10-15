@@ -1068,6 +1068,7 @@ export type Database = {
           price_cents: number
           purchased_on: string
           quantity: number
+          receipt_photo_path: string | null
           store: string | null
           total_lbs: number
           unit_type: string
@@ -1088,6 +1089,7 @@ export type Database = {
           price_cents: number
           purchased_on?: string
           quantity: number
+          receipt_photo_path?: string | null
           store?: string | null
           total_lbs?: number
           unit_type?: string
@@ -1108,6 +1110,7 @@ export type Database = {
           price_cents?: number
           purchased_on?: string
           quantity?: number
+          receipt_photo_path?: string | null
           store?: string | null
           total_lbs?: number
           unit_type?: string
@@ -1647,6 +1650,232 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "pens_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_generator_logs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          fuel_cost_cents: number | null
+          fuel_gallons: number | null
+          generator_id: string
+          homestead_id: string
+          id: string
+          kind: string
+          logged_at: string
+          maintenance_type: string | null
+          notes: string | null
+          runtime_hours: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          fuel_cost_cents?: number | null
+          fuel_gallons?: number | null
+          generator_id: string
+          homestead_id?: string
+          id?: string
+          kind: string
+          logged_at?: string
+          maintenance_type?: string | null
+          notes?: string | null
+          runtime_hours?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          fuel_cost_cents?: number | null
+          fuel_gallons?: number | null
+          generator_id?: string
+          homestead_id?: string
+          id?: string
+          kind?: string
+          logged_at?: string
+          maintenance_type?: string | null
+          notes?: string | null
+          runtime_hours?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_generator_logs_generator_id_fkey"
+            columns: ["generator_id"]
+            isOneToOne: false
+            referencedRelation: "power_generators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "power_generator_logs_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_generators: {
+        Row: {
+          burn_rate_gph: number
+          created_at: string
+          created_by: string | null
+          current_fuel_gal: number
+          fuel_type: string
+          homestead_id: string
+          id: string
+          last_maintenance_at: string | null
+          last_maintenance_hrs: number
+          last_maintenance_type: string | null
+          name: string
+          notes: string | null
+          oil_change_interval_hrs: number
+          tank_capacity_gal: number
+          total_runtime_hrs: number
+          updated_at: string
+        }
+        Insert: {
+          burn_rate_gph?: number
+          created_at?: string
+          created_by?: string | null
+          current_fuel_gal?: number
+          fuel_type?: string
+          homestead_id?: string
+          id?: string
+          last_maintenance_at?: string | null
+          last_maintenance_hrs?: number
+          last_maintenance_type?: string | null
+          name: string
+          notes?: string | null
+          oil_change_interval_hrs?: number
+          tank_capacity_gal?: number
+          total_runtime_hrs?: number
+          updated_at?: string
+        }
+        Update: {
+          burn_rate_gph?: number
+          created_at?: string
+          created_by?: string | null
+          current_fuel_gal?: number
+          fuel_type?: string
+          homestead_id?: string
+          id?: string
+          last_maintenance_at?: string | null
+          last_maintenance_hrs?: number
+          last_maintenance_type?: string | null
+          name?: string
+          notes?: string | null
+          oil_change_interval_hrs?: number
+          tank_capacity_gal?: number
+          total_runtime_hrs?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_generators_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_propane_logs: {
+        Row: {
+          cost_cents: number | null
+          created_at: string
+          created_by: string | null
+          gallons: number | null
+          homestead_id: string
+          id: string
+          kind: string
+          level_pct: number | null
+          logged_at: string
+          notes: string | null
+          tank_id: string
+        }
+        Insert: {
+          cost_cents?: number | null
+          created_at?: string
+          created_by?: string | null
+          gallons?: number | null
+          homestead_id?: string
+          id?: string
+          kind: string
+          level_pct?: number | null
+          logged_at?: string
+          notes?: string | null
+          tank_id: string
+        }
+        Update: {
+          cost_cents?: number | null
+          created_at?: string
+          created_by?: string | null
+          gallons?: number | null
+          homestead_id?: string
+          id?: string
+          kind?: string
+          level_pct?: number | null
+          logged_at?: string
+          notes?: string | null
+          tank_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_propane_logs_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "power_propane_logs_tank_id_fkey"
+            columns: ["tank_id"]
+            isOneToOne: false
+            referencedRelation: "power_propane_tanks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_propane_tanks: {
+        Row: {
+          capacity_gal: number
+          created_at: string
+          created_by: string | null
+          current_level_pct: number
+          homestead_id: string
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          capacity_gal?: number
+          created_at?: string
+          created_by?: string | null
+          current_level_pct?: number
+          homestead_id?: string
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          capacity_gal?: number
+          created_at?: string
+          created_by?: string | null
+          current_level_pct?: number
+          homestead_id?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_propane_tanks_homestead_id_fkey"
             columns: ["homestead_id"]
             isOneToOne: false
             referencedRelation: "homesteads"
