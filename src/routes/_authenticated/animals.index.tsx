@@ -48,6 +48,8 @@ type Animal = {
   purchase_cost_cents?: number | null; purchase_date?: string | null;
   expected_sale_price_cents?: number | null;
   sale_price_cents?: number | null; sale_date?: string | null;
+  for_sale?: boolean | null; listing_price_cents?: number | null;
+  sale_notes?: string | null; sale_listed_at?: string | null;
   current_pen?: string | null;
 };
 
@@ -336,6 +338,11 @@ function AnimalsPage() {
                             <Badge className={cn("text-[10px] px-1.5 py-0 h-5", statusBadgeClass(a.status))}>
                               {a.status.replace(/_/g, " ")}
                             </Badge>
+                            {a.for_sale && (
+                              <Badge className="text-[10px] px-1.5 py-0 h-5 bg-green-600 text-white hover:bg-green-600">
+                                For Sale
+                              </Badge>
+                            )}
                             {a.tag && (
                               <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                                 #{a.tag}

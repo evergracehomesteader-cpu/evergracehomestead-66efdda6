@@ -16,6 +16,7 @@ import { format, addDays } from "date-fns";
 import { toast } from "sonner";
 import { gestationFor, statusBadgeClass, weaningDaysFor } from "@/lib/homestead";
 import { LineageTree } from "@/components/LineageTree";
+import { ForSaleCard } from "@/components/ForSaleCard";
 import { WithdrawalBanner } from "@/components/WithdrawalBanner";
 import { loadAnimalFinance } from "@/lib/animal-finance";
 import { SignedImg } from "@/components/SignedImg";
@@ -237,6 +238,7 @@ function AnimalDetail() {
           <p className="text-muted-foreground">{animal.species}{animal.breed ? ` · ${animal.breed}` : ""} · {animal.sex}</p>
           <div className="flex gap-2 flex-wrap mt-2">
             <Badge className={statusBadgeClass(animal.status)}>{animal.status}</Badge>
+            {animal.for_sale && <Badge className="bg-green-600 text-white hover:bg-green-600">For Sale</Badge>}
             {(animal.temperament_tags ?? []).map((t: string) => <Badge key={t} variant="outline">{t}</Badge>)}
           </div>
         </div>
@@ -259,6 +261,8 @@ function AnimalDetail() {
           </div>
         </Card>
       </div>
+
+      <ForSaleCard animal={animal} onUpdate={(p) => updateAnimal.mutate(p)} />
 
       <WithdrawalBanner records={healthRecs ?? []} />
 
