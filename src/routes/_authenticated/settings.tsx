@@ -69,10 +69,11 @@ function SettingsPage() {
             </dd>
           </div>
         </dl>
-        <div className="flex gap-2 pt-2">
+        <div className="flex gap-2 pt-2 flex-wrap">
           <Button size="sm" variant="outline" asChild><Link to="/changelog">Changelog</Link></Button>
           <Button size="sm" variant="outline" asChild><Link to="/app-updates">App Updates</Link></Button>
           <Button size="sm" variant="outline" asChild><Link to="/pwa-diagnostics"><Wifi className="h-4 w-4 mr-1" /> PWA Diagnostics</Link></Button>
+          <Button size="sm" variant="outline" onClick={() => window.dispatchEvent(new Event("hh:show-tour"))}>Replay the welcome tour</Button>
         </div>
       </Card>
     </div>

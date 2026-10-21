@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { DemoBanner } from "@/components/DemoBanner";
+import { OnboardingTour } from "@/components/OnboardingTour";
 import { HomesteadSwitcher } from "@/components/HomesteadSwitcher";
 import { SyncStatus } from "@/lib/offline/SyncStatus";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -55,6 +56,7 @@ function AuthLayout() {
           </div>
           <MobileTabBar />
         </div>
+        <OnboardingTour />
       </SidebarProvider>
     </HomesteadProvider>
   );
