@@ -39,6 +39,7 @@ import { Route as AcceptInviteTokenRouteImport } from './routes/accept-invite.$t
 import { Route as AuthenticatedAdminBackupsRouteImport } from './routes/_authenticated/admin.backups'
 import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin.roles'
 import { Route as AuthenticatedAdminSuggestionsRouteImport } from './routes/_authenticated/admin.suggestions'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAnimalsIndexRouteImport } from './routes/_authenticated/animals.index'
 import { Route as AuthenticatedAnimalsAnimalIdRouteImport } from './routes/_authenticated/animals.$animalId'
 
@@ -195,6 +196,11 @@ const AuthenticatedAdminSuggestionsRoute =
     path: '/admin/suggestions',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAnimalsIndexRoute =
   AuthenticatedAnimalsIndexRouteImport.update({
     id: '/animals/',
@@ -238,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/suggestions': typeof AuthenticatedAdminSuggestionsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
   '/animals/': typeof AuthenticatedAnimalsIndexRoute
 }
@@ -271,6 +278,7 @@ export interface FileRoutesByTo {
   '/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/admin/suggestions': typeof AuthenticatedAdminSuggestionsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
   '/animals': typeof AuthenticatedAnimalsIndexRoute
 }
@@ -306,6 +314,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/backups': typeof AuthenticatedAdminBackupsRoute
   '/_authenticated/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/_authenticated/admin/suggestions': typeof AuthenticatedAdminSuggestionsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/animals/$animalId': typeof AuthenticatedAnimalsAnimalIdRoute
   '/_authenticated/animals/': typeof AuthenticatedAnimalsIndexRoute
 }
@@ -341,6 +350,7 @@ export interface FileRouteTypes {
     | '/admin/backups'
     | '/admin/roles'
     | '/admin/suggestions'
+    | '/admin/users'
     | '/animals/$animalId'
     | '/animals/'
   fileRoutesByTo: FileRoutesByTo
@@ -374,6 +384,7 @@ export interface FileRouteTypes {
     | '/admin/backups'
     | '/admin/roles'
     | '/admin/suggestions'
+    | '/admin/users'
     | '/animals/$animalId'
     | '/animals'
   id:
@@ -408,6 +419,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/backups'
     | '/_authenticated/admin/roles'
     | '/_authenticated/admin/suggestions'
+    | '/_authenticated/admin/users'
     | '/_authenticated/animals/$animalId'
     | '/_authenticated/animals/'
   fileRoutesById: FileRoutesById
@@ -631,6 +643,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSuggestionsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/animals/': {
       id: '/_authenticated/animals/'
       path: '/animals'
@@ -675,6 +694,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminBackupsRoute: typeof AuthenticatedAdminBackupsRoute
   AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
   AuthenticatedAdminSuggestionsRoute: typeof AuthenticatedAdminSuggestionsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAnimalsAnimalIdRoute: typeof AuthenticatedAnimalsAnimalIdRoute
   AuthenticatedAnimalsIndexRoute: typeof AuthenticatedAnimalsIndexRoute
 }
@@ -706,6 +726,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminBackupsRoute: AuthenticatedAdminBackupsRoute,
   AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
   AuthenticatedAdminSuggestionsRoute: AuthenticatedAdminSuggestionsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAnimalsAnimalIdRoute: AuthenticatedAnimalsAnimalIdRoute,
   AuthenticatedAnimalsIndexRoute: AuthenticatedAnimalsIndexRoute,
 }
