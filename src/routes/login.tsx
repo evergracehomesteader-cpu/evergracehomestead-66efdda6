@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Navigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Navigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/lib/supabase";
@@ -138,6 +138,11 @@ function LoginPage() {
           {mode === "signup"
             ? "By creating an account, you get your own private homestead."
             : "New here? Create an account to start your own homestead."}
+        </p>
+        <p className="text-xs text-muted-foreground text-center mt-3">
+          <Link to="/privacy" className="underline">Privacy Policy</Link>
+          {" · "}
+          <Link to="/terms" className="underline">Terms of Service</Link>
         </p>
       </div>
     </div>
