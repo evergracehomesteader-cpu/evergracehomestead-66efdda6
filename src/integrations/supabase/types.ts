@@ -2383,6 +2383,10 @@ export type Database = {
         Args: { _hid: string; _uid: string }
         Returns: boolean
       }
+      receipt_photo_shared: {
+        Args: { _name: string; _uid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       animal_sex: "female" | "male" | "unknown"
