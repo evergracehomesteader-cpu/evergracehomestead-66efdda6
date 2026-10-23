@@ -33,6 +33,7 @@ function AuthLayout() {
               <div className="hidden md:block">
                 <SidebarTrigger />
               </div>
+              <img src="/icon-192.png" alt="Evergrace Homestead" className="h-7 w-7 rounded-md object-cover shrink-0" />
               <div className="font-display font-semibold text-base md:text-base truncate">Homestead Hub</div>
               <div className="ml-auto flex items-center gap-2">
                 <SyncStatus />

@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Sprout } from "lucide-react";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
@@ -87,9 +86,7 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-secondary px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground mb-4">
-            <Sprout className="h-7 w-7" />
-          </div>
+          <img src="/logo.png" alt="Evergrace Homestead" className="mx-auto mb-4 w-72 max-w-full h-auto rounded-lg" />
           <h1 className="text-3xl font-display font-semibold">Homestead Hub</h1>
           <p className="text-muted-foreground text-sm mt-1">Livestock · Feed · Garden · Finances</p>
         </div>
