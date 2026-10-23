@@ -304,21 +304,29 @@ export function OnboardingTour() {
   }
 
   return (
-    <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-label="App tour">
-      {/* Dimmed shade — four panels around the hole (or one solid overlay). */}
+    <div
+      className="fixed inset-0 z-[100] pointer-events-none"
+      role="dialog"
+      aria-modal="true"
+      aria-label="App tour"
+    >
+      {/* Dimmed shade — four panels around the hole (or one solid overlay).
+          Panels take pointer-events-auto so stray taps land on the shade,
+          while the hole itself stays uncovered AND the root is
+          pointer-events-none, so taps over the hole reach the real control. */}
       {hole ? (
         <>
-          <div className="absolute bg-black/60" style={{ top: 0, left: 0, width: vw, height: hole.top }} />
+          <div className="absolute bg-black/60 pointer-events-auto" style={{ top: 0, left: 0, width: vw, height: hole.top }} />
           <div
-            className="absolute bg-black/60"
+            className="absolute bg-black/60 pointer-events-auto"
             style={{ top: hole.top + hole.height, left: 0, width: vw, height: Math.max(0, vh - hole.top - hole.height) }}
           />
           <div
-            className="absolute bg-black/60"
+            className="absolute bg-black/60 pointer-events-auto"
             style={{ top: hole.top, left: 0, width: hole.left, height: hole.height }}
           />
           <div
-            className="absolute bg-black/60"
+            className="absolute bg-black/60 pointer-events-auto"
             style={{
               top: hole.top,
               left: hole.left + hole.width,
@@ -333,12 +341,12 @@ export function OnboardingTour() {
           />
         </>
       ) : (
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/60 pointer-events-auto" />
       )}
 
       {/* Tour card */}
       <div
-        className="absolute rounded-2xl bg-card text-card-foreground shadow-2xl border p-4"
+        className="absolute rounded-2xl bg-card text-card-foreground shadow-2xl border p-4 pointer-events-auto"
         style={cardStyle}
       >
         <button
