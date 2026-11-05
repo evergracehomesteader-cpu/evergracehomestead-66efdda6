@@ -224,6 +224,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "animals_father_id_fkey"
+            columns: ["father_id"]
+            isOneToOne: false
+            referencedRelation: "for_sale_listings"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "animals_homestead_id_fkey"
             columns: ["homestead_id"]
             isOneToOne: false
@@ -235,6 +242,13 @@ export type Database = {
             columns: ["mother_id"]
             isOneToOne: false
             referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animals_mother_id_fkey"
+            columns: ["mother_id"]
+            isOneToOne: false
+            referencedRelation: "for_sale_listings"
             referencedColumns: ["id"]
           },
         ]
@@ -1048,6 +1062,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "feed_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "for_sale_listings"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "feed_logs_feed_item_id_fkey"
             columns: ["feed_item_id"]
             isOneToOne: false
@@ -1080,6 +1101,7 @@ export type Database = {
           price_cents: number
           purchased_on: string
           quantity: number
+          receipt_photo_path: string | null
           store: string | null
           total_lbs: number
           unit_type: string
@@ -1100,6 +1122,7 @@ export type Database = {
           price_cents: number
           purchased_on?: string
           quantity: number
+          receipt_photo_path?: string | null
           store?: string | null
           total_lbs?: number
           unit_type?: string
@@ -1120,6 +1143,7 @@ export type Database = {
           price_cents?: number
           purchased_on?: string
           quantity?: number
+          receipt_photo_path?: string | null
           store?: string | null
           total_lbs?: number
           unit_type?: string
@@ -1343,6 +1367,13 @@ export type Database = {
             columns: ["animal_id"]
             isOneToOne: false
             referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "heat_events_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "for_sale_listings"
             referencedColumns: ["id"]
           },
           {
@@ -1666,6 +1697,232 @@ export type Database = {
           },
         ]
       }
+      power_generator_logs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          fuel_cost_cents: number | null
+          fuel_gallons: number | null
+          generator_id: string
+          homestead_id: string
+          id: string
+          kind: string
+          logged_at: string
+          maintenance_type: string | null
+          notes: string | null
+          runtime_hours: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          fuel_cost_cents?: number | null
+          fuel_gallons?: number | null
+          generator_id: string
+          homestead_id?: string
+          id?: string
+          kind: string
+          logged_at?: string
+          maintenance_type?: string | null
+          notes?: string | null
+          runtime_hours?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          fuel_cost_cents?: number | null
+          fuel_gallons?: number | null
+          generator_id?: string
+          homestead_id?: string
+          id?: string
+          kind?: string
+          logged_at?: string
+          maintenance_type?: string | null
+          notes?: string | null
+          runtime_hours?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_generator_logs_generator_id_fkey"
+            columns: ["generator_id"]
+            isOneToOne: false
+            referencedRelation: "power_generators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "power_generator_logs_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_generators: {
+        Row: {
+          burn_rate_gph: number
+          created_at: string
+          created_by: string | null
+          current_fuel_gal: number
+          fuel_type: string
+          homestead_id: string
+          id: string
+          last_maintenance_at: string | null
+          last_maintenance_hrs: number
+          last_maintenance_type: string | null
+          name: string
+          notes: string | null
+          oil_change_interval_hrs: number
+          tank_capacity_gal: number
+          total_runtime_hrs: number
+          updated_at: string
+        }
+        Insert: {
+          burn_rate_gph?: number
+          created_at?: string
+          created_by?: string | null
+          current_fuel_gal?: number
+          fuel_type?: string
+          homestead_id?: string
+          id?: string
+          last_maintenance_at?: string | null
+          last_maintenance_hrs?: number
+          last_maintenance_type?: string | null
+          name: string
+          notes?: string | null
+          oil_change_interval_hrs?: number
+          tank_capacity_gal?: number
+          total_runtime_hrs?: number
+          updated_at?: string
+        }
+        Update: {
+          burn_rate_gph?: number
+          created_at?: string
+          created_by?: string | null
+          current_fuel_gal?: number
+          fuel_type?: string
+          homestead_id?: string
+          id?: string
+          last_maintenance_at?: string | null
+          last_maintenance_hrs?: number
+          last_maintenance_type?: string | null
+          name?: string
+          notes?: string | null
+          oil_change_interval_hrs?: number
+          tank_capacity_gal?: number
+          total_runtime_hrs?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_generators_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_propane_logs: {
+        Row: {
+          cost_cents: number | null
+          created_at: string
+          created_by: string | null
+          gallons: number | null
+          homestead_id: string
+          id: string
+          kind: string
+          level_pct: number | null
+          logged_at: string
+          notes: string | null
+          tank_id: string
+        }
+        Insert: {
+          cost_cents?: number | null
+          created_at?: string
+          created_by?: string | null
+          gallons?: number | null
+          homestead_id?: string
+          id?: string
+          kind: string
+          level_pct?: number | null
+          logged_at?: string
+          notes?: string | null
+          tank_id: string
+        }
+        Update: {
+          cost_cents?: number | null
+          created_at?: string
+          created_by?: string | null
+          gallons?: number | null
+          homestead_id?: string
+          id?: string
+          kind?: string
+          level_pct?: number | null
+          logged_at?: string
+          notes?: string | null
+          tank_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_propane_logs_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "power_propane_logs_tank_id_fkey"
+            columns: ["tank_id"]
+            isOneToOne: false
+            referencedRelation: "power_propane_tanks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_propane_tanks: {
+        Row: {
+          capacity_gal: number
+          created_at: string
+          created_by: string | null
+          current_level_pct: number
+          homestead_id: string
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          capacity_gal?: number
+          created_at?: string
+          created_by?: string | null
+          current_level_pct?: number
+          homestead_id?: string
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          capacity_gal?: number
+          created_at?: string
+          created_by?: string | null
+          current_level_pct?: number
+          homestead_id?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_propane_tanks_homestead_id_fkey"
+            columns: ["homestead_id"]
+            isOneToOne: false
+            referencedRelation: "homesteads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pregnancies: {
         Row: {
           actual_birth: string | null
@@ -1742,6 +1999,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pregnancies_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "for_sale_listings"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pregnancies_homestead_id_fkey"
             columns: ["homestead_id"]
             isOneToOne: false
@@ -1753,6 +2017,13 @@ export type Database = {
             columns: ["sire_id"]
             isOneToOne: false
             referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pregnancies_sire_id_fkey"
+            columns: ["sire_id"]
+            isOneToOne: false
+            referencedRelation: "for_sale_listings"
             referencedColumns: ["id"]
           },
         ]
@@ -2118,6 +2389,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "weight_logs_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "for_sale_listings"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "weight_logs_homestead_id_fkey"
             columns: ["homestead_id"]
             isOneToOne: false
@@ -2128,7 +2406,45 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      for_sale_listings: {
+        Row: {
+          breed: string | null
+          date_of_birth: string | null
+          id: string | null
+          listing_price_cents: number | null
+          name: string | null
+          photo_path: string | null
+          sale_listed_at: string | null
+          sale_notes: string | null
+          sex: Database["public"]["Enums"]["animal_sex"] | null
+          species: string | null
+        }
+        Insert: {
+          breed?: string | null
+          date_of_birth?: string | null
+          id?: string | null
+          listing_price_cents?: number | null
+          name?: string | null
+          photo_path?: never
+          sale_listed_at?: string | null
+          sale_notes?: string | null
+          sex?: Database["public"]["Enums"]["animal_sex"] | null
+          species?: string | null
+        }
+        Update: {
+          breed?: string | null
+          date_of_birth?: string | null
+          id?: string | null
+          listing_price_cents?: number | null
+          name?: string | null
+          photo_path?: never
+          sale_listed_at?: string | null
+          sale_notes?: string | null
+          sex?: Database["public"]["Enums"]["animal_sex"] | null
+          species?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       accept_homestead_invitation: { Args: { _token: string }; Returns: string }
@@ -2158,12 +2474,17 @@ export type Database = {
         Returns: Database["public"]["Enums"]["app_role"]
       }
       is_approved_user: { Args: { _uid: string }; Returns: boolean }
+      is_for_sale_photo: { Args: { _name: string }; Returns: boolean }
       is_homestead_member: {
         Args: { _hid: string; _uid: string }
         Returns: boolean
       }
       is_homestead_owner: {
         Args: { _hid: string; _uid: string }
+        Returns: boolean
+      }
+      receipt_photo_shared: {
+        Args: { _name: string; _uid: string }
         Returns: boolean
       }
     }
