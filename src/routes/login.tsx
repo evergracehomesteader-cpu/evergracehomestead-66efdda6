@@ -125,9 +125,21 @@ function LoginPage() {
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
             <div className="relative flex justify-center"><span className="bg-card px-2 text-xs uppercase text-muted-foreground">or</span></div>
           </div>
-          <Button type="button" variant="outline" className="w-full" onClick={async () => { const { enterDemoMode } = await import("@/lib/demo/mode"); await enterDemoMode(); }}>
-            Try Demo Mode
-          </Button>
+          <GoogleSignInButton
+            onSignedIn={() => {
+              if (pendingInvite) {
+                sessionStorage.removeItem("pending_invite_token");
+                navigate({ to: "/accept-invite/$token", params: { token: pendingInvite } });
+              } else {
+                navigate({ to: "/dashboard" });
+              }
+            }}
+          />
+          <div className="mt-3">
+            <Button type="button" variant="outline" className="w-full" onClick={async () => { const { enterDemoMode } = await import("@/lib/demo/mode"); await enterDemoMode(); }}>
+              Try Demo Mode
+            </Button>
+          </div>
           <p className="text-xs text-muted-foreground text-center mt-3">
             Explore with realistic sample data. Nothing is saved to your account.
           </p>
