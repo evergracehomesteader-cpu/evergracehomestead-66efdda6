@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
@@ -36,6 +35,20 @@ function LoginPage() {
     }
     return <Navigate to="/dashboard" />;
   }
+
+  const handleGoogle = async () => {
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/login` },
+      });
+      if (error) throw error;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Google sign-in failed");
+      setBusy(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +105,19 @@ function LoginPage() {
           <p className="text-muted-foreground text-sm mt-1">Livestock · Feed · Garden · Finances</p>
         </div>
         <Card className="p-6">
+          <Button type="button" variant="outline" className="w-full" disabled={busy} onClick={handleGoogle}>
+            <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M23.5 12.27c0-.85-.08-1.66-.22-2.45H12v4.64h6.45a5.52 5.52 0 0 1-2.4 3.58v2.97h3.88c2.27-2.09 3.57-5.17 3.57-8.74z" />
+              <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.88-2.97c-1.08.72-2.45 1.15-4.06 1.15-3.12 0-5.77-2.11-6.71-4.95H1.28v3.07A12 12 0 0 0 12 24z" />
+              <path fill="#FBBC05" d="M5.29 14.32A7.2 7.2 0 0 1 4.91 12c0-.81.14-1.59.38-2.32V6.61H1.28a12 12 0 0 0 0 10.78l4.01-3.07z" />
+              <path fill="#EA4335" d="M12 4.73c1.76 0 3.35.61 4.6 1.8l3.44-3.44A11.98 11.98 0 0 0 12 0 12 12 0 0 0 1.28 6.61l4.01 3.07C6.23 6.84 8.88 4.73 12 4.73z" />
+            </svg>
+            Continue with Google
+          </Button>
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <div className="relative flex justify-center"><span className="bg-card px-2 text-xs uppercase text-muted-foreground">or</span></div>
+          </div>
           <div className="flex gap-1 mb-4 rounded-md bg-muted p-1">
             <button type="button" onClick={() => setMode("signin")}
               className={`flex-1 rounded px-3 py-1.5 text-sm font-medium ${mode === "signin" ? "bg-background shadow" : "text-muted-foreground"}`}>
@@ -125,21 +151,9 @@ function LoginPage() {
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
             <div className="relative flex justify-center"><span className="bg-card px-2 text-xs uppercase text-muted-foreground">or</span></div>
           </div>
-          <GoogleSignInButton
-            onSignedIn={() => {
-              if (pendingInvite) {
-                sessionStorage.removeItem("pending_invite_token");
-                navigate({ to: "/accept-invite/$token", params: { token: pendingInvite } });
-              } else {
-                navigate({ to: "/dashboard" });
-              }
-            }}
-          />
-          <div className="mt-3">
-            <Button type="button" variant="outline" className="w-full" onClick={async () => { const { enterDemoMode } = await import("@/lib/demo/mode"); await enterDemoMode(); }}>
-              Try Demo Mode
-            </Button>
-          </div>
+          <Button type="button" variant="outline" className="w-full" onClick={async () => { const { enterDemoMode } = await import("@/lib/demo/mode"); await enterDemoMode(); }}>
+            Try Demo Mode
+          </Button>
           <p className="text-xs text-muted-foreground text-center mt-3">
             Explore with realistic sample data. Nothing is saved to your account.
           </p>
