@@ -151,3 +151,28 @@
   }
 }
 
+/* Google sign-in button — Google branding guidelines (light theme). */
+.google-btn {
+  background: #ffffff;
+  border: 1px solid #747775;
+  color: #1f1f1f;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  height: 40px;
+  padding: 0 12px;
+  gap: 10px;
+  box-shadow: none;
+}
+.google-btn:hover { background: #f8f9f9; }
+.google-btn:active { background: #f2f2f2; }
+.google-btn:focus-visible { outline: 2px solid #1a73e8; outline-offset: 2px; }
+.google-btn svg { width: 18px; height: 18px; }
+/* Dark theme variant, used only if the app ever enables dark mode. */
+.dark .google-btn {
+  background: #131314;
+  border-color: #8e918f;
+  color: #e3e3e3;
+}
+.dark .google-btn:hover { background: #1e1f20; }
+
