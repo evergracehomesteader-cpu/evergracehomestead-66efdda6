@@ -171,13 +171,7 @@ function JobsPage() {
         onBack={() => setView("list")}
         onSave={(payload) => save.mutate({ payload, id: editing?.id })}
         onDelete={
-          editing && can("jobs.edit")
-            ? () => {
-                if (confirm(`Delete the job for ${editing.customer_name}? This can't be undone.`)) {
-                  del.mutate(editing.id);
-                }
-              }
-            : undefined
+          editing && can("jobs.edit") ? () => del.mutate(editing.id) : undefined
         }
       />
     );
@@ -279,6 +273,7 @@ function JobForm({
   const [deposit, setDeposit] = useState(initial?.deposit?.toString() ?? "");
   const [paid, setPaid] = useState(initial?.amount_paid?.toString() ?? "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const total =
     num(sqft) * (hang ? num(hangRate) : 0) +
@@ -448,7 +443,7 @@ function JobForm({
           <h2 className="text-xl font-semibold">Estimate</h2>
           <div className="space-y-2">
             <Label className="text-base" htmlFor="job-sqft">Square feet</Label>
-            <Input id="job-sqft" className={bigInput} type="number" inputMode="decimal" min="0" value={sqft} onChange={(e) => setSqft(e.target.value)} placeholder="0" />
+            <Input id="job-sqft" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={sqft} onChange={(e) => setSqft(e.target.value)} placeholder="0" />
           </div>
 
           <div className="space-y-2">
@@ -457,7 +452,7 @@ function JobForm({
                 {hang && <Check className="h-5 w-5" />} Hanging
               </Button>
               <div className="w-32">
-                <Input aria-label="Hanging rate per square foot" className={bigInput} type="number" inputMode="decimal" step="0.05" min="0" value={hangRate} onChange={(e) => setHangRate(e.target.value)} />
+                <Input aria-label="Hanging rate per square foot" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" step="0.05" min="0" value={hangRate} onChange={(e) => setHangRate(e.target.value)} />
               </div>
             </div>
             <p className="text-sm text-muted-foreground">$/sq ft to hang</p>
@@ -469,7 +464,7 @@ function JobForm({
                 {finish && <Check className="h-5 w-5" />} Finishing
               </Button>
               <div className="w-32">
-                <Input aria-label="Finishing rate per square foot" className={bigInput} type="number" inputMode="decimal" step="0.05" min="0" value={finishRate} onChange={(e) => setFinishRate(e.target.value)} />
+                <Input aria-label="Finishing rate per square foot" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" step="0.05" min="0" value={finishRate} onChange={(e) => setFinishRate(e.target.value)} />
               </div>
             </div>
             <p className="text-sm text-muted-foreground">$/sq ft to finish</p>
@@ -477,17 +472,17 @@ function JobForm({
 
           <div className="space-y-2">
             <Label className="text-base" htmlFor="job-materials">Materials $</Label>
-            <Input id="job-materials" className={bigInput} type="number" inputMode="decimal" min="0" value={materials} onChange={(e) => setMaterials(e.target.value)} placeholder="0" />
+            <Input id="job-materials" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={materials} onChange={(e) => setMaterials(e.target.value)} placeholder="0" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label className="text-base" htmlFor="job-hours">Hours (if hourly)</Label>
-              <Input id="job-hours" className={bigInput} type="number" inputMode="decimal" min="0" value={hours} onChange={(e) => setHours(e.target.value)} placeholder="0" />
+              <Input id="job-hours" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={hours} onChange={(e) => setHours(e.target.value)} placeholder="0" />
             </div>
             <div className="space-y-2">
               <Label className="text-base" htmlFor="job-hourly">$ per hour</Label>
-              <Input id="job-hourly" className={bigInput} type="number" inputMode="decimal" min="0" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} placeholder="0" />
+              <Input id="job-hourly" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} placeholder="0" />
             </div>
           </div>
 
@@ -503,11 +498,11 @@ function JobForm({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label className="text-base" htmlFor="job-deposit">Deposit $</Label>
-              <Input id="job-deposit" className={bigInput} type="number" inputMode="decimal" min="0" value={deposit} onChange={(e) => setDeposit(e.target.value)} placeholder="0" />
+              <Input id="job-deposit" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={deposit} onChange={(e) => setDeposit(e.target.value)} placeholder="0" />
             </div>
             <div className="space-y-2">
               <Label className="text-base" htmlFor="job-paid">Paid $</Label>
-              <Input id="job-paid" className={bigInput} type="number" inputMode="decimal" min="0" value={paid} onChange={(e) => setPaid(e.target.value)} placeholder="0" />
+              <Input id="job-paid" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={paid} onChange={(e) => setPaid(e.target.value)} placeholder="0" />
             </div>
           </div>
           <div className="space-y-2">
@@ -542,8 +537,20 @@ function JobForm({
           {saving ? "Saving…" : "Save Job"}
         </Button>
         {onDelete && (
-          <Button size="lg" variant="destructive" className="w-full h-12 text-base" onClick={onDelete}>
-            <Trash2 className="h-5 w-5" /> Delete this job
+          <Button
+            size="lg"
+            variant="destructive"
+            className="w-full h-12 text-base"
+            onClick={() => {
+              if (confirmingDelete) onDelete();
+              else {
+                setConfirmingDelete(true);
+                setTimeout(() => setConfirmingDelete(false), 4000);
+              }
+            }}
+          >
+            <Trash2 className="h-5 w-5" />
+            {confirmingDelete ? "Tap again to DELETE — this can't be undone" : "Delete this job"}
           </Button>
         )}
       </fieldset>
