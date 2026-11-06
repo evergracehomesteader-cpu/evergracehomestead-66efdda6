@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useHomestead } from "@/lib/homestead-context";
@@ -26,6 +26,13 @@ export const Route = createFileRoute("/_authenticated/jobs")({
   ),
 });
 
+interface MaterialsLine {
+  key: string;
+  label: string;
+  qty: number;
+  price: number;
+}
+
 interface Job {
   id: string;
   homestead_id: string;
@@ -43,8 +50,12 @@ interface Job {
   hang_labor_rate: number;
   finish_labor_rate: number;
   materials_cost: number;
+  materials_items: MaterialsLine[] | null;
   labor_hours: number | null;
   labor_hourly_rate: number | null;
+  helper_rate: number | null;
+  helper_hours: number | null;
+  crew_size: number;
   total: number;
   deposit: number;
   amount_paid: number;
@@ -94,6 +105,33 @@ const numOrNull = (v: string) => {
   const n = parseFloat(v);
   return Number.isFinite(n) ? n : null;
 };
+const round1 = (n: number) => Math.round(n * 10) / 10;
+
+// ---- Materials estimate ---------------------------------------------------
+// Quantities are a starting guess from the square footage (with 10% waste on
+// sheets); every qty and price stays editable. Once Aaron types a qty
+// himself we stop overwriting it (the "touched" set in the form). Prices are
+// his to set — the form links out to Lowe's / Menards / Home Depot so he can
+// check today's price.
+const MATERIAL_DEFS: {
+  key: string;
+  label: string;
+  price: number;
+  autoQty: (sqft: number, hang: boolean, finish: boolean) => number;
+}[] = [
+  { key: "sheets", label: "Sheets 4×8", price: 14, autoQty: (s) => Math.ceil((s * 1.1) / 32) },
+  { key: "mud", label: "Mud buckets (4.5 gal)", price: 18, autoQty: (s, _h, f) => (f ? Math.ceil(s / 400) : 0) },
+  { key: "tape", label: "Tape rolls (500 ft)", price: 6, autoQty: (s, _h, f) => (f ? Math.ceil(s / 500) : 0) },
+  { key: "screws", label: "Screws (lbs)", price: 8, autoQty: (s, h) => (h ? Math.ceil(s / 225) : 0) },
+  { key: "bead", label: "Corner bead sticks (8 ft)", price: 4, autoQty: () => 0 },
+];
+
+function initialMaterials(saved?: MaterialsLine[] | null): MaterialsLine[] {
+  return MATERIAL_DEFS.map((d) => {
+    const s = saved?.find((l) => l.key === d.key);
+    return s ? { ...s } : { key: d.key, label: d.label, qty: 0, price: d.price };
+  });
+}
 
 function JobsPage() {
   const qc = useQueryClient();
@@ -267,7 +305,25 @@ function JobForm({
   const [hangRate, setHangRate] = useState(initial?.hang_labor_rate?.toString() ?? "0.75");
   const [finish, setFinish] = useState(initial?.finish ?? true);
   const [finishRate, setFinishRate] = useState(initial?.finish_labor_rate?.toString() ?? "1.25");
-  const [materials, setMaterials] = useState(initial?.materials_cost?.toString() ?? "");
+  const [matLines, setMatLines] = useState<MaterialsLine[]>(() => initialMaterials(initial?.materials_items));
+  // On an existing job every line starts "touched" — saved quantities win
+  // over the square-footage guesses. On a new job nothing is touched, so
+  // quantities follow the square footage until Aaron types over one.
+  const [matTouched, setMatTouched] = useState<ReadonlySet<string>>(
+    () => new Set(initial ? MATERIAL_DEFS.map((d) => d.key) : []),
+  );
+  // Anything in materials_cost that the lines don't explain (an old job's
+  // hand-typed materials $, or a previous "other") lands in Other materials.
+  const [extraMaterials, setExtraMaterials] = useState(() => {
+    if (!initial) return "";
+    const linesTotal = (initial.materials_items ?? []).reduce((sum, l) => sum + l.qty * l.price, 0);
+    const extra = initial.materials_cost - linesTotal;
+    return extra > 0 ? String(round1(extra)) : "";
+  });
+  const [crewSize, setCrewSize] = useState(initial?.crew_size ?? 1);
+  const [helperRate, setHelperRate] = useState(initial?.helper_rate?.toString() ?? "16");
+  const [helperHours, setHelperHours] = useState(initial?.helper_hours?.toString() ?? "");
+  const [helperHoursTouched, setHelperHoursTouched] = useState(initial?.helper_hours != null);
   const [hours, setHours] = useState(initial?.labor_hours?.toString() ?? "");
   const [hourlyRate, setHourlyRate] = useState(initial?.labor_hourly_rate?.toString() ?? "");
   const [deposit, setDeposit] = useState(initial?.deposit?.toString() ?? "");
@@ -275,12 +331,53 @@ function JobForm({
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
+  const sqftN = num(sqft);
+  const linesTotal = matLines.reduce((sum, l) => sum + l.qty * l.price, 0);
+  const materialsTotal = linesTotal + num(extraMaterials);
+
   const total =
-    num(sqft) * (hang ? num(hangRate) : 0) +
-    num(sqft) * (finish ? num(finishRate) : 0) +
-    num(materials) +
+    sqftN * (hang ? num(hangRate) : 0) +
+    sqftN * (finish ? num(finishRate) : 0) +
+    materialsTotal +
     num(hours) * num(hourlyRate);
   const owed = total - num(paid);
+
+  // ---- Time & crew estimate -------------------------------------------------
+  // Rough trade pace: ~55 sq ft/hr to hang, ~45 sq ft/hr to finish (spread
+  // over the repeat trips finishing needs). A "day" is 8 working hours.
+  const hangHours = hang ? sqftN / 55 : 0;
+  const finishHours = finish ? sqftN / 45 : 0;
+  const totalHours = hangHours + finishHours;
+  const totalHoursR = round1(totalHours);
+  const workDays =
+    totalHours > 0 ? Math.max(0.5, Math.ceil((totalHours / (8 * crewSize)) * 2) / 2) : 0;
+
+  // Helper pay comes out of Aaron's pocket, NOT the customer's bill — it
+  // only feeds the "Aaron keeps about" breakdown below the total.
+  const helperCost = crewSize === 2 ? num(helperRate) * num(helperHours) : 0;
+  const aaronKeeps = total - materialsTotal - helperCost;
+
+  const updateLine = (key: string, patch: Partial<MaterialsLine>) =>
+    setMatLines((prev) => prev.map((l) => (l.key === key ? { ...l, ...patch } : l)));
+
+  // Auto-fill material quantities from the square footage until Aaron
+  // overrides a line himself.
+  useEffect(() => {
+    setMatLines((prev) =>
+      prev.map((l) => {
+        if (matTouched.has(l.key)) return l;
+        const def = MATERIAL_DEFS.find((d) => d.key === l.key);
+        return def ? { ...l, qty: def.autoQty(sqftN, hang, finish) } : l;
+      }),
+    );
+  }, [sqftN, hang, finish, matTouched]);
+
+  // Helper hours follow the job's total hours until Aaron edits them.
+  useEffect(() => {
+    if (!helperHoursTouched) {
+      setHelperHours(totalHours > 0 ? String(totalHoursR) : "");
+    }
+  }, [totalHours, totalHoursR, helperHoursTouched]);
 
   const submit = () => {
     if (!customerName.trim()) {
@@ -300,9 +397,13 @@ function JobForm({
       finish,
       hang_labor_rate: num(hangRate),
       finish_labor_rate: num(finishRate),
-      materials_cost: num(materials),
+      materials_cost: materialsTotal,
+      materials_items: matLines,
       labor_hours: numOrNull(hours),
       labor_hourly_rate: numOrNull(hourlyRate),
+      helper_rate: crewSize === 2 ? numOrNull(helperRate) : null,
+      helper_hours: crewSize === 2 ? numOrNull(helperHours) : null,
+      crew_size: crewSize,
       total,
       deposit: num(deposit),
       amount_paid: num(paid),
@@ -325,8 +426,20 @@ function JobForm({
     lines.push("");
     if (hang) lines.push(`Hanging: ${num(sqft)} sq ft × ${money(num(hangRate))} = ${money(num(sqft) * num(hangRate))}`);
     if (finish) lines.push(`Finishing: ${num(sqft)} sq ft × ${money(num(finishRate))} = ${money(num(sqft) * num(finishRate))}`);
-    if (num(materials) > 0) lines.push(`Materials: ${money(num(materials))}`);
     if (num(hours) > 0) lines.push(`Labor: ${num(hours)} hrs × ${money(num(hourlyRate))} = ${money(num(hours) * num(hourlyRate))}`);
+    if (materialsTotal > 0) {
+      lines.push(`Materials: ${money(materialsTotal)}`);
+      for (const l of matLines) {
+        if (l.qty > 0) lines.push(`  ${l.qty} × ${l.label} @ ${money(l.price)} = ${money(l.qty * l.price)}`);
+      }
+      if (num(extraMaterials) > 0) lines.push(`  Other materials: ${money(num(extraMaterials))}`);
+    }
+    if (totalHours > 0) {
+      lines.push(
+        `Estimated time: about ${workDays} ${workDays === 1 ? "day" : "days"} of work` +
+          (finish ? " (finishing takes 3 trips — coats dry between visits)" : ""),
+      );
+    }
     lines.push("", `TOTAL: ${money(total)}`);
     if (num(paid) > 0) lines.push(`Paid: ${money(num(paid))}`);
     if (owed > 0) lines.push(`BALANCE DUE: ${money(owed)}`);
@@ -470,9 +583,59 @@ function JobForm({
             <p className="text-sm text-muted-foreground">$/sq ft to finish</p>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-base" htmlFor="job-materials">Materials $</Label>
-            <Input id="job-materials" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={materials} onChange={(e) => setMaterials(e.target.value)} placeholder="0" />
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Materials (best guess — change anything)</h3>
+            {matLines.map((l) => (
+              <div key={l.key} className="space-y-1">
+                <Label className="text-base">{l.label}</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    aria-label={`How many: ${l.label}`}
+                    className={`${bigInput} w-24`}
+                    type="number"
+                    onWheel={(e) => e.currentTarget.blur()}
+                    inputMode="numeric"
+                    min="0"
+                    value={l.qty === 0 ? "" : String(l.qty)}
+                    onChange={(e) => {
+                      setMatTouched((prev) => new Set(prev).add(l.key));
+                      updateLine(l.key, { qty: Math.max(0, Math.floor(num(e.target.value))) });
+                    }}
+                    placeholder="0"
+                  />
+                  <span className="text-lg text-muted-foreground">× $</span>
+                  <Input
+                    aria-label={`Price each: ${l.label}`}
+                    className={`${bigInput} w-24`}
+                    type="number"
+                    onWheel={(e) => e.currentTarget.blur()}
+                    inputMode="decimal"
+                    min="0"
+                    value={l.price === 0 ? "" : String(l.price)}
+                    onChange={(e) => updateLine(l.key, { price: num(e.target.value) })}
+                    placeholder="0"
+                  />
+                  <span className="ml-auto text-lg font-semibold">{money(l.qty * l.price)}</span>
+                </div>
+              </div>
+            ))}
+            <div className="space-y-2">
+              <Label className="text-base" htmlFor="job-extra-materials">Other materials $</Label>
+              <Input id="job-extra-materials" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={extraMaterials} onChange={(e) => setExtraMaterials(e.target.value)} placeholder="0" />
+            </div>
+            <div className="flex items-center justify-between text-lg font-semibold">
+              <span>Materials total</span>
+              <span>{money(materialsTotal)}</span>
+            </div>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p>
+                Check prices:{" "}
+                <a className="underline" href="https://www.lowes.com/search?searchTerm=drywall+materials" target="_blank" rel="noreferrer">Lowe's</a>{" · "}
+                <a className="underline" href="https://www.menards.com/main/search.html?search=drywall" target="_blank" rel="noreferrer">Menards</a>{" · "}
+                <a className="underline" href="https://www.homedepot.com/s/drywall" target="_blank" rel="noreferrer">Home Depot</a>
+              </p>
+              <p>Prices in the app are yours to set — tap a store to check today's price.</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -486,12 +649,84 @@ function JobForm({
             </div>
           </div>
 
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Who's working?</h3>
+            <div className="flex gap-2">
+              <Button type="button" size="lg" variant={crewSize === 1 ? "default" : "outline"} className="h-14 flex-1 text-lg" onClick={() => setCrewSize(1)}>
+                {crewSize === 1 && <Check className="h-5 w-5" />} Just Aaron
+              </Button>
+              <Button type="button" size="lg" variant={crewSize === 2 ? "default" : "outline"} className="h-14 flex-1 text-lg" onClick={() => setCrewSize(2)}>
+                {crewSize === 2 && <Check className="h-5 w-5" />} Aaron + helper
+              </Button>
+            </div>
+            {totalHours > 0 ? (
+              <p className="text-base text-muted-foreground">
+                About {totalHoursR} hours of work ≈ {workDays} {workDays === 1 ? "day" : "days"} with{" "}
+                {crewSize === 1 ? "just Aaron" : "Aaron + a helper"}.
+                {finish && " Finishing takes at least 3 trips — coats need a day to dry between them."}
+              </p>
+            ) : (
+              <p className="text-base text-muted-foreground">
+                Type the square feet above and I'll figure how long this job takes.
+              </p>
+            )}
+          </div>
+
+          {crewSize === 2 && (
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold">Helper pay (comes out of Aaron's share — not added to the customer's bill)</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label className="text-base" htmlFor="job-helper-rate">Helper $ per hour</Label>
+                  <Input id="job-helper-rate" className={bigInput} type="number" onWheel={(e) => e.currentTarget.blur()} inputMode="decimal" min="0" value={helperRate} onChange={(e) => setHelperRate(e.target.value)} placeholder="0" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-base" htmlFor="job-helper-hours">Helper hours</Label>
+                  <Input
+                    id="job-helper-hours"
+                    className={bigInput}
+                    type="number"
+                    onWheel={(e) => e.currentTarget.blur()}
+                    inputMode="decimal"
+                    min="0"
+                    value={helperHours}
+                    onChange={(e) => {
+                      setHelperHoursTouched(true);
+                      setHelperHours(e.target.value);
+                    }}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+              <p className="text-base text-muted-foreground">Helper gets about {money(helperCost)} on this job.</p>
+            </div>
+          )}
+
           <div className="rounded-lg bg-accent p-4 text-center">
             <div className="text-sm text-muted-foreground">TOTAL</div>
             <div className="text-4xl font-bold">{money(total)}</div>
             {owed > 0 && <div className="mt-1 text-base font-semibold text-destructive">Owes {money(owed)}</div>}
             {owed <= 0 && num(paid) > 0 && <div className="mt-1 text-base font-semibold">Paid in full</div>}
           </div>
+
+          {(crewSize === 2 || materialsTotal > 0) && (
+            <div className="space-y-1 rounded-lg border p-4 text-lg">
+              <div className="flex items-center justify-between">
+                <span>Materials in this bid:</span>
+                <span className="font-semibold">{money(materialsTotal)}</span>
+              </div>
+              {crewSize === 2 && (
+                <div className="flex items-center justify-between">
+                  <span>Helper gets:</span>
+                  <span className="font-semibold">{money(helperCost)}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <span>Aaron keeps about:</span>
+                <span className="font-bold">{money(aaronKeeps)}</span>
+              </div>
+            </div>
+          )}
         </Card>
 
         <Card className="p-4 space-y-4">
