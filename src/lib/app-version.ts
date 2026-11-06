@@ -1,5 +1,5 @@
-export const APP_VERSION = "0.1.2";
-export const APP_LAST_UPDATED = "2026-06-07T00:30:00Z";
+export const APP_VERSION = "0.1.3";
+export const APP_LAST_UPDATED = "2026-11-05T19:15:00Z";
 
 export const APP_PUBLISHED_URL = "https://evergracehomestead.lovable.app";
 
@@ -10,6 +10,15 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: "0.1.3",
+    date: "2026-11-05",
+    changes: [
+      "Added a Jobs page with a big-button drywall estimator (hanging & finishing rates, materials, labor)",
+      "Added a Contractor role so Aaron can track his business jobs simply",
+      "Fixed the Homestead Members list coming up blank",
+    ],
+  },
   {
     version: "0.1.0",
     date: "2026-05-30",

@@ -1,9 +1,9 @@
 export type AppRole =
   | "admin" | "manager" | "helper" | "viewer"
-  | "bookkeeper" | "animal_care" | "volunteer" | "pending";
+  | "bookkeeper" | "animal_care" | "volunteer" | "pending" | "contractor";
 
 export const ALL_ROLES: AppRole[] = [
-  "admin","manager","helper","viewer","bookkeeper","animal_care","volunteer","pending",
+  "admin","manager","helper","viewer","bookkeeper","animal_care","volunteer","contractor","pending",
 ];
 
 export const ROLE_LABEL: Record<AppRole, string> = {
@@ -14,6 +14,7 @@ export const ROLE_LABEL: Record<AppRole, string> = {
   bookkeeper: "Bookkeeper",
   animal_care: "Animal Care",
   volunteer: "Volunteer",
+  contractor: "Contractor",
   pending: "Pending",
 };
 
@@ -65,6 +66,14 @@ export const PERMISSION_GROUPS: { group: string; permissions: { key: string; lab
       { key: "finances.view", label: "View finances" },
       { key: "finances.create", label: "Add finances" },
       { key: "finances.edit", label: "Edit finances" },
+    ],
+  },
+  {
+    group: "Jobs",
+    permissions: [
+      { key: "jobs.view", label: "View jobs" },
+      { key: "jobs.create", label: "Add jobs" },
+      { key: "jobs.edit", label: "Edit jobs" },
     ],
   },
   {

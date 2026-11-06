@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
@@ -16,7 +16,7 @@ import { isDemoMode } from "@/lib/demo/mode";
 
 export const Route = createFileRoute("/_authenticated/homestead")({ component: HomesteadPage });
 
-const ROLES = ["admin", "manager", "animal_care", "bookkeeper", "helper", "viewer"] as const;
+const ROLES = ["admin", "manager", "animal_care", "bookkeeper", "helper", "viewer", "contractor"] as const;
 
 function HomesteadPage() {
   const { user } = useAuth();
@@ -25,6 +25,12 @@ function HomesteadPage() {
   const demo = isDemoMode();
 
   const [name, setName] = useState(currentName);
+  // currentName arrives async from the homestead context; without this the
+  // Details field stays blank (its useState initial value was captured
+  // before the homestead loaded), which looked like lost data after reloads.
+  useEffect(() => {
+    setName(currentName);
+  }, [currentId, currentName]);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<string>("helper");
 
@@ -32,12 +38,27 @@ function HomesteadPage() {
     queryKey: ["homestead-members", currentId],
     enabled: !!currentId && !demo,
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Two plain queries instead of an embedded profiles join: the join
+      // (profiles:user_id) has no direct FK to lean on and fails quietly,
+      // which left this list rendering blank even when members exist.
+      const { data: rows, error } = await supabase
         .from("homestead_members")
-        .select("user_id, role, created_at, profiles:user_id(display_name)")
+        .select("user_id, role, created_at")
         .eq("homestead_id", currentId!);
       if (error) throw error;
-      return data ?? [];
+      const members = rows ?? [];
+      if (members.length === 0) return [];
+      const ids = [...new Set(members.map((m) => m.user_id))];
+      const { data: profs, error: pErr } = await supabase
+        .from("profiles")
+        .select("id, display_name")
+        .in("id", ids);
+      if (pErr) throw pErr;
+      const byId = new Map((profs ?? []).map((p) => [p.id, p.display_name]));
+      return members.map((m) => ({
+        ...m,
+        profiles: { display_name: byId.get(m.user_id) ?? null },
+      }));
     },
   });
 
@@ -137,6 +158,17 @@ function HomesteadPage() {
 
       <Card className="p-5 space-y-4">
         <h2 className="font-semibold">Members</h2>
+        {membersQ.isLoading && (
+          <p className="text-sm text-muted-foreground">Loading members…</p>
+        )}
+        {membersQ.isError && (
+          <p className="text-sm text-destructive">
+            Couldn't load members: {(membersQ.error as Error)?.message ?? "unknown error"}
+          </p>
+        )}
+        {membersQ.isSuccess && (membersQ.data ?? []).length === 0 && (
+          <p className="text-sm text-muted-foreground">No members yet.</p>
+        )}
         <ul className="divide-y">
           {(membersQ.data ?? []).map((m) => {
             const isOwnerRow = current.homesteads?.owner_id === m.user_id;

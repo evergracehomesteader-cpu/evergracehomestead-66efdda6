@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as React from "react";
-import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, Users, Shield, CalendarCheck, Database, Fence, Heart, Lightbulb, ShieldAlert, Zap } from "lucide-react";
+import { Home, PawPrint, Wheat, Sprout, Recycle, Receipt, Handshake, LogOut, CalendarDays, BarChart3, Bell, Egg, UserRound, Baby, Settings, Wrench, Users, Shield, CalendarCheck, Database, Fence, Heart, Lightbulb, ShieldAlert, Zap, Hammer } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -26,6 +26,7 @@ const manage: NavItem[] = [
   { title: "Production", url: "/production", icon: Egg },
   { title: "Power", url: "/power", icon: Zap },
   { title: "Contacts", url: "/contacts", icon: UserRound },
+  { title: "Jobs", url: "/jobs", icon: Hammer, perm: "jobs.view" },
 ];
 
 const plan: NavItem[] = [
