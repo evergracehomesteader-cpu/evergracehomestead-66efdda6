@@ -27,7 +27,6 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedGardenRouteImport } from './routes/_authenticated/garden'
 import { Route as AuthenticatedHomesteadRouteImport } from './routes/_authenticated/homestead'
-import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs'
 import { Route as AuthenticatedLittersRouteImport } from './routes/_authenticated/litters'
 import { Route as AuthenticatedPensRouteImport } from './routes/_authenticated/pens'
 import { Route as AuthenticatedPowerRouteImport } from './routes/_authenticated/power'
@@ -133,11 +132,6 @@ const AuthenticatedGardenRoute = AuthenticatedGardenRouteImport.update({
 const AuthenticatedHomesteadRoute = AuthenticatedHomesteadRouteImport.update({
   id: '/homestead',
   path: '/homestead',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedJobsRoute = AuthenticatedJobsRouteImport.update({
-  id: '/jobs',
-  path: '/jobs',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedLittersRoute = AuthenticatedLittersRouteImport.update({
@@ -250,7 +244,6 @@ export interface FileRoutesByFullPath {
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
   '/homestead': typeof AuthenticatedHomesteadRoute
-  '/jobs': typeof AuthenticatedJobsRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
   '/power': typeof AuthenticatedPowerRoute
@@ -287,7 +280,6 @@ export interface FileRoutesByTo {
   '/feed': typeof AuthenticatedFeedRoute
   '/garden': typeof AuthenticatedGardenRoute
   '/homestead': typeof AuthenticatedHomesteadRoute
-  '/jobs': typeof AuthenticatedJobsRoute
   '/litters': typeof AuthenticatedLittersRoute
   '/pens': typeof AuthenticatedPensRoute
   '/power': typeof AuthenticatedPowerRoute
@@ -326,7 +318,6 @@ export interface FileRoutesById {
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/garden': typeof AuthenticatedGardenRoute
   '/_authenticated/homestead': typeof AuthenticatedHomesteadRoute
-  '/_authenticated/jobs': typeof AuthenticatedJobsRoute
   '/_authenticated/litters': typeof AuthenticatedLittersRoute
   '/_authenticated/pens': typeof AuthenticatedPensRoute
   '/_authenticated/power': typeof AuthenticatedPowerRoute
@@ -365,7 +356,6 @@ export interface FileRouteTypes {
     | '/feed'
     | '/garden'
     | '/homestead'
-    | '/jobs'
     | '/litters'
     | '/pens'
     | '/power'
@@ -402,7 +392,6 @@ export interface FileRouteTypes {
     | '/feed'
     | '/garden'
     | '/homestead'
-    | '/jobs'
     | '/litters'
     | '/pens'
     | '/power'
@@ -440,7 +429,6 @@ export interface FileRouteTypes {
     | '/_authenticated/feed'
     | '/_authenticated/garden'
     | '/_authenticated/homestead'
-    | '/_authenticated/jobs'
     | '/_authenticated/litters'
     | '/_authenticated/pens'
     | '/_authenticated/power'
@@ -597,13 +585,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHomesteadRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/jobs': {
-      id: '/_authenticated/jobs'
-      path: '/jobs'
-      fullPath: '/jobs'
-      preLoaderRoute: typeof AuthenticatedJobsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/litters': {
       id: '/_authenticated/litters'
       path: '/litters'
@@ -740,7 +721,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGardenRoute: typeof AuthenticatedGardenRoute
   AuthenticatedHomesteadRoute: typeof AuthenticatedHomesteadRoute
-  AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute
   AuthenticatedLittersRoute: typeof AuthenticatedLittersRoute
   AuthenticatedPensRoute: typeof AuthenticatedPensRoute
   AuthenticatedPowerRoute: typeof AuthenticatedPowerRoute
@@ -773,7 +753,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGardenRoute: AuthenticatedGardenRoute,
   AuthenticatedHomesteadRoute: AuthenticatedHomesteadRoute,
-  AuthenticatedJobsRoute: AuthenticatedJobsRoute,
   AuthenticatedLittersRoute: AuthenticatedLittersRoute,
   AuthenticatedPensRoute: AuthenticatedPensRoute,
   AuthenticatedPowerRoute: AuthenticatedPowerRoute,
